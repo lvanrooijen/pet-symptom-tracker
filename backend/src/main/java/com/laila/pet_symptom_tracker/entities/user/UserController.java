@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping(Routes.USERS)
 @RequiredArgsConstructor
-@CrossOrigin(origins = "${pet-symptom-tracker.cors}")
+@CrossOrigin(origins = "${pet_symptom_tracker.cors}")
 public class UserController {
   private final UserRepository userRepository;
 

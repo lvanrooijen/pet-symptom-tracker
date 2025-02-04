@@ -39,6 +39,6 @@ public class UserService implements UserDetailsService {
   public User loadUserByUsername(String username) throws UsernameNotFoundException {
     return userRepository
         .findByUsernameIgnoreCase(username)
-        .orElseThrow(() -> new UsernameNotFoundException("username does not exist"));
+        .orElseThrow(UsernameNotFoundException::new);
   }
 }

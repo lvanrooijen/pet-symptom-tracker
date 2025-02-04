@@ -93,3 +93,4 @@ yarn.lock
 
 # Custom additions
 backend/src/main/resources/env.properties
+pet_symptom_tracker_backend/src/main/resources/env.properties
