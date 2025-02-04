@@ -92,3 +92,4 @@ package-lock.json
 yarn.lock
 
 src/main/resources/env.properties
+backend/src/main/resources/env.properties
