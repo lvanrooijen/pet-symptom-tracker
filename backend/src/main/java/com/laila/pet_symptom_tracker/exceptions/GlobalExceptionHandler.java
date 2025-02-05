@@ -48,7 +48,7 @@ public class GlobalExceptionHandler {
     ProblemDetail problemDetail = ProblemDetail.forStatus(HttpStatus.FORBIDDEN);
     problemDetail.setTitle("Forbidden");
     problemDetail.setDetail("You do not have the right to do this.");
-    return ResponseEntity.status(HttpStatus.FORBIDDEN).body(problemDetail);
+    return ResponseEntity.status(HttpStatus.I_AM_A_TEAPOT).body(problemDetail);
   }
 
   @ExceptionHandler(NotFoundException.class)
