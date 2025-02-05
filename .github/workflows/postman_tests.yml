@@ -1,0 +1,28 @@
+name: Postman Tests
+
+on:
+  pull_request:
+    branches:
+      - main
+  push:
+    branches:
+        - main
+
+jobs:
+  test:
+    runs-on: windows-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v2
+      with:
+        node-version: '23.6.1'
+
+    - name: Install dependencies
+      run: npm install -g newman
+
+    - name: Run Postman Collection
+      run: newman run .github/postman_tests/pet_symptom_tracker.postman_collection.json -e .github/postman_tests/pet_symptom_tracker_environment.postman_environment.json
