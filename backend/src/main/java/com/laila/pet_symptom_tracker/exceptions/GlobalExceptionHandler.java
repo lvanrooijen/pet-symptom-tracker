@@ -45,9 +45,16 @@ public class GlobalExceptionHandler {
 
   @ExceptionHandler(ForbiddenException.class)
   public ResponseEntity<ProblemDetail> forbiddenHandler(ForbiddenException exception) {
+    String message;
+    if (exception.getMessage() == null || exception.getMessage().isBlank()) {
+      message = "Forbidden";
+    } else {
+      message = exception.getMessage();
+    }
+
     ProblemDetail problemDetail = ProblemDetail.forStatus(HttpStatus.FORBIDDEN);
     problemDetail.setTitle("Forbidden");
-    problemDetail.setDetail("You do not have the right to do this.");
+    problemDetail.setDetail(message);
     return ResponseEntity.status(HttpStatus.FORBIDDEN).body(problemDetail);
   }
 

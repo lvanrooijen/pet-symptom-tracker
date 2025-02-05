@@ -25,7 +25,7 @@ public class UserService implements UserDetailsService {
 
   public User register(RegisterDto dto) {
     if (userRepository.findByUsernameIgnoreCase(dto.username()).isPresent())
-      throw new IllegalArgumentException("Username already exists.");
+      throw new BadRequestException("Username already exists.");
 
     if (userRepository.findByEmailIgnoreCase(dto.email()).isPresent()) {
       throw new BadRequestException("User with this email has already been registered");
@@ -78,13 +78,24 @@ public class UserService implements UserDetailsService {
     }
   }
 
-  public GetUser banUnbanUser(UUID id, User loggedInUser, UserControllerActions action) {
+  public GetUser banUnbanUser(UUID id, User loggedInUser, String action) {
     User user = userRepository.findById(id).orElseThrow(NotFoundException::new);
 
-    if (isAdmin(loggedInUser) || isModerator(loggedInUser)) {
-      user.setEnabled(UserControllerActions.ENABLE == action);
+    if (!isAdmin(loggedInUser) && !isModerator(loggedInUser)) {
+      throw new ForbiddenException("Only an admin or Moderator is allowed to do this");
+    }
+
+    if (action == null || action.isBlank()) {
+      throw new BadRequestException("Action must be provided");
+    }
+
+    if (UserControllerActions.valueOf(action.toUpperCase()) == UserControllerActions.ENABLE) {
+      user.setEnabled(true);
+    } else if (UserControllerActions.valueOf(action.toUpperCase())
+        == UserControllerActions.DISABLE) {
+      user.setEnabled(false);
     } else {
-      throw new ForbiddenException();
+      throw new BadRequestException("Invalid action.");
     }
 
     return GetUser.to(userRepository.save(user));

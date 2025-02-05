@@ -2,7 +2,6 @@ package com.laila.pet_symptom_tracker.entities.user;
 
 import com.laila.pet_symptom_tracker.entities.user.dto.GetUser;
 import com.laila.pet_symptom_tracker.entities.user.dto.PatchUser;
-import com.laila.pet_symptom_tracker.entities.user.enums.UserControllerActions;
 import com.laila.pet_symptom_tracker.mainconfig.Routes;
 import java.util.List;
 import java.util.UUID;
@@ -51,7 +50,7 @@ public class UserController {
   public ResponseEntity<GetUser> banUnbanUser(
       @PathVariable UUID id,
       Authentication authentication,
-      @RequestParam(required = true) UserControllerActions action) {
+      @RequestParam(required = true) String action) {
     User loggedInUser = (User) authentication.getPrincipal();
 
     return ResponseEntity.ok().body(userService.banUnbanUser(id, loggedInUser, action));
