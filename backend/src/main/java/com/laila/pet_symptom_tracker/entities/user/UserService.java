@@ -39,8 +39,23 @@ public class UserService implements UserDetailsService {
       throw new BadRequestException("Invalid email");
     }
 
-    return userRepository.save(
-        new User(dto.email(), passwordEncoder.encode(dto.password()), dto.username(), Role.USER));
+    User createdUser =
+        new User(dto.email(), passwordEncoder.encode(dto.password()), dto.username(), Role.USER);
+    if (dto.firstname() != null) {
+      if (dto.firstname().isBlank()) {
+        throw new BadRequestException("firstname may be omitted, but can not be blank");
+      }
+      createdUser.setFirstName(dto.firstname());
+    }
+
+    if (dto.lastname() != null) {
+      createdUser.setLastName(dto.lastname());
+      if (dto.lastname().isBlank()) {
+        throw new BadRequestException("lastname may be omitted, but can not be blank");
+      }
+    }
+
+    return userRepository.save(createdUser);
   }
 
   public GetUser getById(UUID id, User loggedInUser) {
