@@ -1,5 +1,6 @@
 package com.laila.pet_symptom_tracker.entities.user;
 
+import com.laila.pet_symptom_tracker.entities.user.enums.Role;
 import jakarta.persistence.*;
 import java.util.Collection;
 import java.util.List;

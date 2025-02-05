@@ -45,13 +45,14 @@ public class GlobalExceptionHandler {
 
   @ExceptionHandler(ForbiddenException.class)
   public ResponseEntity<ProblemDetail> forbiddenHandler(ForbiddenException exception) {
-    ProblemDetail problemDetail =
-        ProblemDetail.forStatusAndDetail(HttpStatus.FORBIDDEN, "Forbidden");
+    ProblemDetail problemDetail = ProblemDetail.forStatus(HttpStatus.FORBIDDEN);
+    problemDetail.setTitle("Forbidden");
+    problemDetail.setDetail("You do not have the right to do this.");
     return ResponseEntity.status(HttpStatus.FORBIDDEN).body(problemDetail);
   }
 
   @ExceptionHandler(NotFoundException.class)
-  public ResponseEntity<?> notFoundHandler(NotFoundException exception) {
+  public ResponseEntity<Void> notFoundHandler(NotFoundException exception) {
     return ResponseEntity.notFound().build();
   }
 }

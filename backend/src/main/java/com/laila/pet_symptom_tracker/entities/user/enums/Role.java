@@ -1,4 +1,4 @@
-package com.laila.pet_symptom_tracker.entities.user;
+package com.laila.pet_symptom_tracker.entities.user.enums;
 
 public enum Role {
   ADMIN("ADMIN"),

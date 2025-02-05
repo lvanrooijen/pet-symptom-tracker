@@ -2,8 +2,8 @@ package com.laila.pet_symptom_tracker.entities.user.dto;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import com.laila.pet_symptom_tracker.entities.user.Role;
 import com.laila.pet_symptom_tracker.entities.user.User;
+import com.laila.pet_symptom_tracker.entities.user.enums.Role;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
