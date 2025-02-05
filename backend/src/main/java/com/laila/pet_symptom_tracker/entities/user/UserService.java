@@ -1,14 +1,14 @@
 package com.laila.pet_symptom_tracker.entities.user;
 
-import com.laila.pet_symptom_tracker.entities.user.dto.GetUser;
-import com.laila.pet_symptom_tracker.entities.user.dto.PatchUser;
-import com.laila.pet_symptom_tracker.entities.user.dto.RegisterDto;
+import com.laila.pet_symptom_tracker.entities.user.dto.*;
 import com.laila.pet_symptom_tracker.entities.user.enums.Role;
 import com.laila.pet_symptom_tracker.entities.user.enums.UserControllerActions;
 import com.laila.pet_symptom_tracker.exceptions.BadRequestException;
 import com.laila.pet_symptom_tracker.exceptions.ForbiddenException;
 import com.laila.pet_symptom_tracker.exceptions.NotFoundException;
 import com.laila.pet_symptom_tracker.exceptions.UsernameNotFoundException;
+import com.laila.pet_symptom_tracker.securityconfig.JwtService;
+import com.laila.pet_symptom_tracker.securityconfig.dto.TokenDto;
 import com.laila.pet_symptom_tracker.util.validator.UserValidator;
 import java.util.List;
 import java.util.UUID;
@@ -22,6 +22,7 @@ import org.springframework.stereotype.Service;
 public class UserService implements UserDetailsService {
   private final PasswordEncoder passwordEncoder;
   private final UserRepository userRepository;
+  private final JwtService jwtService;
 
   public User register(RegisterDto dto) {
     if (userRepository.findByUsernameIgnoreCase(dto.username()).isPresent())
@@ -56,6 +57,23 @@ public class UserService implements UserDetailsService {
     }
 
     return userRepository.save(createdUser);
+  }
+
+  public TokenDto loginUser(LoginDto loginDto) {
+    User user;
+    if (isEmailAddress(loginDto.username())) {
+      user = userRepository.findByEmailIgnoreCase((loginDto).username()).orElse(null);
+    } else {
+      user = userRepository.findByUsernameIgnoreCase((loginDto).username()).orElse(null);
+    }
+
+    if (user == null) {
+      throw new BadRequestException("A user with this username/email does not exist");
+    }
+
+    if (!user.isEnabled()) throw new BadRequestException("account is disabled");
+
+    return new TokenDto(jwtService.generateTokenForUser(user), UserAuthDto.from(user));
   }
 
   public GetUser getById(UUID id, User loggedInUser) {
@@ -143,5 +161,9 @@ public class UserService implements UserDetailsService {
 
   private Boolean isSameUser(User user1, User user2) {
     return user1.getId() == user2.getId();
+  }
+
+  private Boolean isEmailAddress(String email) {
+    return UserValidator.isValidEmailPattern(email);
   }
 }
