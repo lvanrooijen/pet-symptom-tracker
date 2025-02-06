@@ -42,6 +42,7 @@ public class UserService implements UserDetailsService {
 
     User createdUser =
         new User(dto.email(), passwordEncoder.encode(dto.password()), dto.username(), Role.USER);
+
     if (dto.firstname() != null) {
       if (dto.firstname().isBlank()) {
         throw new BadRequestException("firstname may be omitted, but can not be blank");
@@ -160,7 +161,7 @@ public class UserService implements UserDetailsService {
   }
 
   private Boolean isSameUser(User user1, User user2) {
-    return user1.getId() == user2.getId();
+    return user1.equals(user2);
   }
 
   private Boolean isEmailAddress(String email) {
