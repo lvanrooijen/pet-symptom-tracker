@@ -95,4 +95,16 @@ public class User implements UserDetails {
   public boolean isEnabled() {
     return this.enabled;
   }
+
+  public Boolean isAdmin() {
+    return hasRole(Role.ADMIN);
+  }
+
+  public Boolean isModerator() {
+    return hasRole(Role.MODERATOR);
+  }
+
+  public Boolean isUser() {
+    return hasRole(Role.USER);
+  }
 }

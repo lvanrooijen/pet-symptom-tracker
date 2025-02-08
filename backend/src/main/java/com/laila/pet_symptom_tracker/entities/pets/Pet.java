@@ -7,25 +7,36 @@ import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
 import java.time.LocalDate;
 import lombok.Generated;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity(name = "pets")
 @NoArgsConstructor
+@Getter
 public class Pet {
-  @ManyToOne User user;
+  @Setter @ManyToOne User user;
   @Id @Generated private Long id;
-  private String name;
+  @Setter private String name;
 
   // PetType petType;
 
   // PetBreed petBreed;
 
   // DiseaseLog diseaseLog;
-  private LocalDate dateOfBirth;
+  @Setter private LocalDate dateOfBirth;
 
   @Column(nullable = false)
+  @Setter
   private Boolean isAlive;
 
   @Column(nullable = true)
+  @Setter
   private LocalDate dateOfDeath;
+
+  public Pet(String name, LocalDate dateOfBirth, Boolean isAlive) {
+    this.name = name;
+    this.dateOfBirth = dateOfBirth;
+    this.isAlive = isAlive;
+  }
 }
