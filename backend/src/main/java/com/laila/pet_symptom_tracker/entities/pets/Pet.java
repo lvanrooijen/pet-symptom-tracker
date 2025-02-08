@@ -24,6 +24,7 @@ public class Pet {
   // PetBreed petBreed;
 
   // DiseaseLog diseaseLog;
+
   @Setter private LocalDate dateOfBirth;
 
   @Column(nullable = false)
