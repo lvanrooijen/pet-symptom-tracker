@@ -42,12 +42,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     if (!requestHasValidAuthHeader(request)) {
       response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-      return;
     }
 
     if (requestHasValidAuthHeader(request)) {
       getUserFromAuthorizationHeader(request.getHeader(AUTHORIZATION_HEADER_NAME))
-          .ifPresentOrElse(
+          .ifPresent(
               principal -> {
                 UsernamePasswordAuthenticationToken authToken =
                     new UsernamePasswordAuthenticationToken(
@@ -56,9 +55,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 
                 SecurityContextHolder.getContext().setAuthentication(authToken);
-              },
-              () -> {
-                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
               });
     }
 

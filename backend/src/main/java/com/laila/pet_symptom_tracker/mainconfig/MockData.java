@@ -1,7 +1,9 @@
 package com.laila.pet_symptom_tracker.mainconfig;
 
+import com.laila.pet_symptom_tracker.entities.pets.Pet;
 import com.laila.pet_symptom_tracker.entities.user.User;
 import com.laila.pet_symptom_tracker.entities.user.enums.Role;
+import java.time.LocalDate;
 import java.util.List;
 
 public class MockData {
@@ -19,5 +21,13 @@ public class MockData {
         new User("admin@gmail.com", "Password123!", "Admin", Role.ADMIN),
         new User("moderator@gmail.com", "Password123!", "Moderator", Role.MODERATOR),
         new User("user@gmail.com", "Password123!", "user", Role.USER));
+  }
+
+  public static Iterable<Pet> getPets() {
+    return List.of(
+        new Pet("Mister Snugglebut", LocalDate.of(2019, 6, 2), true),
+        new Pet("Fluffles", LocalDate.of(2004, 9, 28), true),
+        new Pet("Lama", LocalDate.of(2012, 2, 11), true),
+        new Pet("Tuxie", LocalDate.of(2008, 11, 13), true));
   }
 }

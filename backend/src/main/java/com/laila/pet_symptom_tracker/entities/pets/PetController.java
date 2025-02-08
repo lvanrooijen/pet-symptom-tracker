@@ -19,7 +19,6 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 public class PetController {
   private final PetService petService;
 
-  // create
   @PostMapping
   public ResponseEntity<GetPet> create(@RequestBody PostPet petDto, Authentication authentication) {
     User loggedInUser = (User) authentication.getPrincipal();
@@ -35,21 +34,18 @@ public class PetController {
     return ResponseEntity.created(location).body(createdPet);
   }
 
-  // get by id
   @GetMapping("/{id}")
   public ResponseEntity<GetPet> getById(@PathVariable Long id, Authentication authentication) {
     User loggedInUser = (User) authentication.getPrincipal();
     return ResponseEntity.ok(petService.getById(loggedInUser, id));
   }
 
-  // get all
   @GetMapping
   public ResponseEntity<List<GetPet>> getAll(Authentication authentication) {
     User loggedInUser = (User) authentication.getPrincipal();
     return ResponseEntity.ok(petService.getAll(loggedInUser));
   }
 
-  // update
   @PatchMapping("/{id}")
   public ResponseEntity<GetPet> update(
       @PathVariable Long id, @RequestBody PatchPet patch, Authentication authentication) {
@@ -57,7 +53,6 @@ public class PetController {
     return ResponseEntity.ok(petService.update(loggedInUser, id, patch));
   }
 
-  // delete
   @DeleteMapping("/{id}")
   public ResponseEntity<Void> delete(@PathVariable Long id, Authentication authentication) {
     User loggedInUser = (User) authentication.getPrincipal();
