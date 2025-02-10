@@ -1,8 +1,9 @@
-package com.laila.pet_symptom_tracker.entities.pets;
+package com.laila.pet_symptom_tracker.entities.pet;
 
+import com.laila.pet_symptom_tracker.entities.petbreed.PetBreed;
+import com.laila.pet_symptom_tracker.entities.pettype.PetType;
 import com.laila.pet_symptom_tracker.entities.user.User;
 import jakarta.persistence.*;
-
 import java.time.LocalDate;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,15 +13,13 @@ import lombok.Setter;
 @NoArgsConstructor
 @Getter
 public class Pet {
-  @Setter @ManyToOne User user;
+  @Setter @ManyToOne User owner;
   @Id @GeneratedValue private Long id;
   @Setter private String name;
 
-  // PetType petType;
+  @ManyToOne private PetType petType;
 
-  // PetBreed petBreed;
-
-  // DiseaseLog diseaseLog;
+  @ManyToOne private PetBreed petBreed;
 
   @Setter private LocalDate dateOfBirth;
 
@@ -38,8 +37,8 @@ public class Pet {
     this.isAlive = isAlive;
   }
 
-  public Pet(User user, String name, LocalDate dateOfBirth, Boolean isAlive) {
-    this.user = user;
+  public Pet(User owner, String name, LocalDate dateOfBirth, Boolean isAlive) {
+    this.owner = owner;
     this.name = name;
     this.dateOfBirth = dateOfBirth;
     this.isAlive = isAlive;

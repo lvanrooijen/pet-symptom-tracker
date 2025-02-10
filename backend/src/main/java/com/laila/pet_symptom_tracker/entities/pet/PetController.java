@@ -1,8 +1,8 @@
-package com.laila.pet_symptom_tracker.entities.pets;
+package com.laila.pet_symptom_tracker.entities.pet;
 
-import com.laila.pet_symptom_tracker.entities.pets.dto.GetPet;
-import com.laila.pet_symptom_tracker.entities.pets.dto.PatchPet;
-import com.laila.pet_symptom_tracker.entities.pets.dto.PostPet;
+import com.laila.pet_symptom_tracker.entities.pet.dto.GetPet;
+import com.laila.pet_symptom_tracker.entities.pet.dto.PatchPet;
+import com.laila.pet_symptom_tracker.entities.pet.dto.PostPet;
 import com.laila.pet_symptom_tracker.entities.user.User;
 import com.laila.pet_symptom_tracker.mainconfig.Routes;
 import java.net.URI;

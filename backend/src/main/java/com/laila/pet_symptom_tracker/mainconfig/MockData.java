@@ -1,6 +1,6 @@
 package com.laila.pet_symptom_tracker.mainconfig;
 
-import com.laila.pet_symptom_tracker.entities.pets.Pet;
+import com.laila.pet_symptom_tracker.entities.pet.Pet;
 import com.laila.pet_symptom_tracker.entities.user.User;
 import com.laila.pet_symptom_tracker.entities.user.enums.Role;
 import java.time.LocalDate;

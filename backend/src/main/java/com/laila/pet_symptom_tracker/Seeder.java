@@ -1,6 +1,6 @@
 package com.laila.pet_symptom_tracker;
 
-import com.laila.pet_symptom_tracker.entities.pets.PetRepository;
+import com.laila.pet_symptom_tracker.entities.pet.PetRepository;
 import com.laila.pet_symptom_tracker.entities.user.User;
 import com.laila.pet_symptom_tracker.entities.user.UserRepository;
 import com.laila.pet_symptom_tracker.mainconfig.MockData;
