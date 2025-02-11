@@ -5,4 +5,6 @@ public class Routes {
   public static final String AUTHENTICATION = BASE_ROUTE + "/auth";
   public static final String USERS = BASE_ROUTE + "/users";
   public static final String PETS = BASE_ROUTE + "/pets";
+  public static final String DISEASE = BASE_ROUTE + "/diseases";
+  //  public static final String PLACEHOLDER = BASE_ROUTE + "/placeholder" ;
 }

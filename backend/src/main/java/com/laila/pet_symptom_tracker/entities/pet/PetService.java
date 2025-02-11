@@ -20,13 +20,13 @@ public class PetService {
 
   public GetPet create(User loggedInUser, PostPet dto) {
     Pet pet = PostPet.to(dto);
-    pet.setUser(loggedInUser);
+    pet.setOwner(loggedInUser);
     return GetPet.from(petRepository.save(pet));
   }
 
   public GetPet getById(User loggedInUser, Long id) {
     Pet pet = petRepository.findById(id).orElseThrow(() -> new NotFoundException("Pet not found"));
-    if (loggedInUser.equals(pet.getUser())
+    if (loggedInUser.equals(pet.getOwner())
         || loggedInUser.isAdmin()
         || loggedInUser.isModerator()) {
       return GetPet.from(pet);
@@ -50,7 +50,7 @@ public class PetService {
 
       if (patch.userId() != null) {
         User newOwner = userRepository.findById(patch.userId()).orElseThrow(NotFoundException::new);
-        updatedPet.setUser(newOwner);
+        updatedPet.setOwner(newOwner);
       }
       if (patch.name() != null) {
         updatedPet.setName(patch.name());
@@ -73,7 +73,7 @@ public class PetService {
   public void delete(User loggedInUser, Long id) {
     Pet pet = petRepository.findById(id).orElseThrow(NotFoundException::new);
 
-    if (!pet.getUser().equals(loggedInUser) || !loggedInUser.isAdmin())
+    if (!pet.getOwner().equals(loggedInUser) || !loggedInUser.isAdmin())
       throw new ForbiddenException();
 
     petRepository.deleteById(id);
