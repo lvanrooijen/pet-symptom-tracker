@@ -1,6 +1,6 @@
 package com.laila.pet_symptom_tracker.entities.user;
 
-import com.laila.pet_symptom_tracker.entities.user.enums.Role;
+import com.laila.pet_symptom_tracker.entities.authentication.Role;
 import jakarta.persistence.*;
 import java.util.UUID;
 import lombok.Getter;
@@ -11,8 +11,6 @@ import lombok.Setter;
 @Getter
 @NoArgsConstructor
 public class User {
-  public static final String ROLE_PREFIX = "ROLE_";
-
   @Id
   @GeneratedValue(strategy = GenerationType.UUID)
   UUID id;
@@ -52,15 +50,17 @@ public class User {
     this.password = password;
     this.username = username;
     this.enabled = true;
-    setRole(role);
+    this.locked = false;
+    this.role = role.toString();
   }
 
   public boolean hasRole(Role role) {
-    return this.role.equals(ROLE_PREFIX + role.label);
+    return this.role.equals(role.toString());
   }
 
   public void setRole(Role role) {
-    this.role = ROLE_PREFIX + role.label;
+    // TODO voor later, alleen een admin mag een role aanpassen van user naar mod of mod naar user
+    this.role = role.toString();
   }
 
   public Boolean isAdmin() {
@@ -73,5 +73,9 @@ public class User {
 
   public Boolean isUser() {
     return hasRole(Role.USER);
+  }
+
+  public Boolean isLocked() {
+    return this.locked;
   }
 }

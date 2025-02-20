@@ -3,37 +3,15 @@ package com.laila.pet_symptom_tracker.entities.authentication;
 import com.laila.pet_symptom_tracker.entities.user.User;
 import java.util.Collection;
 import java.util.List;
-import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.provisioning.UserDetailsManager;
 
-@RequiredArgsConstructor
-public class SecurityUser implements UserDetailsManager, UserDetails {
+public class SecurityUser implements UserDetails {
   private final User user;
 
-  @Override
-  public void createUser(UserDetails user) {}
-
-  @Override
-  public void updateUser(UserDetails user) {}
-
-  @Override
-  public void deleteUser(String username) {}
-
-  @Override
-  public void changePassword(String oldPassword, String newPassword) {}
-
-  @Override
-  public boolean userExists(String username) {
-    return false;
-  }
-
-  @Override
-  public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-    return null;
+  public SecurityUser(User user) {
+    this.user = user;
   }
 
   @Override

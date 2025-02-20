@@ -1,6 +1,6 @@
 package com.laila.pet_symptom_tracker.exceptions.generic;
 
-import com.laila.pet_symptom_tracker.exceptions.user.UsernameNotFoundException;
+import com.laila.pet_symptom_tracker.exceptions.authentication.UsernameNotFoundException;
 import java.util.HashMap;
 import java.util.Map;
 import org.springframework.http.HttpStatus;
