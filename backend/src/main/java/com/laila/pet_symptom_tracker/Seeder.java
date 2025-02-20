@@ -16,22 +16,6 @@ public class Seeder implements CommandLineRunner {
 
   @Override
   public void run(String... args) throws Exception {
-    seedUsers();
-    seedPets();
-  }
-
-  private void seedUsers() {
-    MockData.getUsers().forEach(userRepository::save);
-  }
-
-  private void seedPets() {
-    User charlie = userRepository.findByUsernameIgnoreCase("charlie").orElse(null);
-
-    MockData.getPets()
-        .forEach(
-            pet -> {
-              pet.setUser(charlie);
-              petRepository.save(pet);
-            });
+    // todo seed stuff!
   }
 }

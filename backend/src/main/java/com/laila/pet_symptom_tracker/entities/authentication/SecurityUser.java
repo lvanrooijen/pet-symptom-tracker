@@ -38,13 +38,7 @@ public class SecurityUser implements UserDetailsManager, UserDetails {
 
   @Override
   public Collection<? extends GrantedAuthority> getAuthorities() {
-    return List.of(new SimpleGrantedAuthority(user.getRole())); // TODO welke ga je hier geven?
-  }
-
-  @Override
-  public boolean equals(Object other) {
-    if (!(other instanceof User otherUser)) return false;
-    return user.getId().equals(otherUser.getId()); // TODO is dit nog logisch?
+    return List.of(new SimpleGrantedAuthority(user.getRole()));
   }
 
   @Override
@@ -65,5 +59,14 @@ public class SecurityUser implements UserDetailsManager, UserDetails {
   @Override
   public boolean isEnabled() {
     return user.getEnabled();
+  }
+
+  public boolean isSameUser(Object other) {
+    if (other instanceof SecurityUser otherSecurityUser) {
+      return this.user.getId().equals(otherSecurityUser.user.getId());
+    } else if (other instanceof User otherUser) {
+      return this.user.getId().equals(otherUser.getId());
+    }
+    return false;
   }
 }
