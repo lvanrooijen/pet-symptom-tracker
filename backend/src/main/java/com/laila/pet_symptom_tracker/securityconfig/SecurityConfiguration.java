@@ -21,27 +21,8 @@ public class SecurityConfiguration {
   }
 
   @Bean
-  public SecurityFilterChain securityFilterChain(
-      HttpSecurity httpSecurity, JwtAuthenticationFilter jwtAuthenticationFilter) throws Exception {
-    return httpSecurity
-        .csrf(AbstractHttpConfigurer::disable)
-        .httpBasic(AbstractHttpConfigurer::disable)
-        .authorizeHttpRequests(
-            requests ->
-                requests
-                    .requestMatchers(Routes.AUTHENTICATION + "/**")
-                    .permitAll()
-                    .requestMatchers(Routes.BASE_ROUTE + "/**")
-                    .permitAll()
-                    .anyRequest()
-                    .authenticated())
-            .logout(logout-> logout.logoutUrl(Routes.AUTHENTICATION)
-                    .logoutSuccessHandler((request,response,authentication) -> response.setStatus(HttpServletResponse.SC_OK)))
-        .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
-        .exceptionHandling(
-            exceptionHandlingConfigurer ->
-                exceptionHandlingConfigurer.authenticationEntryPoint(new UnauthorizedEntryPoint()))
-        .build();
+  public SecurityFilterChain securityFilterChain() throws Exception {
+    return null; // TODO starting over!
   }
 
   @Bean

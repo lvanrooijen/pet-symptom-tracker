@@ -2,21 +2,15 @@ package com.laila.pet_symptom_tracker.entities.user;
 
 import com.laila.pet_symptom_tracker.entities.user.enums.Role;
 import jakarta.persistence.*;
-import java.util.Collection;
-import java.util.List;
 import java.util.UUID;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 
 @Entity(name = "users")
 @Getter
 @NoArgsConstructor
-public class User implements UserDetails {
-
+public class User {
   public static final String ROLE_PREFIX = "ROLE_";
 
   @Id
@@ -49,6 +43,10 @@ public class User implements UserDetails {
   @Setter
   private Boolean enabled;
 
+  @Column(nullable = false)
+  @Setter
+  private Boolean locked;
+
   public User(String email, String password, String username, Role role) {
     this.email = email;
     this.password = password;
@@ -63,37 +61,6 @@ public class User implements UserDetails {
 
   public void setRole(Role role) {
     this.role = ROLE_PREFIX + role.label;
-  }
-
-  @Override
-  public Collection<? extends GrantedAuthority> getAuthorities() {
-    return List.of(new SimpleGrantedAuthority(role));
-  }
-
-  @Override
-  public boolean equals(Object other) {
-    if (!(other instanceof User otherUser)) return false;
-    return id.equals(otherUser.id);
-  }
-
-  @Override
-  public boolean isAccountNonExpired() {
-    return UserDetails.super.isAccountNonExpired();
-  }
-
-  @Override
-  public boolean isAccountNonLocked() {
-    return true;
-  }
-
-  @Override
-  public boolean isCredentialsNonExpired() {
-    return true;
-  }
-
-  @Override
-  public boolean isEnabled() {
-    return this.enabled;
   }
 
   public Boolean isAdmin() {
