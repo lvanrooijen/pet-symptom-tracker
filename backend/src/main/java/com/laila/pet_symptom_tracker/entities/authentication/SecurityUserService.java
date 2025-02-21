@@ -5,6 +5,7 @@ import com.laila.pet_symptom_tracker.entities.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.stereotype.Service;
 
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class SecurityUserService implements UserDetailsManager {
   private final UserRepository userRepository;
+  private PasswordEncoder passwordEncoder;
 
   public User findByEmail(String email) {
     return userRepository
@@ -44,5 +46,9 @@ public class SecurityUserService implements UserDetailsManager {
             .findByEmailIgnoreCase(email)
             .orElseThrow(() -> new UsernameNotFoundException("User not found"));
     return new SecurityUser(user);
+  }
+
+  public boolean passwordMatches(String password, User user) {
+    return passwordEncoder.matches(password, user.getPassword());
   }
 }

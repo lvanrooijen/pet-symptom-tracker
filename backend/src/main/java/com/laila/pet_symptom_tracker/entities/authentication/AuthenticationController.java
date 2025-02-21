@@ -8,4 +8,14 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping(Routes.AUTHENTICATION)
 @RequiredArgsConstructor
 @CrossOrigin(origins = "${pet_symptom_tracker.cors}")
-public class AuthenticationController {}
+public class AuthenticationController {
+  // user registeren
+
+  // user updaten
+
+  // user inloggen
+
+  // user ww veranderen
+
+  // user eigen account verwijderen
+}

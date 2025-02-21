@@ -16,6 +16,12 @@ public class Seeder implements CommandLineRunner {
 
   @Override
   public void run(String... args) throws Exception {
-    // todo seed stuff!
+    seedPets();
+  }
+
+  private void seedPets() {
+    if (!petRepository.findAll().isEmpty()) return;
+
+    petRepository.saveAll(MockData.getPets());
   }
 }
