@@ -19,7 +19,7 @@ public class AuthenticationController {
   private final UserService userService;
 
   // user registeren
-  @GetMapping("/register")
+  @PostMapping("/register")
   public ResponseEntity<GetUser> register(@RequestBody @Valid RegisterUser registerUser) {
     GetUser createdUser = userService.register(registerUser);
     URI location =

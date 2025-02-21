@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class UserService implements UserDetailsManager {
   private final UserRepository userRepository;
-  private PasswordEncoder passwordEncoder;
+  private final PasswordEncoder passwordEncoder;
 
   /* ~~~~~~~~~~~~~~ Controller methods ~~~~~~~~~~~~~~ */
   public GetUser register(RegisterUser registerUser) {

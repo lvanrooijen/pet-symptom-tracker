@@ -5,8 +5,10 @@ import com.laila.pet_symptom_tracker.entities.pet.dto.PatchPet;
 import com.laila.pet_symptom_tracker.entities.pet.dto.PostPet;
 import com.laila.pet_symptom_tracker.entities.user.User;
 import com.laila.pet_symptom_tracker.mainconfig.Routes;
+import com.laila.pet_symptom_tracker.mainconfig.TerminalColors;
 import java.net.URI;
 import java.util.List;
+import java.util.logging.Logger;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -17,6 +19,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 @RequestMapping(Routes.PETS)
 @RequiredArgsConstructor
 public class PetController {
+  private final Logger log = Logger.getLogger(PetController.class.getName());
   private final PetService petService;
 
   @PostMapping
@@ -42,7 +45,10 @@ public class PetController {
 
   @GetMapping
   public ResponseEntity<List<GetPet>> getAll(Authentication authentication) {
-    User loggedInUser = (User) authentication.getPrincipal();
+    log.info(
+        TerminalColors.setInfoColor(
+            "Authentication is: " + authentication)); // TODO was hier gebleven!
+    User loggedInUser = (User) authentication;
     return ResponseEntity.ok(petService.getAll(loggedInUser));
   }
 
