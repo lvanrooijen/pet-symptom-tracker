@@ -8,6 +8,4 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping(Routes.USERS)
 @RequiredArgsConstructor
 @CrossOrigin(origins = "${pet_symptom_tracker.cors}")
-public class UserController {
-  private final UserService userService;
-}
+public class UserController {}

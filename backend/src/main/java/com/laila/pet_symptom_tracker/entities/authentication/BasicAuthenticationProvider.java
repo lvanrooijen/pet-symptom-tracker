@@ -1,5 +1,6 @@
 package com.laila.pet_symptom_tracker.entities.authentication;
 
+import com.laila.pet_symptom_tracker.entities.user.UserService;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -11,15 +12,15 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class BasicAuthenticationProvider implements AuthenticationProvider {
-  private SecurityUserService securityUserService;
   private PasswordEncoder passwordEncoder;
+  private UserService userService;
 
   @Override
   public Authentication authenticate(Authentication authentication) throws AuthenticationException {
     String email = authentication.getName();
     String password = authentication.getCredentials().toString();
 
-    UserDetails user = securityUserService.loadUserByUsername(email);
+    UserDetails user = userService.loadUserByUsername(email);
 
     if (passwordEncoder.matches(password, user.getPassword())) {
       return new UsernamePasswordAuthenticationToken(email, password, user.getAuthorities());

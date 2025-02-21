@@ -7,6 +7,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 public class MockData {
+
   public static List<User> getUsers() {
     return List.of(
         new User("charlie@gmail.com", "Password123!", "Charlie", Role.USER),
