@@ -4,17 +4,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 public enum Authorities {
-  // Generic authorities (User-specific)
-  READ_OWN_PROFILE(List.of(Role.USER, Role.MODERATOR, Role.ADMIN)),
-  WRITE_OWN_PROFILE(List.of(Role.USER, Role.MODERATOR, Role.ADMIN)),
-  DELETE_OWN_PROFILE(List.of(Role.USER, Role.MODERATOR, Role.ADMIN)),
-
+  // Ik ben bij hoofdstuk 7, moet betere strategie voor die authorities verzinnen!
+  // pas dingen aanmaken als nodig, Yagni!
+  // Generic authorities
+  READ_ALL_PETS(List.of(Role.ADMIN, Role.MODERATOR));
   // Moderator authorities
-  READ_OTHERS_PROFILE(List.of(Role.MODERATOR, Role.ADMIN)),
-  WRITE_OTHERS_PROFILE(List.of(Role.MODERATOR, Role.ADMIN)),
 
   // Admin authorities
-  DELETE_OTHERS_PROFILE(List.of(Role.ADMIN));
 
   private final List<Role> roles;
 

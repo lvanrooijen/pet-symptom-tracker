@@ -15,8 +15,9 @@ public class SecurityConfiguration {
 
   @Bean
   SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    // TODO endpoints goed configureren
     http.authenticationProvider(basicAuthProvider)
-        .authorizeHttpRequests(c -> c.anyRequest().permitAll())
+        .authorizeHttpRequests(c -> c.anyRequest().hasAuthority("READ_ALL_PETS"))
         .httpBasic(Customizer.withDefaults());
 
     return http.build();
