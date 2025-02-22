@@ -1,10 +1,12 @@
 package com.laila.pet_symptom_tracker.entities.user;
 
+import com.laila.pet_symptom_tracker.entities.authentication.Authorities;
 import com.laila.pet_symptom_tracker.entities.authentication.Role;
 import jakarta.persistence.*;
 import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -32,7 +34,7 @@ public class User implements UserDetails {
   @Setter
   private String username;
 
-  private String role;
+  @Setter private Role role;
 
   @Column(nullable = true)
   @Setter
@@ -56,7 +58,7 @@ public class User implements UserDetails {
     this.username = username;
     this.enabled = true;
     this.locked = false;
-    this.role = role.toString();
+    this.role = role;
   }
 
   public User(Builder builder) {
@@ -65,15 +67,11 @@ public class User implements UserDetails {
     this.password = builder.password;
     this.firstName = builder.firstname;
     this.lastName = builder.lastname;
-    this.role = builder.role == null ? Role.USER.toString() : builder.role;
+    this.role = builder.role;
   }
 
   public boolean hasRole(Role role) {
-    return this.role.equals(role.toString());
-  }
-
-  public void setRole(Role role) {
-    this.role = role.toString();
+    return this.role.equals(role);
   }
 
   public Boolean isLocked() {
@@ -82,7 +80,10 @@ public class User implements UserDetails {
 
   @Override
   public Collection<? extends GrantedAuthority> getAuthorities() {
-    return List.of(new SimpleGrantedAuthority(role));
+    List<Authorities> authorities = Authorities.getByRole(role);
+    return authorities.stream()
+        .map(authority -> new SimpleGrantedAuthority(authority.toString()))
+        .toList();
   }
 
   @Override
@@ -96,6 +97,13 @@ public class User implements UserDetails {
   }
 
   /*  ~~~~~~~~~~~  Helper methods ~~~~~~~~~~~  */
+  public List<SimpleGrantedAuthority> getAuthoritiesFromRole(Role role) {
+    List<Authorities> authorities = Authorities.getByRole(role);
+    return authorities.stream()
+        .map(authority -> new SimpleGrantedAuthority(authority.toString()))
+        .toList();
+  }
+
   public Boolean isAdmin() {
     return hasRole(Role.ADMIN);
   }
@@ -115,13 +123,14 @@ public class User implements UserDetails {
     return hasRole(Role.USER);
   }
 
+  /*  ~~~~~~~~~~~ Builder Class ~~~~~~~~~~~  */
   public static class Builder {
     private String username;
     private String email;
     private String password;
     private String firstname;
     private String lastname;
-    private String role;
+    private Role role;
 
     public Builder username(String username) {
       this.username = username;
@@ -149,11 +158,7 @@ public class User implements UserDetails {
     }
 
     public Builder role(Role role) {
-      if (role == null) {
-        this.role = Role.USER.toString();
-      } else {
-        this.role = role.toString();
-      }
+      this.role = role;
       return this;
     }
 

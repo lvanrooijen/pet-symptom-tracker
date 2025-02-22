@@ -23,7 +23,9 @@ public class BasicAuthenticationProvider implements AuthenticationProvider {
     String password = authentication.getCredentials().toString();
 
     UserDetails user = userService.loadUserByUsername(email);
+
     if (passwordEncoder.matches(password, user.getPassword())) {
+
       return new UsernamePasswordAuthenticationToken(email, password, user.getAuthorities());
     } else {
       throw new BadCredentialsException("Authentication failed, bad credentials");

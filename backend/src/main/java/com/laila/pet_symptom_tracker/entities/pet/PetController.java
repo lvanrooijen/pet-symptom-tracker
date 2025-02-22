@@ -4,6 +4,8 @@ import com.laila.pet_symptom_tracker.entities.pet.dto.GetPet;
 import com.laila.pet_symptom_tracker.entities.pet.dto.PatchPet;
 import com.laila.pet_symptom_tracker.entities.pet.dto.PostPet;
 import com.laila.pet_symptom_tracker.entities.user.User;
+import com.laila.pet_symptom_tracker.entities.user.UserRepository;
+import com.laila.pet_symptom_tracker.exceptions.generic.NotFoundException;
 import com.laila.pet_symptom_tracker.mainconfig.Routes;
 import com.laila.pet_symptom_tracker.mainconfig.TerminalColors;
 import java.net.URI;
@@ -21,6 +23,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 public class PetController {
   private final Logger log = Logger.getLogger(PetController.class.getName());
   private final PetService petService;
+  private final UserRepository userRepository;
 
   @PostMapping
   public ResponseEntity<GetPet> create(@RequestBody PostPet petDto, Authentication authentication) {
@@ -45,10 +48,13 @@ public class PetController {
 
   @GetMapping
   public ResponseEntity<List<GetPet>> getAll(Authentication authentication) {
+    User loggedInUser =
+        userRepository
+            .findByEmailIgnoreCase(authentication.getName())
+            .orElseThrow(NotFoundException::new);
     log.info(
         TerminalColors.setInfoColor(
             "Authentication is: " + authentication)); // TODO was hier gebleven!
-    User loggedInUser = (User) authentication;
     return ResponseEntity.ok(petService.getAll(loggedInUser));
   }
 
