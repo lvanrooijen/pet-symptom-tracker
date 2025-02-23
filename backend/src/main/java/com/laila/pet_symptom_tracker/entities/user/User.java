@@ -80,10 +80,7 @@ public class User implements UserDetails {
 
   @Override
   public Collection<? extends GrantedAuthority> getAuthorities() {
-    List<Authorities> authorities = Authorities.getByRole(role);
-    return authorities.stream()
-        .map(authority -> new SimpleGrantedAuthority(authority.toString()))
-        .toList();
+    return getAuthoritiesFromRole(role);
   }
 
   @Override
@@ -98,10 +95,9 @@ public class User implements UserDetails {
 
   /*  ~~~~~~~~~~~  Helper methods ~~~~~~~~~~~  */
   public List<SimpleGrantedAuthority> getAuthoritiesFromRole(Role role) {
-    List<Authorities> authorities = Authorities.getByRole(role);
-    return authorities.stream()
-        .map(authority -> new SimpleGrantedAuthority(authority.toString()))
-        .toList();
+    List<String> authorities = Authorities.getByRole(role);
+    authorities.add(role.toString());
+    return authorities.stream().map(SimpleGrantedAuthority::new).toList();
   }
 
   public Boolean isAdmin() {

@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public enum Authorities {
-  // Ik ben bij hoofdstuk 7, moet betere strategie voor die authorities verzinnen!
-  // pas dingen aanmaken als nodig, Yagni!
   // Generic authorities
   READ_ALL_PETS(List.of(Role.ADMIN, Role.MODERATOR));
   // Moderator authorities
@@ -18,11 +16,11 @@ public enum Authorities {
     this.roles = roles;
   }
 
-  public static List<Authorities> getByRole(Role role) {
-    List<Authorities> authoritiesForRole = new ArrayList<>();
+  public static List<String> getByRole(Role role) {
+    List<String> authoritiesForRole = new ArrayList<>();
     for (Authorities authority : Authorities.values()) {
       if (authority.getRoles().contains(role)) {
-        authoritiesForRole.add(authority);
+        authoritiesForRole.add(authority.toString());
       }
     }
     return authoritiesForRole;

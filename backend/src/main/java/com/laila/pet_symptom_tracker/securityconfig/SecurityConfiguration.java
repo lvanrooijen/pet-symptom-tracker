@@ -17,7 +17,7 @@ public class SecurityConfiguration {
   SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
     // TODO endpoints goed configureren
     http.authenticationProvider(basicAuthProvider)
-        .authorizeHttpRequests(c -> c.anyRequest().hasAuthority("READ_ALL_PETS"))
+        .authorizeHttpRequests(c -> c.anyRequest().hasRole("ADMIN"))
         .httpBasic(Customizer.withDefaults());
 
     return http.build();

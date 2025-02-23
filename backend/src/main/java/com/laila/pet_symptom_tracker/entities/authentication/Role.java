@@ -7,6 +7,6 @@ public enum Role {
 
   @Override
   public String toString() {
-    return "ROLE_ " + super.toString();
+    return "ROLE_" + super.toString();
   }
 }
