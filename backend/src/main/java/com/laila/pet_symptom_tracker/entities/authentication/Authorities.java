@@ -10,6 +10,10 @@ public enum Authorities {
 
   // Admin authorities
 
+  // user authorities
+
+  // vetinarian authorities
+
   private final List<Role> roles;
 
   Authorities(List<Role> roles) {

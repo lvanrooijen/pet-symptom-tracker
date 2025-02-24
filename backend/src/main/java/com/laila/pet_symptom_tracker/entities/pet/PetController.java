@@ -58,6 +58,12 @@ public class PetController {
     return ResponseEntity.ok(petService.getAll(loggedInUser));
   }
 
+  // TODO ff om te oefenen
+  @GetMapping("/test/{test}")
+  public ResponseEntity<String> denyIfNotOke(@PathVariable String test) {
+    return ResponseEntity.ok(test);
+  }
+
   @PatchMapping("/{id}")
   public ResponseEntity<GetPet> update(
       @PathVariable Long id, @RequestBody PatchPet patch, Authentication authentication) {
