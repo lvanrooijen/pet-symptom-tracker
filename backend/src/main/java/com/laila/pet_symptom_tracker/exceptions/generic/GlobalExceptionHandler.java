@@ -1,6 +1,5 @@
 package com.laila.pet_symptom_tracker.exceptions.generic;
 
-import com.laila.pet_symptom_tracker.exceptions.authentication.UsernameNotFoundException;
 import java.util.HashMap;
 import java.util.Map;
 import org.springframework.http.HttpStatus;
@@ -41,14 +40,6 @@ public class GlobalExceptionHandler {
     }
 
     ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, message);
-    return ResponseEntity.badRequest().body(problemDetail);
-  }
-
-  @ExceptionHandler(UsernameNotFoundException.class)
-  public ResponseEntity<ProblemDetail> usernameNotFoundHandler(
-      UsernameNotFoundException exception) {
-    ProblemDetail problemDetail =
-        ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, "Username not found");
     return ResponseEntity.badRequest().body(problemDetail);
   }
 

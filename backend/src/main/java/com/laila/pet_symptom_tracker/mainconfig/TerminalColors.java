@@ -8,19 +8,19 @@ public class TerminalColors {
   private static final String RESET_COLOR = "\u001B[0m";
   private static final String CUSTOM_RESET_COLOR = "\u001B[38;2;0;145;110m";
 
-  public static String setWarningColor(String message) {
+  public static String printInRed(String message) {
     return RED + message + CUSTOM_RESET_COLOR;
   }
 
-  public static String setInfoColor(String message) {
+  public static String printInBlue(String message) {
     return BLUE + message + CUSTOM_RESET_COLOR;
   }
 
-  public static String setSuccessColor(String message) {
+  public static String printInGreen(String message) {
     return GREEN + message + CUSTOM_RESET_COLOR;
   }
 
-  public static String setGirlyShit(String message) {
+  public static String printInPink(String message) {
     return PINK + message + CUSTOM_RESET_COLOR;
   }
 }

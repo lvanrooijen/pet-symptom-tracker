@@ -5,7 +5,6 @@ import com.laila.pet_symptom_tracker.entities.pet.dto.PatchPet;
 import com.laila.pet_symptom_tracker.entities.pet.dto.PostPet;
 import com.laila.pet_symptom_tracker.entities.user.User;
 import com.laila.pet_symptom_tracker.entities.user.UserRepository;
-import com.laila.pet_symptom_tracker.exceptions.generic.NotFoundException;
 import com.laila.pet_symptom_tracker.mainconfig.Routes;
 import com.laila.pet_symptom_tracker.mainconfig.TerminalColors;
 import java.net.URI;
@@ -48,20 +47,9 @@ public class PetController {
 
   @GetMapping
   public ResponseEntity<List<GetPet>> getAll(Authentication authentication) {
-    User loggedInUser =
-        userRepository
-            .findByEmailIgnoreCase(authentication.getName())
-            .orElseThrow(NotFoundException::new);
-    log.info(
-        TerminalColors.setInfoColor(
-            "Authentication is: " + authentication)); // TODO was hier gebleven!
+    log.info(TerminalColors.printInBlue("Authentication is: " + authentication));
+    User loggedInUser = (User) authentication.getPrincipal();
     return ResponseEntity.ok(petService.getAll(loggedInUser));
-  }
-
-  // TODO ff om te oefenen
-  @GetMapping("/test/{test}")
-  public ResponseEntity<String> denyIfNotOke(@PathVariable String test) {
-    return ResponseEntity.ok(test);
   }
 
   @PatchMapping("/{id}")

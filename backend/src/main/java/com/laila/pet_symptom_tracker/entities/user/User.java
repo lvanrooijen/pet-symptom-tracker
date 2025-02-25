@@ -1,12 +1,10 @@
 package com.laila.pet_symptom_tracker.entities.user;
 
-import com.laila.pet_symptom_tracker.entities.authentication.Authorities;
 import com.laila.pet_symptom_tracker.entities.authentication.Role;
 import jakarta.persistence.*;
 import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -68,6 +66,8 @@ public class User implements UserDetails {
     this.firstName = builder.firstname;
     this.lastName = builder.lastname;
     this.role = builder.role;
+    this.enabled = (builder.enabled == null) ? true : builder.enabled;
+    this.locked = (builder.locked == null) ? true : builder.locked;
   }
 
   public boolean hasRole(Role role) {
@@ -80,7 +80,7 @@ public class User implements UserDetails {
 
   @Override
   public Collection<? extends GrantedAuthority> getAuthorities() {
-    return getAuthoritiesFromRole(role);
+    return List.of(new SimpleGrantedAuthority(role.toString()));
   }
 
   @Override
@@ -94,12 +94,6 @@ public class User implements UserDetails {
   }
 
   /*  ~~~~~~~~~~~  Helper methods ~~~~~~~~~~~  */
-  public List<SimpleGrantedAuthority> getAuthoritiesFromRole(Role role) {
-    List<String> authorities = Authorities.getByRole(role);
-    authorities.add(role.toString());
-    return authorities.stream().map(SimpleGrantedAuthority::new).toList();
-  }
-
   public Boolean isAdmin() {
     return hasRole(Role.ADMIN);
   }
@@ -127,6 +121,8 @@ public class User implements UserDetails {
     private String firstname;
     private String lastname;
     private Role role;
+    private Boolean enabled;
+    private Boolean locked;
 
     public Builder username(String username) {
       this.username = username;
@@ -155,6 +151,16 @@ public class User implements UserDetails {
 
     public Builder role(Role role) {
       this.role = role;
+      return this;
+    }
+
+    public Builder enabled(Boolean enabled) {
+      this.enabled = enabled;
+      return this;
+    }
+
+    public Builder locked(Boolean locked) {
+      this.locked = locked;
       return this;
     }
 
