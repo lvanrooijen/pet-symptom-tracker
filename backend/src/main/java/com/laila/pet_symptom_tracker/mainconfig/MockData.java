@@ -4,6 +4,7 @@ import com.laila.pet_symptom_tracker.entities.authentication.Role;
 import com.laila.pet_symptom_tracker.entities.pet.Pet;
 import com.laila.pet_symptom_tracker.entities.user.User;
 import java.time.LocalDate;
+import java.util.Arrays;
 import java.util.List;
 
 public class MockData {
@@ -25,9 +26,19 @@ public class MockData {
   }
 
   public static Iterable<Pet> getPets() {
-    return List.of(
+    return Arrays.asList(
         new Pet("Mister Snugglebut", LocalDate.of(2019, 6, 2), true),
         new Pet("Fluffles", LocalDate.of(2004, 9, 28), true),
+        new Pet("Kitiko", LocalDate.of(2012, 2, 11), true),
+        new Pet("MoonCalf", LocalDate.of(2012, 2, 11), true),
+        new Pet("Mimi", LocalDate.of(2012, 2, 11), true),
+        new Pet("Momo", LocalDate.of(2012, 2, 11), true),
+        new Pet("MissStealsYourPizza", LocalDate.of(2012, 2, 11), true),
+        new Pet("Josephine", LocalDate.of(2012, 2, 11), true),
+        new Pet("Tupac", LocalDate.of(2012, 2, 11), true),
+        new Pet("TunaAddict", LocalDate.of(2012, 2, 11), true),
+        new Pet("CrazyCatNip", LocalDate.of(2012, 2, 11), true),
+        new Pet("WavyLady", LocalDate.of(2012, 2, 11), true),
         new Pet("Lama", LocalDate.of(2012, 2, 11), true),
         new Pet("Tuxie", LocalDate.of(2008, 11, 13), true));
   }

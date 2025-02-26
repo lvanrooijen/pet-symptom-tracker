@@ -6,8 +6,8 @@ import com.laila.pet_symptom_tracker.entities.authentication.dto.RegisterRequest
 import com.laila.pet_symptom_tracker.entities.user.User;
 import com.laila.pet_symptom_tracker.entities.user.UserService;
 import com.laila.pet_symptom_tracker.entities.user.dto.GetUser;
+import com.laila.pet_symptom_tracker.mainconfig.ColoredLogger;
 import com.laila.pet_symptom_tracker.mainconfig.Routes;
-import com.laila.pet_symptom_tracker.mainconfig.TerminalColors;
 import com.laila.pet_symptom_tracker.securityconfig.JwtService;
 import com.laila.pet_symptom_tracker.securityconfig.JwtToken;
 import jakarta.validation.Valid;
@@ -30,8 +30,8 @@ public class AuthenticationController {
   @PostMapping("register")
   public ResponseEntity<LoginResponse> register(
       @RequestBody @Valid RegisterRequest registerRequest) {
-    log.info(TerminalColors.printInPink("register attempt"));
-    log.info(TerminalColors.printInRed("Request: " + registerRequest));
+    ColoredLogger.prettyInPink("Register attempt");
+    ColoredLogger.prettyInPink("Register request: " + registerRequest);
     User createdUser = userService.register(registerRequest);
     URI location =
         ServletUriComponentsBuilder.fromCurrentRequest()
@@ -48,7 +48,7 @@ public class AuthenticationController {
 
   @PostMapping("login")
   public ResponseEntity<JwtToken> login(@RequestBody LoginRequest loginRequest) {
-    log.info(TerminalColors.printInPink("login attempt"));
+    ColoredLogger.logInBlue("login attempt");
 
     User user = userService.login(loginRequest);
 
@@ -56,6 +56,10 @@ public class AuthenticationController {
 
     return ResponseEntity.ok(token);
   }
+
+  // create account als MODERATOR
+
+  // create account als ADMIN
 
   // user updaten
 

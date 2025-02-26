@@ -8,6 +8,7 @@ import com.laila.pet_symptom_tracker.entities.user.UserRepository;
 import com.laila.pet_symptom_tracker.exceptions.generic.ForbiddenException;
 import com.laila.pet_symptom_tracker.exceptions.generic.NoContentException;
 import com.laila.pet_symptom_tracker.exceptions.generic.NotFoundException;
+import com.laila.pet_symptom_tracker.mainconfig.ColoredLogger;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -26,9 +27,7 @@ public class PetService {
 
   public GetPet getById(User loggedInUser, Long id) {
     Pet pet = petRepository.findById(id).orElseThrow(() -> new NotFoundException("Pet not found"));
-    if (loggedInUser.equals(pet.getOwner())
-        || loggedInUser.isAdmin()
-        || loggedInUser.isModerator()) {
+    if (pet.isOwner(loggedInUser) || loggedInUser.isAdmin() || loggedInUser.isModerator()) {
       return GetPet.from(pet);
     } else {
       throw new ForbiddenException();
@@ -36,46 +35,56 @@ public class PetService {
   }
 
   public List<GetPet> getAll(User loggedInUser) {
-    if (loggedInUser.isUser()) throw new ForbiddenException();
+    List<Pet> pets;
 
-    List<GetPet> pets = petRepository.findAll().stream().map(GetPet::from).toList();
+    if (loggedInUser.isAdmin() || loggedInUser.isModerator()) {
+      pets = petRepository.findAll();
+    } else {
+      pets = petRepository.findByOwnerId(loggedInUser.getId());
+    }
+
     if (pets.isEmpty()) throw new NoContentException();
 
-    return pets;
+    return pets.stream().map(GetPet::from).toList();
   }
 
   public GetPet update(User loggedInUser, Long id, PatchPet patch) {
-    if (loggedInUser.isUser() || loggedInUser.isModerator() || loggedInUser.isAdmin()) {
-      Pet updatedPet = petRepository.findById(id).orElseThrow(NotFoundException::new);
+    Pet updatedPet = petRepository.findById(id).orElseThrow(NotFoundException::new);
 
-      if (patch.userId() != null) {
-        User newOwner = userRepository.findById(patch.userId()).orElseThrow(NotFoundException::new);
-        updatedPet.setOwner(newOwner);
-      }
-      if (patch.name() != null) {
-        updatedPet.setName(patch.name());
-      }
-      if (patch.dateOfBirth() != null) {
-        updatedPet.setDateOfBirth(patch.dateOfBirth());
-      }
-      if (patch.isAlive() != null) {
-        updatedPet.setIsAlive(patch.isAlive());
-      }
-      if (patch.dateOfDeath() != null) {
-        updatedPet.setDateOfDeath(patch.dateOfDeath());
-      }
+    ColoredLogger.logWarning("Entering update method in pet service");
 
-      petRepository.save(updatedPet);
-      return GetPet.from(updatedPet);
-    } else throw new ForbiddenException();
+    if (updatedPet.isNotOwner(loggedInUser)) {
+      throw new ForbiddenException("You don't have permission to update this pet");
+    }
+
+    if (patch.userId() != null) {
+      User newOwner = userRepository.findById(patch.userId()).orElseThrow(NotFoundException::new);
+      updatedPet.setOwner(newOwner);
+    }
+    if (patch.name() != null) {
+      updatedPet.setName(patch.name());
+    }
+    if (patch.dateOfBirth() != null) {
+      updatedPet.setDateOfBirth(patch.dateOfBirth());
+    }
+    if (patch.isAlive() != null) {
+      updatedPet.setIsAlive(patch.isAlive());
+    }
+    if (patch.dateOfDeath() != null) {
+      updatedPet.setDateOfDeath(patch.dateOfDeath());
+    }
+
+    petRepository.save(updatedPet);
+    return GetPet.from(updatedPet);
   }
 
   public void delete(User loggedInUser, Long id) {
     Pet pet = petRepository.findById(id).orElseThrow(NotFoundException::new);
 
-    if (!pet.getOwner().equals(loggedInUser) || !loggedInUser.isAdmin())
+    if (pet.isOwner(loggedInUser) || loggedInUser.isAdmin()) {
+      petRepository.deleteById(id);
+    } else {
       throw new ForbiddenException();
-
-    petRepository.deleteById(id);
+    }
   }
 }

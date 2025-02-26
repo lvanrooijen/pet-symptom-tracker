@@ -1,5 +1,6 @@
 package com.laila.pet_symptom_tracker;
 
+import com.laila.pet_symptom_tracker.entities.pet.Pet;
 import com.laila.pet_symptom_tracker.entities.pet.PetRepository;
 import com.laila.pet_symptom_tracker.entities.user.User;
 import com.laila.pet_symptom_tracker.entities.user.UserService;
@@ -19,8 +20,8 @@ public class Seeder implements CommandLineRunner {
 
   @Override
   public void run(String... args) throws Exception {
-    seedPets();
     seedUsers();
+    seedPets();
   }
 
   private void seedUsers() {
@@ -31,7 +32,16 @@ public class Seeder implements CommandLineRunner {
 
   private void seedPets() {
     if (!petRepository.findAll().isEmpty()) return;
+    List<User> users = userService.getAll();
+    if (users.isEmpty()) return;
 
-    petRepository.saveAll(MockData.getPets());
+    int count = 0;
+    Iterable<Pet> pets = MockData.getPets();
+    for (Pet pet : pets) {
+      if (count >= users.size()) break;
+      pet.setOwner(users.get(count++));
+    }
+
+    petRepository.saveAll(pets);
   }
 }

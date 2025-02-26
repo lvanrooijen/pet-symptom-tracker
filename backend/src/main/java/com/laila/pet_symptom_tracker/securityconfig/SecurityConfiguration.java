@@ -4,13 +4,11 @@ import java.util.logging.Logger;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
-import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-@EnableMethodSecurity
 @Configuration
 public class SecurityConfiguration {
   private final Logger log = Logger.getLogger(SecurityConfiguration.class.getName());
@@ -32,6 +30,8 @@ public class SecurityConfiguration {
                 request
                     .requestMatchers(HttpMethod.POST, "/api/v1/login", "/api/v1/register")
                     .permitAll()
+                    .requestMatchers(HttpMethod.POST, "/api/v1/pet-types")
+                    .authenticated()
                     .anyRequest()
                     .authenticated());
 

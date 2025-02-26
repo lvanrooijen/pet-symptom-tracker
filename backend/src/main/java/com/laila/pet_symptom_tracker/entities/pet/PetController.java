@@ -6,10 +6,8 @@ import com.laila.pet_symptom_tracker.entities.pet.dto.PostPet;
 import com.laila.pet_symptom_tracker.entities.user.User;
 import com.laila.pet_symptom_tracker.entities.user.UserRepository;
 import com.laila.pet_symptom_tracker.mainconfig.Routes;
-import com.laila.pet_symptom_tracker.mainconfig.TerminalColors;
 import java.net.URI;
 import java.util.List;
-import java.util.logging.Logger;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -20,7 +18,6 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 @RequestMapping(Routes.PETS)
 @RequiredArgsConstructor
 public class PetController {
-  private final Logger log = Logger.getLogger(PetController.class.getName());
   private final PetService petService;
   private final UserRepository userRepository;
 
@@ -47,7 +44,6 @@ public class PetController {
 
   @GetMapping
   public ResponseEntity<List<GetPet>> getAll(Authentication authentication) {
-    log.info(TerminalColors.printInBlue("Authentication is: " + authentication));
     User loggedInUser = (User) authentication.getPrincipal();
     return ResponseEntity.ok(petService.getAll(loggedInUser));
   }

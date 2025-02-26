@@ -1,6 +1,6 @@
 package com.laila.pet_symptom_tracker.exceptions.authentication;
 
-import com.laila.pet_symptom_tracker.mainconfig.TerminalColors;
+import com.laila.pet_symptom_tracker.mainconfig.ColoredLogger;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
@@ -14,7 +14,7 @@ public class AuthenticationExceptionHandler {
   @ExceptionHandler(InvalidLoginAttemptException.class)
   public ResponseEntity<ProblemDetail> invalidLoginAttemptHandler(
       InvalidLoginAttemptException exception) {
-    log.warn(TerminalColors.printInRed("Failed login attempt: " + exception.getMessage()));
+    ColoredLogger.logWarning("Failed login attempt: " + exception.getMessage());
 
     ProblemDetail problemDetail =
         ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, "Login failed");

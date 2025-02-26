@@ -4,16 +4,14 @@ import com.laila.pet_symptom_tracker.entities.authentication.Role;
 import com.laila.pet_symptom_tracker.entities.authentication.dto.LoginRequest;
 import com.laila.pet_symptom_tracker.entities.authentication.dto.RegisterRequest;
 import com.laila.pet_symptom_tracker.exceptions.authentication.InvalidLoginAttemptException;
-import com.laila.pet_symptom_tracker.mainconfig.TerminalColors;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.stereotype.Service;
 
-@Slf4j
 @Service
 @RequiredArgsConstructor
 public class UserService implements UserDetailsManager {
@@ -32,7 +30,6 @@ public class UserService implements UserDetailsManager {
             .role(Role.USER)
             .build();
 
-    log.info(TerminalColors.printInBlue(user.toString()));
     createUser(user);
 
     return user;
@@ -45,11 +42,14 @@ public class UserService implements UserDetailsManager {
             .orElseThrow(() -> new UsernameNotFoundException("user not found"));
 
     if (passwordEncoder.matches(loginRequest.password(), user.getPassword())) {
-      log.info(TerminalColors.printInBlue("Passwords match"));
       return user;
     } else {
       throw new InvalidLoginAttemptException("Login failed");
     }
+  }
+
+  public List<User> getAll() {
+    return userRepository.findAll();
   }
 
   /* ~~~~~~~~~~~~~~ Helper methods ~~~~~~~~~~~~~~ */
@@ -64,9 +64,6 @@ public class UserService implements UserDetailsManager {
 
   @Override
   public void createUser(UserDetails user) {
-    log.info(
-        TerminalColors.printInPink(
-            "User: name: " + user.getUsername() + " enabled: " + ((User) user).isEnabled()));
     if (user instanceof User) {
       userRepository.save((User) user);
     } else {

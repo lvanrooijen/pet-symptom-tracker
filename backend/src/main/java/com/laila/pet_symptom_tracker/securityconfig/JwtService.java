@@ -1,7 +1,7 @@
 package com.laila.pet_symptom_tracker.securityconfig;
 
 import com.laila.pet_symptom_tracker.entities.user.User;
-import com.laila.pet_symptom_tracker.mainconfig.TerminalColors;
+import com.laila.pet_symptom_tracker.mainconfig.ColoredLogger;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import jakarta.transaction.Transactional;
@@ -31,7 +31,7 @@ public class JwtService {
     try {
       Claims claims =
           Jwts.parser().verifyWith(jwtSecretKey).build().parseSignedClaims(token).getPayload();
-      log.info(TerminalColors.printInGreen(claims.getSubject()));
+      ColoredLogger.logInGreen(claims.getSubject());
       return Optional.of(
           new JwtTokenDetails(
               claims.getSubject(),
@@ -39,12 +39,12 @@ public class JwtService {
               claims.getIssuedAt(),
               claims.getExpiration()));
     } catch (RuntimeException ex) {
-      log.warning(
-          TerminalColors.printInRed(
-              "Exception reading JWT-token: TYPE: "
-                  + ex.getClass().getName()
-                  + " MESSAGE: "
-                  + ex.getMessage()));
+
+      ColoredLogger.logWarning(
+          "Exception reading JWT-token: TYPE: "
+              + ex.getClass().getName()
+              + " MESSAGE: "
+              + ex.getMessage());
 
       return Optional.empty();
     }

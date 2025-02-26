@@ -1,6 +1,6 @@
 package com.laila.pet_symptom_tracker.securityconfig;
 
-import com.laila.pet_symptom_tracker.mainconfig.TerminalColors;
+import com.laila.pet_symptom_tracker.mainconfig.ColoredLogger;
 import java.util.List;
 import java.util.logging.Logger;
 import org.springframework.beans.factory.annotation.Value;
@@ -30,7 +30,7 @@ public class CorsConfig {
       - Acces-Control-Request-Headers: Authorization, Content-Type
     */
 
-    log.info(TerminalColors.printInPink("Cors config loaded, client: " + corsClient));
+    ColoredLogger.logCustomInColor(0, 0, 0, "Cors config loaded, client: " + corsClient);
     CorsConfiguration configuration = new CorsConfiguration();
     configuration.setAllowedOrigins(List.of(corsClient));
     configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
