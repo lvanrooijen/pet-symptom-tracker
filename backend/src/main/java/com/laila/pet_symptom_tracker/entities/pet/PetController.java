@@ -6,6 +6,7 @@ import com.laila.pet_symptom_tracker.entities.pet.dto.PostPet;
 import com.laila.pet_symptom_tracker.entities.user.User;
 import com.laila.pet_symptom_tracker.entities.user.UserRepository;
 import com.laila.pet_symptom_tracker.mainconfig.Routes;
+import jakarta.validation.Valid;
 import java.net.URI;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -22,7 +23,8 @@ public class PetController {
   private final UserRepository userRepository;
 
   @PostMapping
-  public ResponseEntity<GetPet> create(@RequestBody PostPet petDto, Authentication authentication) {
+  public ResponseEntity<GetPet> create(
+          @RequestBody @Valid PostPet petDto, Authentication authentication) {
     User loggedInUser = (User) authentication.getPrincipal();
 
     GetPet createdPet = petService.create(loggedInUser, petDto);

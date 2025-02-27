@@ -22,13 +22,13 @@ public class Seeder implements CommandLineRunner {
 
   @Override
   public void run(String... args) throws Exception {
+    seedPetTypes();
     seedUsers();
     seedPets();
-    seedPetTypes();
   }
 
   private void seedPetTypes() {
-    if(!petTypeRepository.findAll().isEmpty()) return;
+    if (!petTypeRepository.findAll().isEmpty()) return;
     petTypeRepository.saveAll(MockData.getPetTypes());
   }
 
@@ -44,7 +44,7 @@ public class Seeder implements CommandLineRunner {
     if (users.isEmpty()) return;
 
     int count = 0;
-    Iterable<Pet> pets = MockData.getPets();
+    List<Pet> pets = MockData.getPets();
     for (Pet pet : pets) {
       if (count >= users.size()) break;
       pet.setOwner(users.get(count++));

@@ -19,7 +19,7 @@ public class Pet {
   @Id @GeneratedValue private Long id;
   @Setter private String name;
 
-  @ManyToOne private PetType petType;
+  @ManyToOne @Setter private PetType petType;
 
   @ManyToOne private PetBreed petBreed;
 

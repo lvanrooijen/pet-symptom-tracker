@@ -3,8 +3,11 @@ package com.laila.pet_symptom_tracker.entities.pet;
 import com.laila.pet_symptom_tracker.entities.pet.dto.GetPet;
 import com.laila.pet_symptom_tracker.entities.pet.dto.PatchPet;
 import com.laila.pet_symptom_tracker.entities.pet.dto.PostPet;
+import com.laila.pet_symptom_tracker.entities.pettype.PetType;
+import com.laila.pet_symptom_tracker.entities.pettype.PetTypeRepository;
 import com.laila.pet_symptom_tracker.entities.user.User;
 import com.laila.pet_symptom_tracker.entities.user.UserRepository;
+import com.laila.pet_symptom_tracker.exceptions.generic.BadRequestException;
 import com.laila.pet_symptom_tracker.exceptions.generic.ForbiddenException;
 import com.laila.pet_symptom_tracker.exceptions.generic.NoContentException;
 import com.laila.pet_symptom_tracker.exceptions.generic.NotFoundException;
@@ -17,11 +20,24 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class PetService {
   private final PetRepository petRepository;
+  private final PetTypeRepository petTypeRepository;
   private final UserRepository userRepository;
 
   public GetPet create(User loggedInUser, PostPet dto) {
-    Pet pet = PostPet.to(dto);
-    pet.setOwner(loggedInUser);
+    PetType petType =
+        petTypeRepository
+            .findById(dto.petTypeId())
+            .orElseThrow(() -> new BadRequestException("Pet Type not found"));
+
+    Pet pet =
+        Pet.builder()
+            .name(dto.name())
+            .owner(loggedInUser)
+            .dateOfBirth(dto.dateOfBirth())
+            .petType(petType)
+            .isAlive(true)
+            .build();
+
     return GetPet.from(petRepository.save(pet));
   }
 
@@ -72,6 +88,14 @@ public class PetService {
     }
     if (patch.dateOfDeath() != null) {
       updatedPet.setDateOfDeath(patch.dateOfDeath());
+    }
+
+    if (patch.petTypeId() != null) {
+      PetType petType =
+          petTypeRepository
+              .findById(patch.petTypeId())
+              .orElseThrow(() -> new BadRequestException("Pet Type does not exist"));
+      updatedPet.setPetType(petType);
     }
 
     petRepository.save(updatedPet);

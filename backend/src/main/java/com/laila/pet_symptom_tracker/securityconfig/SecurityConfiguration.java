@@ -33,17 +33,33 @@ public class SecurityConfiguration {
                     .requestMatchers(HttpMethod.POST, SecurityPaths.OPEN_POST_PATHS)
                     .permitAll()
                     // Get Paths
-                    .requestMatchers(HttpMethod.GET, SecurityPaths.USER_GET_PATHS)
+                    .requestMatchers(HttpMethod.GET, SecurityPaths.ADMIN_ONLY_PATHS)
+                    .hasRole("ADMIN")
+                    .requestMatchers(HttpMethod.GET, SecurityPaths.ADMIN_MODERATOR_PATHS)
+                    .hasAnyRole("ADMIN", "MODERATOR")
+                    .requestMatchers(HttpMethod.GET, SecurityPaths.AUTHENTICATED_GET_PATHS)
                     .authenticated()
                     // Post paths
+                    .requestMatchers(HttpMethod.POST, SecurityPaths.ADMIN_ONLY_PATHS)
+                    .hasRole("ADMIN")
                     .requestMatchers(HttpMethod.POST, SecurityPaths.ADMIN_MODERATOR_PATHS)
                     .hasAnyRole("ADMIN", "MODERATOR")
+                    .requestMatchers(HttpMethod.POST, SecurityPaths.AUTHENTICATED_MANAGE_PATHS)
+                    .authenticated()
                     // Patch paths
+                    .requestMatchers(HttpMethod.PATCH, SecurityPaths.ADMIN_ONLY_PATHS)
+                    .hasRole("ADMIN")
                     .requestMatchers(HttpMethod.PATCH, SecurityPaths.ADMIN_MODERATOR_PATHS)
                     .hasAnyRole("ADMIN", "MODERATOR")
+                    .requestMatchers(HttpMethod.PATCH, SecurityPaths.AUTHENTICATED_MANAGE_PATHS)
+                    .authenticated()
                     // Delete Paths
+                    .requestMatchers(HttpMethod.DELETE, SecurityPaths.ADMIN_ONLY_PATHS)
+                    .hasRole("ADMIN")
                     .requestMatchers(HttpMethod.DELETE, SecurityPaths.ADMIN_MODERATOR_PATHS)
                     .hasAnyRole("ADMIN", "MODERATOR")
+                    .requestMatchers(HttpMethod.DELETE, SecurityPaths.AUTHENTICATED_MANAGE_PATHS)
+                    .authenticated()
                     // Remainder paths
                     .anyRequest()
                     .authenticated());
