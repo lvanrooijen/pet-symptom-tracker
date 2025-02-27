@@ -11,7 +11,6 @@ import com.laila.pet_symptom_tracker.exceptions.generic.BadRequestException;
 import com.laila.pet_symptom_tracker.exceptions.generic.ForbiddenException;
 import com.laila.pet_symptom_tracker.exceptions.generic.NoContentException;
 import com.laila.pet_symptom_tracker.exceptions.generic.NotFoundException;
-import com.laila.pet_symptom_tracker.mainconfig.ColoredLogger;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -66,8 +65,6 @@ public class PetService {
 
   public GetPet update(User loggedInUser, Long id, PatchPet patch) {
     Pet updatedPet = petRepository.findById(id).orElseThrow(NotFoundException::new);
-
-    ColoredLogger.logWarning("Entering update method in pet service");
 
     if (updatedPet.isNotOwner(loggedInUser)) {
       throw new ForbiddenException("You don't have permission to update this pet");

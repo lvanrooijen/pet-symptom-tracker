@@ -4,10 +4,12 @@ import com.laila.pet_symptom_tracker.entities.disease.Disease;
 import com.laila.pet_symptom_tracker.entities.pet.Pet;
 import jakarta.persistence.*;
 import java.time.LocalDate;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
 @NoArgsConstructor
+@Getter
 public class DiseaseLog {
   @Id @GeneratedValue private Long id;
 

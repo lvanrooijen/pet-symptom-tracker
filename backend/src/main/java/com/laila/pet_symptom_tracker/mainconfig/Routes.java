@@ -7,6 +7,7 @@ public class Routes {
   public static final String PETS = BASE_ROUTE + "/pets";
   public static final String DISEASE = BASE_ROUTE + "/diseases";
   public static final String PET_TYPES = BASE_ROUTE + "/pet-types";
+  public static final String BREEDS = BASE_ROUTE + "/breeds";
 
   //  public static final String PLACEHOLDER = BASE_ROUTE + "/placeholder" ;
 }
