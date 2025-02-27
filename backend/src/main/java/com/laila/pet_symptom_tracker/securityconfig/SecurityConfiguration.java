@@ -33,7 +33,7 @@ public class SecurityConfiguration {
                     .requestMatchers(HttpMethod.POST, SecurityPaths.OPEN_POST_PATHS)
                     .permitAll()
                     // Get Paths
-                    .requestMatchers(HttpMethod.GET, SecurityPaths.OPEN_GET_PATHS)
+                    .requestMatchers(HttpMethod.GET, SecurityPaths.USER_GET_PATHS)
                     .authenticated()
                     // Post paths
                     .requestMatchers(HttpMethod.POST, SecurityPaths.ADMIN_MODERATOR_PATHS)
