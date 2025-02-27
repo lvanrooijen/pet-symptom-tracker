@@ -1,5 +1,6 @@
 package com.laila.pet_symptom_tracker.securityconfig;
 
+import com.laila.pet_symptom_tracker.mainconfig.SecurityPaths;
 import java.util.logging.Logger;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -28,10 +29,22 @@ public class SecurityConfiguration {
         .authorizeHttpRequests(
             request ->
                 request
-                    .requestMatchers(HttpMethod.POST, "/api/v1/login", "/api/v1/register")
+                    // Open to all paths
+                    .requestMatchers(HttpMethod.POST, SecurityPaths.OPEN_POST_PATHS)
                     .permitAll()
-                    .requestMatchers(HttpMethod.POST, "/api/v1/pet-types")
+                    // Get Paths
+                    .requestMatchers(HttpMethod.GET, SecurityPaths.OPEN_GET_PATHS)
                     .authenticated()
+                    // Post paths
+                    .requestMatchers(HttpMethod.POST, SecurityPaths.ADMIN_MODERATOR_PATHS)
+                    .hasAnyRole("ADMIN", "MODERATOR")
+                    // Patch paths
+                    .requestMatchers(HttpMethod.PATCH, SecurityPaths.ADMIN_MODERATOR_PATHS)
+                    .hasAnyRole("ADMIN", "MODERATOR")
+                    // Delete Paths
+                    .requestMatchers(HttpMethod.DELETE, SecurityPaths.ADMIN_MODERATOR_PATHS)
+                    .hasAnyRole("ADMIN", "MODERATOR")
+                    // Remainder paths
                     .anyRequest()
                     .authenticated());
 

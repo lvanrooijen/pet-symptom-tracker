@@ -6,6 +6,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @NoArgsConstructor
@@ -14,6 +15,7 @@ public class PetType {
   @Id @GeneratedValue private Long id;
 
   @Column(nullable = false)
+  @Setter
   private String name;
 
   public PetType(String name) {

@@ -2,9 +2,9 @@ package com.laila.pet_symptom_tracker.mainconfig;
 
 import com.laila.pet_symptom_tracker.entities.authentication.Role;
 import com.laila.pet_symptom_tracker.entities.pet.Pet;
+import com.laila.pet_symptom_tracker.entities.pettype.PetType;
 import com.laila.pet_symptom_tracker.entities.user.User;
 import java.time.LocalDate;
-import java.util.Arrays;
 import java.util.List;
 
 public class MockData {
@@ -25,8 +25,8 @@ public class MockData {
         new User("user@gmail.com", "Password123!", "user", Role.USER));
   }
 
-  public static Iterable<Pet> getPets() {
-    return Arrays.asList(
+  public static List<Pet> getPets() {
+    return List.of(
         new Pet("Mister Snugglebut", LocalDate.of(2019, 6, 2), true),
         new Pet("Fluffles", LocalDate.of(2004, 9, 28), true),
         new Pet("Kitiko", LocalDate.of(2012, 2, 11), true),
@@ -41,5 +41,10 @@ public class MockData {
         new Pet("WavyLady", LocalDate.of(2012, 2, 11), true),
         new Pet("Lama", LocalDate.of(2012, 2, 11), true),
         new Pet("Tuxie", LocalDate.of(2008, 11, 13), true));
+  }
+
+  public static List<PetType> getPetTypes() {
+    return List.of(
+        new PetType("Cat"), new PetType("Dog"), new PetType("Rabbit"), new PetType("Bird"));
   }
 }

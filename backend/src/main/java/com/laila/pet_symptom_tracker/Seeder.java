@@ -2,6 +2,7 @@ package com.laila.pet_symptom_tracker;
 
 import com.laila.pet_symptom_tracker.entities.pet.Pet;
 import com.laila.pet_symptom_tracker.entities.pet.PetRepository;
+import com.laila.pet_symptom_tracker.entities.pettype.PetTypeRepository;
 import com.laila.pet_symptom_tracker.entities.user.User;
 import com.laila.pet_symptom_tracker.entities.user.UserService;
 import com.laila.pet_symptom_tracker.mainconfig.MockData;
@@ -17,11 +18,18 @@ public class Seeder implements CommandLineRunner {
   private final PasswordEncoder passwordEncoder;
   private final UserService userService;
   private final PetRepository petRepository;
+  private final PetTypeRepository petTypeRepository;
 
   @Override
   public void run(String... args) throws Exception {
     seedUsers();
     seedPets();
+    seedPetTypes();
+  }
+
+  private void seedPetTypes() {
+    if(!petTypeRepository.findAll().isEmpty()) return;
+    petTypeRepository.saveAll(MockData.getPetTypes());
   }
 
   private void seedUsers() {

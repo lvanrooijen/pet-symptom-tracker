@@ -24,19 +24,13 @@ public class CorsConfig {
 
   @Bean
   CorsConfigurationSource corsConfiguration() {
-    /*TODO NOTE TO SELF in postman moet je de OPTIONS request gebruiken, bij headers geef je mee:
-      - Origin: address van de client.
-      - Acces-Control-Request-Method: Soort request, post patch etc.
-      - Acces-Control-Request-Headers: Authorization, Content-Type
-    */
-
     ColoredLogger.logCustomInColor(0, 0, 0, "Cors config loaded, client: " + corsClient);
     CorsConfiguration configuration = new CorsConfiguration();
     configuration.setAllowedOrigins(List.of(corsClient));
-    configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+    configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
     configuration.setAllowedHeaders(
         List.of("Authorization", "Cache-Control", "Content-Type", "Accept", "X-Requested-With"));
-    configuration.setAllowCredentials(true);
+    configuration.setAllowCredentials(false);
 
     UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
     source.registerCorsConfiguration("/**", configuration);
