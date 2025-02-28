@@ -1,6 +1,5 @@
 package com.laila.pet_symptom_tracker.entities.disease;
 
-import com.laila.pet_symptom_tracker.entities.diseasetype.DiseaseType;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -13,6 +12,4 @@ public class Disease {
 
   @Column(nullable = false)
   private String name;
-
-  @ManyToOne private DiseaseType diseaseType;
 }

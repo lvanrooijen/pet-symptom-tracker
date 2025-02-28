@@ -9,4 +9,4 @@ public record PatchPet(
     LocalDate dateOfBirth,
     Boolean isAlive,
     LocalDate dateOfDeath,
-    Long petTypeId) {}
+    Long breedId) {}

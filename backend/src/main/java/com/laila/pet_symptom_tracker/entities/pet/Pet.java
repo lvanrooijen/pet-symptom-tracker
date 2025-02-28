@@ -1,7 +1,6 @@
 package com.laila.pet_symptom_tracker.entities.pet;
 
 import com.laila.pet_symptom_tracker.entities.breed.Breed;
-import com.laila.pet_symptom_tracker.entities.pettype.PetType;
 import com.laila.pet_symptom_tracker.entities.user.User;
 import jakarta.persistence.*;
 import java.time.LocalDate;
@@ -19,9 +18,7 @@ public class Pet {
   @Id @GeneratedValue private Long id;
   @Setter private String name;
 
-  @ManyToOne @Setter private PetType petType;
-
-  @ManyToOne private Breed breed;
+  @Setter @ManyToOne private Breed breed;
 
   @Setter private LocalDate dateOfBirth;
 
@@ -37,7 +34,6 @@ public class Pet {
       User owner,
       Long id,
       String name,
-      PetType petType,
       Breed breed,
       LocalDate dateOfBirth,
       Boolean isAlive,
@@ -45,7 +41,6 @@ public class Pet {
     this.owner = owner;
     this.id = id;
     this.name = name;
-    this.petType = petType;
     this.breed = breed;
     this.dateOfBirth = dateOfBirth;
     this.isAlive = isAlive;
@@ -53,13 +48,6 @@ public class Pet {
   }
 
   public Pet(String name, LocalDate dateOfBirth, Boolean isAlive) {
-    this.name = name;
-    this.dateOfBirth = dateOfBirth;
-    this.isAlive = isAlive;
-  }
-
-  public Pet(User owner, String name, LocalDate dateOfBirth, Boolean isAlive) {
-    this.owner = owner;
     this.name = name;
     this.dateOfBirth = dateOfBirth;
     this.isAlive = isAlive;

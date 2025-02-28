@@ -29,37 +29,38 @@ public class SecurityConfiguration {
         .authorizeHttpRequests(
             request ->
                 request
-                    // Open to all paths
+                    // Non-Authenticated paths
                     .requestMatchers(HttpMethod.POST, SecurityPaths.OPEN_POST_PATHS)
                     .permitAll()
                     // Get Paths
-                    .requestMatchers(HttpMethod.GET, SecurityPaths.ADMIN_ONLY_PATHS)
-                    .hasRole("ADMIN")
-                    .requestMatchers(HttpMethod.GET, SecurityPaths.ADMIN_MODERATOR_PATHS)
-                    .hasAnyRole("ADMIN", "MODERATOR")
                     .requestMatchers(HttpMethod.GET, SecurityPaths.AUTHENTICATED_GET_PATHS)
                     .authenticated()
-                    // Post paths
-                    .requestMatchers(HttpMethod.POST, SecurityPaths.ADMIN_ONLY_PATHS)
-                    .hasRole("ADMIN")
-                    .requestMatchers(HttpMethod.POST, SecurityPaths.ADMIN_MODERATOR_PATHS)
+                    .requestMatchers(HttpMethod.GET, SecurityPaths.MODERATOR_PATHS)
                     .hasAnyRole("ADMIN", "MODERATOR")
+                    .requestMatchers(HttpMethod.GET, SecurityPaths.ADMIN_ONLY_PATHS)
+                    .hasRole("ADMIN")
+                    // Post paths
                     .requestMatchers(HttpMethod.POST, SecurityPaths.AUTHENTICATED_MANAGE_PATHS)
                     .authenticated()
-                    // Patch paths
-                    .requestMatchers(HttpMethod.PATCH, SecurityPaths.ADMIN_ONLY_PATHS)
-                    .hasRole("ADMIN")
-                    .requestMatchers(HttpMethod.PATCH, SecurityPaths.ADMIN_MODERATOR_PATHS)
+                    .requestMatchers(HttpMethod.POST, SecurityPaths.MODERATOR_MANAGE_PATHS)
                     .hasAnyRole("ADMIN", "MODERATOR")
+                    .requestMatchers(HttpMethod.POST, SecurityPaths.ADMIN_ONLY_PATHS)
+                    .hasRole("ADMIN")
+                    // Patch paths
                     .requestMatchers(HttpMethod.PATCH, SecurityPaths.AUTHENTICATED_MANAGE_PATHS)
                     .authenticated()
-                    // Delete Paths
-                    .requestMatchers(HttpMethod.DELETE, SecurityPaths.ADMIN_ONLY_PATHS)
-                    .hasRole("ADMIN")
-                    .requestMatchers(HttpMethod.DELETE, SecurityPaths.ADMIN_MODERATOR_PATHS)
+                    .requestMatchers(HttpMethod.PATCH, SecurityPaths.MODERATOR_MANAGE_PATHS)
                     .hasAnyRole("ADMIN", "MODERATOR")
+                    .requestMatchers(HttpMethod.PATCH, SecurityPaths.ADMIN_ONLY_PATHS)
+                    .hasRole("ADMIN")
+                    // Delete Paths
                     .requestMatchers(HttpMethod.DELETE, SecurityPaths.AUTHENTICATED_MANAGE_PATHS)
                     .authenticated()
+                    .requestMatchers(HttpMethod.DELETE, SecurityPaths.MODERATOR_MANAGE_PATHS)
+                    .hasAnyRole("ADMIN", "MODERATOR")
+                    .requestMatchers(HttpMethod.DELETE, SecurityPaths.ADMIN_ONLY_PATHS)
+                    .hasRole("ADMIN")
+
                     // Remainder paths
                     .anyRequest()
                     .authenticated());

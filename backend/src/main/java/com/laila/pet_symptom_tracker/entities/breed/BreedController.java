@@ -48,4 +48,10 @@ public class BreedController {
       @PathVariable Long id, @RequestBody @Valid PatchBreed patch) {
     return ResponseEntity.ok(breedService.patch(id, patch));
   }
+
+  @DeleteMapping("/{id}")
+  public ResponseEntity<Void> delete(@PathVariable Long id) {
+    breedService.deleteById(id);
+    return ResponseEntity.ok().build();
+  }
 }

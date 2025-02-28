@@ -1,6 +1,7 @@
 package com.laila.pet_symptom_tracker.mainconfig;
 
 import com.laila.pet_symptom_tracker.entities.authentication.Role;
+import com.laila.pet_symptom_tracker.entities.breed.dto.PostBreed;
 import com.laila.pet_symptom_tracker.entities.pet.Pet;
 import com.laila.pet_symptom_tracker.entities.pettype.PetType;
 import com.laila.pet_symptom_tracker.entities.user.User;
@@ -46,5 +47,13 @@ public class MockData {
   public static List<PetType> getPetTypes() {
     return List.of(
         new PetType("Cat"), new PetType("Dog"), new PetType("Rabbit"), new PetType("Bird"));
+  }
+
+  public static List<PostBreed> getBreeds() {
+    return List.of(
+        new PostBreed("Siamese", 1L),
+        new PostBreed("Rotweiler", 2L),
+        new PostBreed("Flemish Giant", 3L),
+        new PostBreed("Parrot", 4L));
   }
 }

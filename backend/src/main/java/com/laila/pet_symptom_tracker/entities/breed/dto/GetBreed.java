@@ -1,9 +1,10 @@
 package com.laila.pet_symptom_tracker.entities.breed.dto;
 
 import com.laila.pet_symptom_tracker.entities.breed.Breed;
+import com.laila.pet_symptom_tracker.entities.pettype.PetType;
 
-public record GetBreed(Long id, String name, Long petTypeId) {
+public record GetBreed(Long id, String name, PetType petType) {
   public static GetBreed from(Breed entity) {
-    return new GetBreed(entity.getId(), entity.getName(), entity.getPetType().getId());
+    return new GetBreed(entity.getId(), entity.getName(), entity.getPetType());
   }
 }

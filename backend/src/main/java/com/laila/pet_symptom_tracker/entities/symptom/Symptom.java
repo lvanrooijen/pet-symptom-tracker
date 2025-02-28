@@ -1,6 +1,5 @@
 package com.laila.pet_symptom_tracker.entities.symptom;
 
-import com.laila.pet_symptom_tracker.entities.symptomtype.SymptomType;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -17,5 +16,6 @@ public class Symptom {
   @Column(nullable = false)
   private String description;
 
-  @ManyToOne private SymptomType symptomType;
+  @Column(nullable = false)
+  private Boolean isVerified;
 }

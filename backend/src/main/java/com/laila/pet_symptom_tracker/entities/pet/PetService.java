@@ -1,9 +1,10 @@
 package com.laila.pet_symptom_tracker.entities.pet;
 
+import com.laila.pet_symptom_tracker.entities.breed.Breed;
+import com.laila.pet_symptom_tracker.entities.breed.BreedRepository;
 import com.laila.pet_symptom_tracker.entities.pet.dto.GetPet;
 import com.laila.pet_symptom_tracker.entities.pet.dto.PatchPet;
 import com.laila.pet_symptom_tracker.entities.pet.dto.PostPet;
-import com.laila.pet_symptom_tracker.entities.pettype.PetType;
 import com.laila.pet_symptom_tracker.entities.pettype.PetTypeRepository;
 import com.laila.pet_symptom_tracker.entities.user.User;
 import com.laila.pet_symptom_tracker.entities.user.UserRepository;
@@ -20,20 +21,21 @@ import org.springframework.stereotype.Service;
 public class PetService {
   private final PetRepository petRepository;
   private final PetTypeRepository petTypeRepository;
+  private final BreedRepository breedRepository;
   private final UserRepository userRepository;
 
   public GetPet create(User loggedInUser, PostPet dto) {
-    PetType petType =
-        petTypeRepository
-            .findById(dto.petTypeId())
-            .orElseThrow(() -> new BadRequestException("Pet Type not found"));
+    Breed breed =
+        breedRepository
+            .findById(dto.breedId())
+            .orElseThrow(() -> new BadRequestException("Breed not found"));
 
     Pet pet =
         Pet.builder()
             .name(dto.name())
             .owner(loggedInUser)
             .dateOfBirth(dto.dateOfBirth())
-            .petType(petType)
+            .breed(breed)
             .isAlive(true)
             .build();
 
@@ -87,12 +89,12 @@ public class PetService {
       updatedPet.setDateOfDeath(patch.dateOfDeath());
     }
 
-    if (patch.petTypeId() != null) {
-      PetType petType =
-          petTypeRepository
-              .findById(patch.petTypeId())
-              .orElseThrow(() -> new BadRequestException("Pet Type does not exist"));
-      updatedPet.setPetType(petType);
+    if (patch.breedId() != null) {
+      Breed breed =
+          breedRepository
+              .findById(patch.breedId())
+              .orElseThrow(() -> new BadRequestException("Breed does not exist"));
+      updatedPet.setBreed(breed);
     }
 
     petRepository.save(updatedPet);

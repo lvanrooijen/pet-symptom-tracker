@@ -15,6 +15,9 @@ public class SymptomLog {
 
   @ManyToOne private Symptom symptom;
 
+  @Column(nullable = true)
+  private String extraInfo;
+
   @Column(nullable = false)
   private LocalDate reportedOnDate;
 

@@ -19,15 +19,15 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 @RestController
-@RequestMapping(Routes.AUTHENTICATION)
 @RequiredArgsConstructor
+@RequestMapping(Routes.BASE_ROUTE)
 public class AuthenticationController {
   private final Logger log = Logger.getLogger(AuthenticationController.class.getName());
   private final UserService userService;
   private final JwtService jwtService;
 
   // user registreren
-  @PostMapping("register")
+  @PostMapping("/register")
   public ResponseEntity<LoginResponse> register(
       @RequestBody @Valid RegisterRequest registerRequest) {
     ColoredLogger.prettyInPink("Register attempt");
@@ -46,7 +46,7 @@ public class AuthenticationController {
     return ResponseEntity.created(location).body(response);
   }
 
-  @PostMapping("login")
+  @PostMapping("/login")
   public ResponseEntity<JwtToken> login(@RequestBody LoginRequest loginRequest) {
     ColoredLogger.logInBlue("login attempt");
 
