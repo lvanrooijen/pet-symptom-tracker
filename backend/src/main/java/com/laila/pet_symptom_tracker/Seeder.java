@@ -3,6 +3,8 @@ package com.laila.pet_symptom_tracker;
 import com.laila.pet_symptom_tracker.entities.authentication.Role;
 import com.laila.pet_symptom_tracker.entities.breed.Breed;
 import com.laila.pet_symptom_tracker.entities.breed.BreedRepository;
+import com.laila.pet_symptom_tracker.entities.disease.Disease;
+import com.laila.pet_symptom_tracker.entities.disease.DiseaseRepository;
 import com.laila.pet_symptom_tracker.entities.pet.Pet;
 import com.laila.pet_symptom_tracker.entities.pet.PetRepository;
 import com.laila.pet_symptom_tracker.entities.pettype.PetType;
@@ -28,31 +30,72 @@ public class Seeder implements CommandLineRunner {
   private final PetRepository petRepository;
   private final PetTypeRepository petTypeRepository;
   private final BreedRepository breedRepository;
+  private final DiseaseRepository diseaseRepository;
 
   @Override
   public void run(String... args) throws Exception {
+    seedUsers();
+    seedDiseases();
     seedPetTypes();
     seedBreeds();
-    seedUsers();
     seedPets();
+  }
+
+  private void seedDiseases() {
+    if (!diseaseRepository.findAll().isEmpty()) return;
+    List<User> moderators = userRepository.findByRole(Role.MODERATOR);
+    if (moderators.isEmpty()) return;
+    int maxMods = moderators.size() - 1;
+    List<Disease> diseases =
+        MockData.getDiseases().stream()
+            .map(
+                disease ->
+                    Disease.builder()
+                        .name(disease.name())
+                        .description(disease.description())
+                        .createdBy(moderators.get(random.nextInt(0, maxMods)))
+                        .build())
+            .toList();
+    diseaseRepository.saveAll(diseases);
   }
 
   private void seedBreeds() {
     if (!breedRepository.findAll().isEmpty()) return;
     List<PetType> types = petTypeRepository.findAll();
     if (types.isEmpty()) return;
+    List<User> moderators = userRepository.findByRole(Role.MODERATOR);
+    if (moderators.isEmpty()) return;
+    int maxMods = moderators.size() - 1;
 
     MockData.getBreeds()
         .forEach(
-            breed ->
-                breedRepository.save(
-                    new Breed(
-                        breed.name(), petTypeRepository.findById(breed.petTypeId()).orElse(null))));
+            breed -> {
+              Breed created =
+                  Breed.builder()
+                      .name(breed.name())
+                      .petType(petTypeRepository.findById(breed.petTypeId()).orElse(null))
+                      .createdBy(moderators.get(random.nextInt(0, maxMods)))
+                      .build();
+              breedRepository.save(created);
+            });
   }
 
   private void seedPetTypes() {
     if (!petTypeRepository.findAll().isEmpty()) return;
-    petTypeRepository.saveAll(MockData.getPetTypes());
+    List<User> moderators = userRepository.findByRole(Role.MODERATOR);
+    if (moderators.isEmpty()) return;
+    int maxMods = moderators.size() - 1;
+    List<PetType> petTypes =
+        MockData.getPetTypes().stream()
+            .map(
+                type ->
+                    PetType.builder()
+                        .name(type.name())
+                        .createdBy(moderators.get(random.nextInt(0, maxMods)))
+                        .build())
+            .toList();
+
+    petTypeRepository.saveAll(petTypes);
   }
 
   private void seedUsers() {

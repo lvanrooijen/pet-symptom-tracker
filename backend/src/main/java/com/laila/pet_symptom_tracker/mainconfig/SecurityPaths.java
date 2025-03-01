@@ -14,7 +14,7 @@ public class SecurityPaths {
   public static final String[] MODERATOR_PATHS = {};
 
   public static final String[] MODERATOR_MANAGE_PATHS = {
-    PET_TYPES, PET_TYPES_SUB_PATH, BREEDS, BREEDS_SUB_PATH
+    PET_TYPES, PET_TYPES_SUB_PATH, BREEDS, BREEDS_SUB_PATH, DISEASE, DISEASE_SUB_PATH
   };
 
   public static String[] OPEN_GET_PATHS = {};

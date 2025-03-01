@@ -1,9 +1,8 @@
 package com.laila.pet_symptom_tracker.entities.pettype;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
+import com.laila.pet_symptom_tracker.entities.user.User;
+import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -18,7 +17,11 @@ public class PetType {
   @Setter
   private String name;
 
-  public PetType(String name) {
+  @ManyToOne private User createdBy;
+
+  @Builder
+  private PetType(String name, User createdBy) {
     this.name = name;
+    this.createdBy = createdBy;
   }
 }

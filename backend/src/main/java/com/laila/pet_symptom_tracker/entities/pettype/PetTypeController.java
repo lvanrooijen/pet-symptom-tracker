@@ -51,10 +51,4 @@ public class PetTypeController {
     GetPetType updatedPetType = petTypeService.patch(id, patch);
     return ResponseEntity.ok(updatedPetType);
   }
-
-  @DeleteMapping("/{id}")
-  public ResponseEntity<Void> delete(@PathVariable Long id) {
-    petTypeService.deleteById(id);
-    return ResponseEntity.ok().build();
-  }
 }

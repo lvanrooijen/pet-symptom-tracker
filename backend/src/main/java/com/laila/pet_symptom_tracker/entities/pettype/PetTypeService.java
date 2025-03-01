@@ -1,5 +1,7 @@
 package com.laila.pet_symptom_tracker.entities.pettype;
 
+import com.laila.pet_symptom_tracker.entities.breed.BreedRepository;
+import com.laila.pet_symptom_tracker.entities.pet.PetRepository;
 import com.laila.pet_symptom_tracker.entities.pettype.dto.GetPetType;
 import com.laila.pet_symptom_tracker.entities.pettype.dto.PatchPetType;
 import com.laila.pet_symptom_tracker.entities.pettype.dto.PostPetType;
@@ -7,6 +9,7 @@ import com.laila.pet_symptom_tracker.entities.user.User;
 import com.laila.pet_symptom_tracker.exceptions.generic.ForbiddenException;
 import com.laila.pet_symptom_tracker.exceptions.generic.NotFoundException;
 import com.laila.pet_symptom_tracker.mainconfig.ColoredLogger;
+import jakarta.transaction.Transactional;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -15,6 +18,8 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class PetTypeService {
   private final PetTypeRepository petTypeRepository;
+  private final BreedRepository breedRepository;
+  private final PetRepository petRepository;
 
   public GetPetType create(PostPetType dto, User loggedInUser) {
     ColoredLogger.prettyInPink(loggedInUser.getRole().toString());
@@ -22,7 +27,7 @@ public class PetTypeService {
       throw new ForbiddenException(
           "You must be an administrator or a moderator to perform this action");
 
-    PetType createdType = PostPetType.to(dto);
+    PetType createdType = PetType.builder().name(dto.name()).createdBy(loggedInUser).build();
     ColoredLogger.prettyInPink(createdType.getName());
 
     petTypeRepository.save(createdType);
@@ -39,6 +44,7 @@ public class PetTypeService {
     return GetPetType.from(petType);
   }
 
+  // TODO bijhouden wie wanneer aanpassing heeft gemaakt
   public GetPetType patch(Long id, PatchPetType patch) {
     PetType petType = petTypeRepository.findById(id).orElseThrow(NotFoundException::new);
 
@@ -48,10 +54,5 @@ public class PetTypeService {
 
     petTypeRepository.save(petType);
     return GetPetType.from(petType);
-  }
-
-  public void deleteById(Long id) {
-    petTypeRepository.findById(id).orElseThrow(NotFoundException::new);
-    petTypeRepository.deleteById(id);
   }
 }

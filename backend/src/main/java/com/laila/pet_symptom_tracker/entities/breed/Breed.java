@@ -1,7 +1,9 @@
 package com.laila.pet_symptom_tracker.entities.breed;
 
 import com.laila.pet_symptom_tracker.entities.pettype.PetType;
+import com.laila.pet_symptom_tracker.entities.user.User;
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -18,8 +20,12 @@ public class Breed {
 
   @Setter @ManyToOne private PetType petType;
 
-  public Breed(String name, PetType petType) {
+  @ManyToOne private User createdBy;
+
+  @Builder
+  private Breed(String name, PetType petType, User createdBy) {
     this.name = name;
     this.petType = petType;
+    this.createdBy = createdBy;
   }
 }

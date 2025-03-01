@@ -5,6 +5,7 @@ import com.laila.pet_symptom_tracker.entities.breed.dto.PatchBreed;
 import com.laila.pet_symptom_tracker.entities.breed.dto.PostBreed;
 import com.laila.pet_symptom_tracker.entities.pettype.PetType;
 import com.laila.pet_symptom_tracker.entities.pettype.PetTypeRepository;
+import com.laila.pet_symptom_tracker.entities.user.User;
 import com.laila.pet_symptom_tracker.exceptions.generic.BadRequestException;
 import com.laila.pet_symptom_tracker.exceptions.generic.NotFoundException;
 import java.util.List;
@@ -17,12 +18,13 @@ public class BreedService {
   private final BreedRepository breedRepository;
   private final PetTypeRepository petTypeRepository;
 
-  public GetBreed create(PostBreed postBreed) {
+  public GetBreed create(PostBreed postBreed, User loggedInUser) {
     PetType type =
         petTypeRepository
             .findById(postBreed.petTypeId())
             .orElseThrow(() -> new BadRequestException("Pet Type does not exist"));
-    Breed createdBreed = new Breed(postBreed.name(), type);
+    Breed createdBreed =
+        Breed.builder().name(postBreed.name()).petType(type).createdBy(loggedInUser).build();
     breedRepository.save(createdBreed);
     return GetBreed.from(createdBreed);
   }
@@ -36,6 +38,7 @@ public class BreedService {
     return GetBreed.from(breed);
   }
 
+  // TODO bijhouden wie wanneer aanpassing heeft gemaakt
   public GetBreed patch(Long id, PatchBreed patch) {
     Breed updatedBreed = breedRepository.findById(id).orElseThrow(NotFoundException::new);
 

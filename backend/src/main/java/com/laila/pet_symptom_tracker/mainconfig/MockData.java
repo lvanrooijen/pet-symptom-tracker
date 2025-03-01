@@ -2,8 +2,9 @@ package com.laila.pet_symptom_tracker.mainconfig;
 
 import com.laila.pet_symptom_tracker.entities.authentication.Role;
 import com.laila.pet_symptom_tracker.entities.breed.dto.PostBreed;
+import com.laila.pet_symptom_tracker.entities.disease.dto.PostDisease;
 import com.laila.pet_symptom_tracker.entities.pet.Pet;
-import com.laila.pet_symptom_tracker.entities.pettype.PetType;
+import com.laila.pet_symptom_tracker.entities.pettype.dto.PostPetType;
 import com.laila.pet_symptom_tracker.entities.user.User;
 import java.time.LocalDate;
 import java.util.List;
@@ -23,6 +24,8 @@ public class MockData {
         new User("olivia@gmail.com", "Password123!", "Olivia", Role.USER),
         new User("admin@gmail.com", "Password123!", "Admin", Role.ADMIN),
         new User("moderator@gmail.com", "Password123!", "Moderator", Role.MODERATOR),
+        new User("modOne@gmail.com", "Password123!", "ModOne", Role.MODERATOR),
+        new User("modTwo@gmail.com", "Password123!", "ModTwo", Role.MODERATOR),
         new User("user@gmail.com", "Password123!", "user", Role.USER));
   }
 
@@ -44,9 +47,9 @@ public class MockData {
         new Pet("Tuxie", LocalDate.of(2008, 11, 13), true));
   }
 
-  public static List<PetType> getPetTypes() {
+  public static List<PostPetType> getPetTypes() {
     return List.of(
-        new PetType("Cat"), new PetType("Dog"), new PetType("Rabbit"), new PetType("Bird"));
+        new PostPetType("Cat"), new PostPetType("Dog"), new PostPetType("Rabbit"), new PostPetType("Bird"));
   }
 
   public static List<PostBreed> getBreeds() {
@@ -55,5 +58,20 @@ public class MockData {
         new PostBreed("Rotweiler", 2L),
         new PostBreed("Flemish Giant", 3L),
         new PostBreed("Parrot", 4L));
+  }
+
+  public static List<PostDisease> getDiseases() {
+    return List.of(
+        new PostDisease("Rabies", "A deadly virus that affects the nervous system of mammals."),
+        new PostDisease(
+            "Canine Parvovirus", "A severe virus in dogs causing vomiting and diarrhea."),
+        new PostDisease(
+            "Feline Leukemia Virus (FeLV)", "A virus in cats that weakens the immune system."),
+        new PostDisease(
+            "Foot-and-Mouth Disease (FMD)",
+            "A highly contagious virus affecting livestock like cows, pigs, and sheep."),
+        new PostDisease(
+            "Avian Influenza (Bird Flu)",
+            "A flu virus that affects birds and sometimes spreads to humans."));
   }
 }
