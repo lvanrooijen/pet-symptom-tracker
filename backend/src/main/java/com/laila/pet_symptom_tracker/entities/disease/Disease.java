@@ -6,10 +6,12 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.SQLDelete;
 
 @Entity
 @NoArgsConstructor
 @Getter
+@SQLDelete(sql = "UPDATE disease SET deleted = true WHERE id=?")
 public class Disease {
   @Id @GeneratedValue private Long id;
 
@@ -20,6 +22,10 @@ public class Disease {
   @Column(nullable = true)
   @Setter
   private String description;
+
+  @Column(nullable = false)
+  @Setter
+  private boolean deleted = Boolean.FALSE;
 
   @ManyToOne private User createdBy;
 

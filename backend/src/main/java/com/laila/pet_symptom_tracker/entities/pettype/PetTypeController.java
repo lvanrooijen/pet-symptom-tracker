@@ -35,8 +35,9 @@ public class PetTypeController {
   }
 
   @GetMapping
-  public ResponseEntity<List<GetPetType>> getAll() {
-    List<GetPetType> petTypes = petTypeService.getAll();
+  public ResponseEntity<List<GetPetType>> getAll(Authentication authentication) {
+    User loggedInUser = (User) authentication.getPrincipal();
+    List<GetPetType> petTypes = petTypeService.getAll(loggedInUser);
     return ResponseEntity.ok(petTypes);
   }
 
@@ -50,5 +51,11 @@ public class PetTypeController {
   public ResponseEntity<GetPetType> update(@PathVariable Long id, @RequestBody PatchPetType patch) {
     GetPetType updatedPetType = petTypeService.patch(id, patch);
     return ResponseEntity.ok(updatedPetType);
+  }
+
+  @DeleteMapping("/{id}")
+  public ResponseEntity<Void> delete(@PathVariable Long id) {
+    petTypeService.delete(id);
+    return ResponseEntity.ok().build();
   }
 }

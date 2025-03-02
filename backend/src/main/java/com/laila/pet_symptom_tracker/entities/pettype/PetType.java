@@ -6,16 +6,22 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.*;
 
 @Entity
 @NoArgsConstructor
 @Getter
+@SQLDelete(sql = "UPDATE pet_type SET deleted = true WHERE id=?")
 public class PetType {
   @Id @GeneratedValue private Long id;
 
   @Column(nullable = false)
   @Setter
   private String name;
+
+  @Column(nullable = false)
+  @Setter
+  private boolean deleted = Boolean.FALSE;
 
   @ManyToOne private User createdBy;
 

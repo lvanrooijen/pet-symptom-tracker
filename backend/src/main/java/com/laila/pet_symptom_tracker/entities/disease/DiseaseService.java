@@ -27,8 +27,14 @@ public class DiseaseService {
     return GetDisease.from(createdDisease);
   }
 
-  public List<GetDisease> getAll() {
-    return diseaseRepository.findAll().stream().map(GetDisease::from).toList();
+  public List<GetDisease> getAll(User loggedInUser) {
+    List<Disease> diseases;
+    if (loggedInUser.isAdmin()) {
+      diseases = diseaseRepository.findAll();
+    } else {
+      diseases = diseaseRepository.findByDeletedFalse();
+    }
+    return diseases.stream().map(GetDisease::from).toList();
   }
 
   public GetDisease getById(Long id) {

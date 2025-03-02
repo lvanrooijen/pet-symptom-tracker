@@ -9,7 +9,6 @@ import com.laila.pet_symptom_tracker.entities.user.User;
 import com.laila.pet_symptom_tracker.exceptions.generic.ForbiddenException;
 import com.laila.pet_symptom_tracker.exceptions.generic.NotFoundException;
 import com.laila.pet_symptom_tracker.mainconfig.ColoredLogger;
-import jakarta.transaction.Transactional;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -35,8 +34,15 @@ public class PetTypeService {
     return GetPetType.from(createdType);
   }
 
-  public List<GetPetType> getAll() {
-    return petTypeRepository.findAll().stream().map(GetPetType::from).toList();
+  public List<GetPetType> getAll(User loggedInUser) {
+    List<PetType> petTypes;
+    if (loggedInUser.isAdmin()) {
+      petTypes = petTypeRepository.findAll();
+    } else {
+      petTypes = petTypeRepository.findByDeletedFalse();
+    }
+
+    return petTypes.stream().map(GetPetType::from).toList();
   }
 
   public GetPetType getById(Long id) {
@@ -54,5 +60,10 @@ public class PetTypeService {
 
     petTypeRepository.save(petType);
     return GetPetType.from(petType);
+  }
+
+  public void delete(Long id) {
+    petTypeRepository.findById(id).orElseThrow(NotFoundException::new);
+    petTypeRepository.deleteById(id);
   }
 }

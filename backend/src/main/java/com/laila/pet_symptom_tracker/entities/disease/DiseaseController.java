@@ -35,8 +35,9 @@ public class DiseaseController {
   }
 
   @GetMapping
-  public ResponseEntity<List<GetDisease>> getAll() {
-    List<GetDisease> diseases = diseaseService.getAll();
+  public ResponseEntity<List<GetDisease>> getAll(Authentication authentication) {
+    User loggedInUser = (User) authentication.getPrincipal();
+    List<GetDisease> diseases = diseaseService.getAll(loggedInUser);
 
     if (diseases.isEmpty()) {
       return ResponseEntity.noContent().build();
