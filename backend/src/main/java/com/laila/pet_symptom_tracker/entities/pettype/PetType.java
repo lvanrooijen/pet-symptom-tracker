@@ -21,7 +21,7 @@ public class PetType {
 
   @Column(nullable = false)
   @Setter
-  private boolean deleted = Boolean.FALSE;
+  private boolean deleted = false;
 
   @ManyToOne private User createdBy;
 

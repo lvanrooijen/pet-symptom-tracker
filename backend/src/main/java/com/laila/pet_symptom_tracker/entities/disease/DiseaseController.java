@@ -56,4 +56,10 @@ public class DiseaseController {
     GetDisease updatedDisease = diseaseService.update(id, patch);
     return ResponseEntity.ok(updatedDisease);
   }
+
+  @DeleteMapping("/{id}")
+  public ResponseEntity<Void> delete(@PathVariable Long id) {
+    diseaseService.delete(id);
+    return ResponseEntity.ok().build();
+  }
 }

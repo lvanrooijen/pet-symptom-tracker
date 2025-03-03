@@ -42,7 +42,6 @@ public class DiseaseService {
     return GetDisease.from(disease);
   }
 
-  // TODO bijhouden wie wanneer aanpassing heeft gemaakt
   public GetDisease update(Long id, PatchDisease patch) {
     Disease updatedDisease = diseaseRepository.findById(id).orElseThrow(NotFoundException::new);
     if (patch.name() != null) {
@@ -53,5 +52,10 @@ public class DiseaseService {
     }
     diseaseRepository.save(updatedDisease);
     return GetDisease.from(updatedDisease);
+  }
+
+  public void delete(Long id) {
+    diseaseRepository.findById(id).orElseThrow(NotFoundException::new);
+    diseaseRepository.deleteById(id);
   }
 }

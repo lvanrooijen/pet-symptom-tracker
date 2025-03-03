@@ -9,6 +9,8 @@ import com.laila.pet_symptom_tracker.entities.pet.Pet;
 import com.laila.pet_symptom_tracker.entities.pet.PetRepository;
 import com.laila.pet_symptom_tracker.entities.pettype.PetType;
 import com.laila.pet_symptom_tracker.entities.pettype.PetTypeRepository;
+import com.laila.pet_symptom_tracker.entities.symptom.Symptom;
+import com.laila.pet_symptom_tracker.entities.symptom.SymptomRepository;
 import com.laila.pet_symptom_tracker.entities.user.User;
 import com.laila.pet_symptom_tracker.entities.user.UserRepository;
 import com.laila.pet_symptom_tracker.entities.user.UserService;
@@ -31,6 +33,7 @@ public class Seeder implements CommandLineRunner {
   private final PetTypeRepository petTypeRepository;
   private final BreedRepository breedRepository;
   private final DiseaseRepository diseaseRepository;
+  private final SymptomRepository symptomRepository;
 
   @Override
   public void run(String... args) throws Exception {
@@ -39,6 +42,22 @@ public class Seeder implements CommandLineRunner {
     seedPetTypes();
     seedBreeds();
     seedPets();
+    seedSymptoms();
+  }
+
+  private void seedSymptoms() {
+    if (!symptomRepository.findAll().isEmpty()) return;
+    List<Symptom> symptoms =
+        MockData.getSymptoms().stream()
+            .map(
+                symptom ->
+                    Symptom.builder()
+                        .name(symptom.name())
+                        .description(symptom.description())
+                        .isVerified(false)
+                        .build())
+            .toList();
+    symptomRepository.saveAll(symptoms);
   }
 
   private void seedDiseases() {

@@ -1,7 +1,10 @@
 package com.laila.pet_symptom_tracker.entities.symptom;
 
+import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface SymptomRepository extends JpaRepository<Symptom, Long> {}
+public interface SymptomRepository extends JpaRepository<Symptom, Long> {
+  List<Symptom> findByDeletedFalse();
+}
