@@ -6,8 +6,10 @@ import com.laila.pet_symptom_tracker.entities.disease.dto.PostDisease;
 import com.laila.pet_symptom_tracker.entities.pet.Pet;
 import com.laila.pet_symptom_tracker.entities.pettype.dto.PostPetType;
 import com.laila.pet_symptom_tracker.entities.symptom.dto.PostSymptom;
+import com.laila.pet_symptom_tracker.entities.symptomlog.dto.PostSymptomLog;
 import com.laila.pet_symptom_tracker.entities.user.User;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 
 public class MockData {
@@ -90,5 +92,12 @@ public class MockData {
         new PostSymptom(
             "Cough",
             "A cough is a sudden expulsion of air through the large breathing passages which can help clear them of fluids, irritants, foreign particles and microbes."));
+  }
+
+  public static List<PostSymptomLog> getSymptomLogs() {
+    return List.of(
+        new PostSymptomLog(null, null, "chat chatter chat", LocalDate.now(), null),
+        new PostSymptomLog(null, null, "bladibla", LocalDate.now(), null),
+        new PostSymptomLog(null, null, "soweto", LocalDate.now(), LocalTime.now()));
   }
 }

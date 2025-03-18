@@ -22,7 +22,7 @@ public class PetTypeService {
 
   public GetPetType create(PostPetType dto, User loggedInUser) {
     ColoredLogger.prettyInPink(loggedInUser.getRole().toString());
-    if (!loggedInUser.isModerator() && !loggedInUser.isAdmin())
+    if (!loggedInUser.hasModeratorRole() && !loggedInUser.hasAdminRole())
       throw new ForbiddenException(
           "You must be an administrator or a moderator to perform this action");
 
@@ -36,7 +36,7 @@ public class PetTypeService {
 
   public List<GetPetType> getAll(User loggedInUser) {
     List<PetType> petTypes;
-    if (loggedInUser.isAdmin()) {
+    if (loggedInUser.hasAdminRole()) {
       petTypes = petTypeRepository.findAll();
     } else {
       petTypes = petTypeRepository.findByDeletedFalse();

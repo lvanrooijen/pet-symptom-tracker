@@ -44,7 +44,9 @@ public class PetService {
 
   public GetPet getById(User loggedInUser, Long id) {
     Pet pet = petRepository.findById(id).orElseThrow(() -> new NotFoundException("Pet not found"));
-    if (pet.isOwner(loggedInUser) || loggedInUser.isAdmin() || loggedInUser.isModerator()) {
+    if (pet.isOwner(loggedInUser)
+        || loggedInUser.hasAdminRole()
+        || loggedInUser.hasModeratorRole()) {
       return GetPet.from(pet);
     } else {
       throw new ForbiddenException();
@@ -54,7 +56,7 @@ public class PetService {
   public List<GetPet> getAll(User loggedInUser) {
     List<Pet> pets;
 
-    if (loggedInUser.isAdmin() || loggedInUser.isModerator()) {
+    if (loggedInUser.hasAdminRole() || loggedInUser.hasModeratorRole()) {
       pets = petRepository.findAll();
     } else {
       pets = petRepository.findByOwnerId(loggedInUser.getId());
@@ -104,7 +106,7 @@ public class PetService {
   public void delete(User loggedInUser, Long id) {
     Pet pet = petRepository.findById(id).orElseThrow(NotFoundException::new);
 
-    if (pet.isOwner(loggedInUser) || loggedInUser.isAdmin()) {
+    if (pet.isOwner(loggedInUser) || loggedInUser.hasAdminRole()) {
       petRepository.deleteById(id);
     } else {
       throw new ForbiddenException();

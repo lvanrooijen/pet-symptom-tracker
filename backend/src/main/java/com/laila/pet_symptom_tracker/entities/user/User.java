@@ -94,11 +94,11 @@ public class User implements UserDetails {
   }
 
   /*  ~~~~~~~~~~~  Helper methods ~~~~~~~~~~~  */
-  public Boolean isAdmin() {
+  public Boolean hasAdminRole() {
     return hasRole(Role.ADMIN);
   }
 
-  public Boolean isModerator() {
+  public Boolean hasModeratorRole() {
     return hasRole(Role.MODERATOR);
   }
 
@@ -109,7 +109,7 @@ public class User implements UserDetails {
     return false;
   }
 
-  public Boolean isUser() {
+  public Boolean hasUserRole() {
     return hasRole(Role.USER);
   }
 

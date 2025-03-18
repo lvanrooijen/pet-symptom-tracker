@@ -29,7 +29,7 @@ public class DiseaseService {
 
   public List<GetDisease> getAll(User loggedInUser) {
     List<Disease> diseases;
-    if (loggedInUser.isAdmin()) {
+    if (loggedInUser.hasAdminRole()) {
       diseases = diseaseRepository.findAll();
     } else {
       diseases = diseaseRepository.findByDeletedFalse();

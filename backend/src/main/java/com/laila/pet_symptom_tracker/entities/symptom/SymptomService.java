@@ -21,7 +21,7 @@ public class SymptomService {
         Symptom.builder()
             .name(postSymptom.name())
             .description(postSymptom.description())
-            .isVerified(loggedInUser.isAdmin() || loggedInUser.isModerator())
+            .isVerified(loggedInUser.hasAdminRole() || loggedInUser.hasModeratorRole())
             .build();
 
     symptomRepository.save(created);
@@ -30,7 +30,7 @@ public class SymptomService {
 
   public List<GetSymptom> getAll(User loggedInUser) {
     List<Symptom> symptoms;
-    if (loggedInUser.isAdmin()) {
+    if (loggedInUser.hasAdminRole()) {
       symptoms = symptomRepository.findAll();
     } else {
       symptoms = symptomRepository.findByDeletedFalse();
@@ -47,12 +47,15 @@ public class SymptomService {
     Symptom symptom = symptomRepository.findById(id).orElseThrow(NotFoundException::new);
 
     if (patch.isVerified() != null) {
-      if (loggedInUser.isUser()) {
+      if (loggedInUser.hasUserRole()) {
         throw new ForbiddenException("Only an administrator or moderator can perform this action");
       }
-      if (loggedInUser.isAdmin() || loggedInUser.isModerator()) {
+      if (loggedInUser.hasAdminRole() || loggedInUser.hasModeratorRole()) {
         ColoredLogger.prettyInPink(
-            "is admin:  " + loggedInUser.isAdmin() + " is Mod: " + loggedInUser.isModerator());
+            "is admin:  "
+                + loggedInUser.hasAdminRole()
+                + " is Mod: "
+                + loggedInUser.hasModeratorRole());
         symptom.setIsVerified(patch.isVerified());
       }
     }
