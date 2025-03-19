@@ -4,35 +4,32 @@ import com.laila.pet_symptom_tracker.entities.pet.Pet;
 import com.laila.pet_symptom_tracker.entities.symptom.Symptom;
 import jakarta.persistence.*;
 import java.time.LocalDate;
-import java.time.LocalTime;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @NoArgsConstructor
 @Getter
 public class SymptomLog {
-  @ManyToOne Pet pet;
+  @ManyToOne @Setter Pet pet;
   @Id @GeneratedValue private Long id;
-  @ManyToOne private Symptom symptom;
+  @ManyToOne @Setter private Symptom symptom;
 
   @Column(nullable = true)
+  @Setter
   private String details;
 
   @Column(nullable = false)
+  @Setter
   private LocalDate reportDate;
 
-  @Column(nullable = true)
-  private LocalTime reportTime;
-
   @Builder
-  private SymptomLog(
-      Pet pet, Symptom symptom, String details, LocalDate reportDate, LocalTime reportTime) {
+  private SymptomLog(Pet pet, Symptom symptom, String details, LocalDate reportDate) {
     this.pet = pet;
     this.symptom = symptom;
     this.details = details;
     this.reportDate = reportDate;
-    this.reportTime = reportTime;
   }
 }

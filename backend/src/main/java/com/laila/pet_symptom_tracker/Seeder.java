@@ -60,7 +60,6 @@ public class Seeder implements CommandLineRunner {
                         .pet(pets.get(random.nextInt(0, pets.size())))
                         .details(log.details())
                         .reportDate(log.reportDate())
-                        .reportTime(log.reportTime())
                         .build())
             .toList();
     symptomLogRepository.saveAll(logs);

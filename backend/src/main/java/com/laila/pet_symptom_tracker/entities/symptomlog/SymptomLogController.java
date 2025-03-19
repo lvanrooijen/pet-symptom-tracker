@@ -1,6 +1,7 @@
 package com.laila.pet_symptom_tracker.entities.symptomlog;
 
 import com.laila.pet_symptom_tracker.entities.symptomlog.dto.GetSymptomLog;
+import com.laila.pet_symptom_tracker.entities.symptomlog.dto.PatchSymptomLog;
 import com.laila.pet_symptom_tracker.entities.symptomlog.dto.PostSymptomLog;
 import com.laila.pet_symptom_tracker.entities.user.User;
 import com.laila.pet_symptom_tracker.mainconfig.Routes;
@@ -54,14 +55,17 @@ public class SymptomLogController {
   }
 
   @PatchMapping("/{id}")
-  public ResponseEntity<GetSymptomLog> update() {
-    GetSymptomLog updatedSymptomLog = symptomLogService.update();
+  public ResponseEntity<GetSymptomLog> update(
+      @PathVariable Long id, Authentication authentication, @RequestBody PatchSymptomLog patch) {
+    User loggedInUser = (User) authentication.getPrincipal();
+    GetSymptomLog updatedSymptomLog = symptomLogService.update(id, loggedInUser, patch);
     return ResponseEntity.ok(updatedSymptomLog);
   }
 
   @DeleteMapping("/{id}")
-  public ResponseEntity<Void> delete() {
-    symptomLogService.delete();
+  public ResponseEntity<Void> delete(@PathVariable Long id, Authentication authentication) {
+    User loggedInUser = (User) authentication.getPrincipal();
+    symptomLogService.delete(id, loggedInUser);
     return ResponseEntity.ok().build();
   }
 }

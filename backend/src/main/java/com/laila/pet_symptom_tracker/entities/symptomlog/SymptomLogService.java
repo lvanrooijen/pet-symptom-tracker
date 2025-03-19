@@ -5,6 +5,7 @@ import com.laila.pet_symptom_tracker.entities.pet.PetRepository;
 import com.laila.pet_symptom_tracker.entities.symptom.Symptom;
 import com.laila.pet_symptom_tracker.entities.symptom.SymptomRepository;
 import com.laila.pet_symptom_tracker.entities.symptomlog.dto.GetSymptomLog;
+import com.laila.pet_symptom_tracker.entities.symptomlog.dto.PatchSymptomLog;
 import com.laila.pet_symptom_tracker.entities.symptomlog.dto.PostSymptomLog;
 import com.laila.pet_symptom_tracker.entities.user.User;
 import com.laila.pet_symptom_tracker.exceptions.generic.BadRequestException;
@@ -42,7 +43,6 @@ public class SymptomLogService {
             .symptom(symptom)
             .details(postBody.details())
             .reportDate(postBody.reportDate())
-            .reportTime(postBody.reportTime())
             .build();
 
     symptomLogRepository.save(createdSymptomLog);
@@ -50,8 +50,16 @@ public class SymptomLogService {
   }
 
   public List<GetSymptomLog> findAll(User loggedInUser) {
-    // TODO me!
-    return null;
+    List<SymptomLog> symptomLogs = symptomLogRepository.findAll();
+
+    if (loggedInUser.hasUserRole()) {
+      return symptomLogs.stream()
+          .filter(log -> log.pet.isOwner(loggedInUser))
+          .map(GetSymptomLog::from)
+          .toList();
+    }
+
+    return symptomLogs.stream().map(GetSymptomLog::from).toList();
   }
 
   public GetSymptomLog getById(User loggedInUser, Long id) {
@@ -68,12 +76,34 @@ public class SymptomLogService {
     }
   }
 
-  public GetSymptomLog update() {
-    // TODO me!
-    return null;
+  public GetSymptomLog update(Long id, User loggedInUser, PatchSymptomLog patch) {
+    SymptomLog updatedLog = symptomLogRepository.findById(id).orElseThrow(NotFoundException::new);
+
+    if (patch.details() != null) {
+      updatedLog.setDetails(patch.details());
+    }
+    if (patch.petId() != null) {
+      Pet pet = petRepository.findById(patch.petId()).orElseThrow(NotFoundException::new);
+      if (pet.isNotOwner(loggedInUser) && loggedInUser.hasUserRole()) {
+        throw new ForbiddenException(
+            "Only the Owner of this pet or admin is allowed to perform this action.");
+      }
+      updatedLog.setPet(pet);
+    }
+    if (patch.symptomId() != null) {
+      Symptom symptom =
+          symptomRepository.findById(patch.symptomId()).orElseThrow(NotFoundException::new);
+      updatedLog.setSymptom(symptom);
+    }
+
+    return GetSymptomLog.from(updatedLog);
   }
 
-  public void delete() {
-    // TODO me!
+  public void delete(Long id, User loggedInUser) {
+    SymptomLog log = symptomLogRepository.findById(id).orElseThrow(NotFoundException::new);
+    if (log.pet.isNotOwner(loggedInUser) && loggedInUser.hasUserRole())
+      throw new ForbiddenException("Only the owner or admin is allowed to perform this action");
+
+    symptomLogRepository.deleteById(id);
   }
 }
