@@ -13,7 +13,7 @@ public class UserValidator {
   private static final int MIN_USERNAME_LENGTH = 3;
 
   private static final String PASSWORD_REQUIREMENTS =
-      "A password must contain a minimum of 8 characters and a maximum of 16 characters, at least 1 number, 1 uppercase letter and 1 special character";
+      "A password must contain a minimum of 8 characters and a maximum of 16 characters, at least 1 number, 1 uppercase letter and 1 special character.";
 
   public static boolean isValidEmailPattern(String email) {
     if (email == null) return false;
