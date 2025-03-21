@@ -4,10 +4,11 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class UserValidator {
-  private static final String EMAIL_REGEX = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$";
+  private static final String EMAIL_REGEX =
+      "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$";
   private static final Pattern emailPattern = Pattern.compile(EMAIL_REGEX);
   private static final String PASSWORD_REGEX =
-      "^(?=.*[a-zA-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$";
+      "^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@$!%*?&])(?!.*\\s).{8,16}$";
   private static final Pattern passwordPattern = Pattern.compile(PASSWORD_REGEX);
   private static final int MAX_USERNAME_LENGTH = 16;
   private static final int MIN_USERNAME_LENGTH = 3;
@@ -24,10 +25,11 @@ public class UserValidator {
 
   public static boolean isValidPasswordPattern(String password) {
     if (password == null) return false;
+
     if (password.isBlank()) return false;
     if (password.length() < 8) return false;
     if (password.length() > 16) return false;
-    Matcher matcher = passwordPattern.matcher(password);
+    Matcher matcher = passwordPattern.matcher(password.trim());
     return matcher.matches();
   }
 
