@@ -5,29 +5,23 @@ import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 class UserValidatorTest {
 
-  @Test
   @DisplayName("Returns true for emails with a valid pattern.")
-  void isEmailValid() {
-    String validEmail = "Human@outlook.com";
-    String validEmail1 = "Human@proton.me";
-    String emailMultipleExtensions = "Human@domain.co.uk";
-    String emailSubDomain = "Human@sub.domain.com";
-    String emailAlias = "Human+alias@email.com";
-
-    assertTrue(UserValidator.isValidEmailPattern(validEmail));
-    assertTrue(UserValidator.isValidEmailPattern(validEmail1));
-    assertTrue(
-        UserValidator.isValidEmailPattern(emailMultipleExtensions),
-        () -> "Email address with multiple extension should return true");
-    assertTrue(
-        UserValidator.isValidEmailPattern(emailSubDomain),
-        () -> "Email address with sub domain should return true");
-    assertTrue(
-        UserValidator.isValidEmailPattern(emailAlias),
-        () -> "Email address with alias should return true");
+  @ParameterizedTest
+  @ValueSource(
+      strings = {
+        "Human@outlook.com",
+        "Human@proton.me",
+        "Human@domain.co.uk",
+        "Human@sub.domain.com",
+        "Human+alias@email.com"
+      })
+  void isEmailValid(String email) {
+    assertTrue(UserValidator.isValidEmailPattern(email));
   }
 
   @Test
@@ -49,13 +43,11 @@ class UserValidatorTest {
   }
 
   @Disabled("Disabled because spring boot validation is used for this at the moment.")
-  @Test
+  @ParameterizedTest
+  @ValueSource(strings = {"abcDEF!123", "?@1234abcDEF"})
   @DisplayName("Returns true if password meets requirements.")
-  void isValidPassword() {
-    String validPassword = "abcDEF!123";
-    String validPassword1 = "?@1234abcDEF";
-    assertTrue(UserValidator.isValidPasswordPattern(validPassword));
-    assertTrue(UserValidator.isValidPasswordPattern(validPassword1));
+  void isValidPassword(String password) {
+    assertTrue(UserValidator.isValidPasswordPattern(password));
   }
 
   @Disabled("Disabled because spring boot validation is used for this at the moment.")
@@ -86,13 +78,11 @@ class UserValidatorTest {
   }
 
   @Disabled("Disabled because spring boot validation is used for this at the moment.")
-  @Test
+  @ParameterizedTest
+  @ValueSource(strings = {"Charlie", "?@1234abcDEF"})
   @DisplayName("Returns true if username meets requirements.")
-  void isValidUsername() {
-    String validUsername = "Charlie";
-    String validUsername1 = "?@1234abcDEF";
-    assertTrue(UserValidator.isValidUsername(validUsername));
-    assertTrue(UserValidator.isValidUsername(validUsername1));
+  void isValidUsername(String username) {
+    assertTrue(UserValidator.isValidUsername(username));
   }
 
   @Disabled("Disabled because spring boot validation is used for this at the moment.")
