@@ -1,5 +1,6 @@
 package com.laila.pet_symptom_tracker.entities.symptomlog;
 
+import com.laila.pet_symptom_tracker.entities.authentication.AuthenticationService;
 import com.laila.pet_symptom_tracker.entities.pet.Pet;
 import com.laila.pet_symptom_tracker.entities.pet.PetRepository;
 import com.laila.pet_symptom_tracker.entities.symptom.Symptom;
@@ -21,8 +22,10 @@ public class SymptomLogService {
   private final SymptomLogRepository symptomLogRepository;
   private final SymptomRepository symptomRepository;
   private final PetRepository petRepository;
+  private final AuthenticationService authenticationService;
 
-  public GetSymptomLog create(User loggedInUser, PostSymptomLog postBody) {
+  public GetSymptomLog create(PostSymptomLog postBody) {
+    User loggedInUser = authenticationService.getAuthenticatedUser();
     Pet pet =
         petRepository
             .findById(postBody.petId())
@@ -49,7 +52,8 @@ public class SymptomLogService {
     return GetSymptomLog.from(createdSymptomLog);
   }
 
-  public List<GetSymptomLog> findAll(User loggedInUser) {
+  public List<GetSymptomLog> findAll() {
+    User loggedInUser = authenticationService.getAuthenticatedUser();
     List<SymptomLog> symptomLogs = symptomLogRepository.findAll();
 
     if (loggedInUser.hasUserRole()) {
@@ -62,7 +66,8 @@ public class SymptomLogService {
     return symptomLogs.stream().map(GetSymptomLog::from).toList();
   }
 
-  public GetSymptomLog getById(User loggedInUser, Long id) {
+  public GetSymptomLog getById(Long id) {
+    User loggedInUser = authenticationService.getAuthenticatedUser();
     SymptomLog log = symptomLogRepository.findById(id).orElseThrow(NotFoundException::new);
     Pet pet = log.pet;
 
@@ -76,7 +81,8 @@ public class SymptomLogService {
     }
   }
 
-  public GetSymptomLog update(Long id, User loggedInUser, PatchSymptomLog patch) {
+  public GetSymptomLog update(Long id, PatchSymptomLog patch) {
+    User loggedInUser = authenticationService.getAuthenticatedUser();
     SymptomLog updatedLog = symptomLogRepository.findById(id).orElseThrow(NotFoundException::new);
 
     if (patch.details() != null) {
@@ -99,7 +105,8 @@ public class SymptomLogService {
     return GetSymptomLog.from(updatedLog);
   }
 
-  public void delete(Long id, User loggedInUser) {
+  public void delete(Long id) {
+    User loggedInUser = authenticationService.getAuthenticatedUser();
     SymptomLog log = symptomLogRepository.findById(id).orElseThrow(NotFoundException::new);
     if (log.pet.isNotOwner(loggedInUser) && loggedInUser.hasUserRole())
       throw new ForbiddenException("Only the owner or admin is allowed to perform this action");

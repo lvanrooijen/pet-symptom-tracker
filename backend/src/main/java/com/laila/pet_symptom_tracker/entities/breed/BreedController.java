@@ -3,21 +3,15 @@ package com.laila.pet_symptom_tracker.entities.breed;
 import com.laila.pet_symptom_tracker.entities.breed.dto.GetBreed;
 import com.laila.pet_symptom_tracker.entities.breed.dto.PatchBreed;
 import com.laila.pet_symptom_tracker.entities.breed.dto.PostBreed;
-import com.laila.pet_symptom_tracker.entities.user.User;
 import com.laila.pet_symptom_tracker.mainconfig.Routes;
 import jakarta.validation.Valid;
 import java.net.URI;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-// TODO
-// seeder updaten
-// al die endpoints checken
-// Tests in Postman toevoegen
 @RestController
 @RequestMapping(Routes.BREEDS)
 @RequiredArgsConstructor
@@ -25,10 +19,8 @@ public class BreedController {
   private final BreedService breedService;
 
   @PostMapping
-  public ResponseEntity<GetBreed> create(
-      @RequestBody @Valid PostBreed postBreed, Authentication authentication) {
-    User loggedInUser = (User) authentication.getPrincipal();
-    GetBreed breed = breedService.create(postBreed, loggedInUser);
+  public ResponseEntity<GetBreed> create(@RequestBody @Valid PostBreed postBreed) {
+    GetBreed breed = breedService.create(postBreed);
     URI location =
         ServletUriComponentsBuilder.fromCurrentRequest()
             .path("/{id}")

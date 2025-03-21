@@ -1,5 +1,6 @@
 package com.laila.pet_symptom_tracker.entities.symptom;
 
+import com.laila.pet_symptom_tracker.entities.authentication.AuthenticationService;
 import com.laila.pet_symptom_tracker.entities.symptom.dto.GetSymptom;
 import com.laila.pet_symptom_tracker.entities.symptom.dto.PatchSymptom;
 import com.laila.pet_symptom_tracker.entities.symptom.dto.PostSymptom;
@@ -15,8 +16,10 @@ import org.springframework.stereotype.Service;
 @Service
 public class SymptomService {
   private final SymptomRepository symptomRepository;
+  private final AuthenticationService authenticationService;
 
-  public GetSymptom create(PostSymptom postSymptom, User loggedInUser) {
+  public GetSymptom create(PostSymptom postSymptom) {
+    User loggedInUser = authenticationService.getAuthenticatedUser();
     Symptom created =
         Symptom.builder()
             .name(postSymptom.name())
@@ -28,7 +31,8 @@ public class SymptomService {
     return GetSymptom.from(created);
   }
 
-  public List<GetSymptom> getAll(User loggedInUser) {
+  public List<GetSymptom> getAll() {
+    User loggedInUser = authenticationService.getAuthenticatedUser();
     List<Symptom> symptoms;
     if (loggedInUser.hasAdminRole()) {
       symptoms = symptomRepository.findAll();
@@ -43,7 +47,8 @@ public class SymptomService {
     return GetSymptom.from(symptom);
   }
 
-  public GetSymptom update(Long id, PatchSymptom patch, User loggedInUser) {
+  public GetSymptom update(Long id, PatchSymptom patch) {
+    User loggedInUser = authenticationService.getAuthenticatedUser();
     Symptom symptom = symptomRepository.findById(id).orElseThrow(NotFoundException::new);
 
     if (patch.isVerified() != null) {

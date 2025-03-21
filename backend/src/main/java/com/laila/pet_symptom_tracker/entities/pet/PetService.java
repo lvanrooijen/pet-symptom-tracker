@@ -1,11 +1,11 @@
 package com.laila.pet_symptom_tracker.entities.pet;
 
+import com.laila.pet_symptom_tracker.entities.authentication.AuthenticationService;
 import com.laila.pet_symptom_tracker.entities.breed.Breed;
 import com.laila.pet_symptom_tracker.entities.breed.BreedRepository;
 import com.laila.pet_symptom_tracker.entities.pet.dto.GetPet;
 import com.laila.pet_symptom_tracker.entities.pet.dto.PatchPet;
 import com.laila.pet_symptom_tracker.entities.pet.dto.PostPet;
-import com.laila.pet_symptom_tracker.entities.pettype.PetTypeRepository;
 import com.laila.pet_symptom_tracker.entities.user.User;
 import com.laila.pet_symptom_tracker.entities.user.UserRepository;
 import com.laila.pet_symptom_tracker.exceptions.generic.BadRequestException;
@@ -20,11 +20,12 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class PetService {
   private final PetRepository petRepository;
-  private final PetTypeRepository petTypeRepository;
   private final BreedRepository breedRepository;
   private final UserRepository userRepository;
+  private final AuthenticationService authenticationService;
 
-  public GetPet create(User loggedInUser, PostPet dto) {
+  public GetPet create(PostPet dto) {
+    User loggedInUser = authenticationService.getAuthenticatedUser();
     Breed breed =
         breedRepository
             .findById(dto.breedId())
@@ -42,7 +43,8 @@ public class PetService {
     return GetPet.from(petRepository.save(pet));
   }
 
-  public GetPet getById(User loggedInUser, Long id) {
+  public GetPet getById(Long id) {
+    User loggedInUser = authenticationService.getAuthenticatedUser();
     Pet pet = petRepository.findById(id).orElseThrow(() -> new NotFoundException("Pet not found"));
     if (pet.isOwner(loggedInUser)
         || loggedInUser.hasAdminRole()
@@ -53,7 +55,8 @@ public class PetService {
     }
   }
 
-  public List<GetPet> getAll(User loggedInUser) {
+  public List<GetPet> getAll() {
+    User loggedInUser = authenticationService.getAuthenticatedUser();
     List<Pet> pets;
 
     if (loggedInUser.hasAdminRole() || loggedInUser.hasModeratorRole()) {
@@ -67,7 +70,8 @@ public class PetService {
     return pets.stream().map(GetPet::from).toList();
   }
 
-  public GetPet update(User loggedInUser, Long id, PatchPet patch) {
+  public GetPet update(Long id, PatchPet patch) {
+    User loggedInUser = authenticationService.getAuthenticatedUser();
     Pet updatedPet = petRepository.findById(id).orElseThrow(NotFoundException::new);
 
     if (updatedPet.isNotOwner(loggedInUser)) {
@@ -103,7 +107,8 @@ public class PetService {
     return GetPet.from(updatedPet);
   }
 
-  public void delete(User loggedInUser, Long id) {
+  public void delete(Long id) {
+    User loggedInUser = authenticationService.getAuthenticatedUser();
     Pet pet = petRepository.findById(id).orElseThrow(NotFoundException::new);
 
     if (pet.isOwner(loggedInUser) || loggedInUser.hasAdminRole()) {

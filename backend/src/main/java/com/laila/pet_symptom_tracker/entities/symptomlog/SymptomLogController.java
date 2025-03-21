@@ -3,14 +3,12 @@ package com.laila.pet_symptom_tracker.entities.symptomlog;
 import com.laila.pet_symptom_tracker.entities.symptomlog.dto.GetSymptomLog;
 import com.laila.pet_symptom_tracker.entities.symptomlog.dto.PatchSymptomLog;
 import com.laila.pet_symptom_tracker.entities.symptomlog.dto.PostSymptomLog;
-import com.laila.pet_symptom_tracker.entities.user.User;
 import com.laila.pet_symptom_tracker.mainconfig.Routes;
 import jakarta.validation.Valid;
 import java.net.URI;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -21,10 +19,8 @@ public class SymptomLogController {
   private final SymptomLogService symptomLogService;
 
   @PostMapping
-  public ResponseEntity<GetSymptomLog> create(
-      @RequestBody @Valid PostSymptomLog symptom, Authentication authentication) {
-    User loggedInUser = (User) authentication.getPrincipal();
-    GetSymptomLog createdSymptom = symptomLogService.create(loggedInUser, symptom);
+  public ResponseEntity<GetSymptomLog> create(@RequestBody @Valid PostSymptomLog symptom) {
+    GetSymptomLog createdSymptom = symptomLogService.create(symptom);
     URI location =
         ServletUriComponentsBuilder.fromCurrentRequest()
             .path("/{id}")
@@ -35,9 +31,8 @@ public class SymptomLogController {
   }
 
   @GetMapping
-  public ResponseEntity<List<GetSymptomLog>> getAll(Authentication authentication) {
-    User loggedInUser = (User) authentication.getPrincipal();
-    List<GetSymptomLog> symptomLogs = symptomLogService.findAll(loggedInUser);
+  public ResponseEntity<List<GetSymptomLog>> getAll() {
+    List<GetSymptomLog> symptomLogs = symptomLogService.findAll();
 
     if (symptomLogs.isEmpty()) {
       return ResponseEntity.noContent().build();
@@ -47,25 +42,21 @@ public class SymptomLogController {
   }
 
   @GetMapping("/{id}")
-  public ResponseEntity<GetSymptomLog> getById(
-      @PathVariable Long id, Authentication authentication) {
-    User loggedInUser = (User) authentication.getPrincipal();
-    GetSymptomLog symptomLog = symptomLogService.getById(loggedInUser, id);
+  public ResponseEntity<GetSymptomLog> getById(@PathVariable Long id) {
+    GetSymptomLog symptomLog = symptomLogService.getById(id);
     return ResponseEntity.ok(symptomLog);
   }
 
   @PatchMapping("/{id}")
   public ResponseEntity<GetSymptomLog> update(
-      @PathVariable Long id, Authentication authentication, @RequestBody PatchSymptomLog patch) {
-    User loggedInUser = (User) authentication.getPrincipal();
-    GetSymptomLog updatedSymptomLog = symptomLogService.update(id, loggedInUser, patch);
+      @PathVariable Long id, @RequestBody PatchSymptomLog patch) {
+    GetSymptomLog updatedSymptomLog = symptomLogService.update(id, patch);
     return ResponseEntity.ok(updatedSymptomLog);
   }
 
   @DeleteMapping("/{id}")
-  public ResponseEntity<Void> delete(@PathVariable Long id, Authentication authentication) {
-    User loggedInUser = (User) authentication.getPrincipal();
-    symptomLogService.delete(id, loggedInUser);
+  public ResponseEntity<Void> delete(@PathVariable Long id) {
+    symptomLogService.delete(id);
     return ResponseEntity.ok().build();
   }
 }

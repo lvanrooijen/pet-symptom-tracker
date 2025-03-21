@@ -3,13 +3,11 @@ package com.laila.pet_symptom_tracker.entities.pettype;
 import com.laila.pet_symptom_tracker.entities.pettype.dto.GetPetType;
 import com.laila.pet_symptom_tracker.entities.pettype.dto.PatchPetType;
 import com.laila.pet_symptom_tracker.entities.pettype.dto.PostPetType;
-import com.laila.pet_symptom_tracker.entities.user.User;
 import com.laila.pet_symptom_tracker.mainconfig.Routes;
 import java.net.URI;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -20,10 +18,8 @@ public class PetTypeController {
   private final PetTypeService petTypeService;
 
   @PostMapping
-  public ResponseEntity<GetPetType> create(
-      Authentication authentication, @RequestBody PostPetType postPetType) {
-    User loggedInUser = (User) authentication.getPrincipal();
-    GetPetType createdPetType = petTypeService.create(postPetType, loggedInUser);
+  public ResponseEntity<GetPetType> create(@RequestBody PostPetType postPetType) {
+    GetPetType createdPetType = petTypeService.create(postPetType);
 
     URI location =
         ServletUriComponentsBuilder.fromCurrentRequest()
@@ -35,9 +31,8 @@ public class PetTypeController {
   }
 
   @GetMapping
-  public ResponseEntity<List<GetPetType>> getAll(Authentication authentication) {
-    User loggedInUser = (User) authentication.getPrincipal();
-    List<GetPetType> petTypes = petTypeService.getAll(loggedInUser);
+  public ResponseEntity<List<GetPetType>> getAll() {
+    List<GetPetType> petTypes = petTypeService.getAll();
     return ResponseEntity.ok(petTypes);
   }
 

@@ -1,5 +1,6 @@
 package com.laila.pet_symptom_tracker.entities.disease;
 
+import com.laila.pet_symptom_tracker.entities.authentication.AuthenticationService;
 import com.laila.pet_symptom_tracker.entities.disease.dto.GetDisease;
 import com.laila.pet_symptom_tracker.entities.disease.dto.PatchDisease;
 import com.laila.pet_symptom_tracker.entities.disease.dto.PostDisease;
@@ -13,8 +14,10 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class DiseaseService {
   private final DiseaseRepository diseaseRepository;
+  private final AuthenticationService authenticationService;
 
-  public GetDisease create(PostDisease body, User loggedInUser) {
+  public GetDisease create(PostDisease body) {
+    User loggedInUser = authenticationService.getAuthenticatedUser();
     Disease createdDisease =
         Disease.builder()
             .name(body.name())
@@ -27,7 +30,8 @@ public class DiseaseService {
     return GetDisease.from(createdDisease);
   }
 
-  public List<GetDisease> getAll(User loggedInUser) {
+  public List<GetDisease> getAll() {
+    User loggedInUser = authenticationService.getAuthenticatedUser();
     List<Disease> diseases;
     if (loggedInUser.hasAdminRole()) {
       diseases = diseaseRepository.findAll();

@@ -1,5 +1,6 @@
 package com.laila.pet_symptom_tracker.entities.diseaselog;
 
+import com.laila.pet_symptom_tracker.entities.authentication.AuthenticationService;
 import com.laila.pet_symptom_tracker.entities.disease.Disease;
 import com.laila.pet_symptom_tracker.entities.disease.DiseaseRepository;
 import com.laila.pet_symptom_tracker.entities.diseaselog.dto.GetDiseaseLog;
@@ -21,8 +22,10 @@ public class DiseaseLogService {
   private final DiseaseLogRepository diseaseLogRepository;
   private final DiseaseRepository diseaseRepository;
   private final PetRepository petRepository;
+  private final AuthenticationService authenticationService;
 
-  public GetDiseaseLog create(PostDiseaseLog postBody, User loggedInUser) {
+  public GetDiseaseLog create(PostDiseaseLog postBody) {
+    User loggedInUser = authenticationService.getAuthenticatedUser();
     Pet pet =
         petRepository
             .findById(postBody.petId())
@@ -51,7 +54,8 @@ public class DiseaseLogService {
     return GetDiseaseLog.from(createdDiseaseLog);
   }
 
-  public List<GetDiseaseLog> getAll(User loggedInUser) {
+  public List<GetDiseaseLog> getAll() {
+    User loggedInUser = authenticationService.getAuthenticatedUser();
     List<DiseaseLog> diseaseLogs = diseaseLogRepository.findAll();
 
     if (loggedInUser.hasUserRole()) {
@@ -64,7 +68,8 @@ public class DiseaseLogService {
     return diseaseLogs.stream().map(GetDiseaseLog::from).toList();
   }
 
-  public GetDiseaseLog getById(Long id, User loggedInUser) {
+  public GetDiseaseLog getById(Long id) {
+    User loggedInUser = authenticationService.getAuthenticatedUser();
     DiseaseLog diseaseLog = diseaseLogRepository.findById(id).orElseThrow(NotFoundException::new);
     if (diseaseLog.getPet().isOwner(loggedInUser)
         || loggedInUser.hasModeratorRole()
@@ -75,10 +80,10 @@ public class DiseaseLogService {
     }
   }
 
-  public GetDiseaseLog update(Long id, PatchDiseaseLog patch, User loggedInUser) {
+  public GetDiseaseLog update(Long id, PatchDiseaseLog patch) {
+    User loggedInUser = authenticationService.getAuthenticatedUser();
     DiseaseLog update = diseaseLogRepository.findById(id).orElseThrow(NotFoundException::new);
 
-    // TODO bug hier!
     if (update.getPet().isNotOwner(loggedInUser) && loggedInUser.hasUserRole()) {
       throw new ForbiddenException("Only the owner or admin is allowed to perform this action");
     }
@@ -103,7 +108,8 @@ public class DiseaseLogService {
     return GetDiseaseLog.from(update);
   }
 
-  public void delete(Long id, User loggedInUser) {
+  public void delete(Long id) {
+    User loggedInUser = authenticationService.getAuthenticatedUser();
     DiseaseLog log = diseaseLogRepository.findById(id).orElseThrow(NotFoundException::new);
     if (log.getPet().isNotOwner(loggedInUser) && loggedInUser.hasUserRole()) {
       throw new ForbiddenException("Only the owner or admin may perform this action");

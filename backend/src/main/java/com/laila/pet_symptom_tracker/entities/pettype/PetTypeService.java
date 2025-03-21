@@ -1,7 +1,6 @@
 package com.laila.pet_symptom_tracker.entities.pettype;
 
-import com.laila.pet_symptom_tracker.entities.breed.BreedRepository;
-import com.laila.pet_symptom_tracker.entities.pet.PetRepository;
+import com.laila.pet_symptom_tracker.entities.authentication.AuthenticationService;
 import com.laila.pet_symptom_tracker.entities.pettype.dto.GetPetType;
 import com.laila.pet_symptom_tracker.entities.pettype.dto.PatchPetType;
 import com.laila.pet_symptom_tracker.entities.pettype.dto.PostPetType;
@@ -17,10 +16,10 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class PetTypeService {
   private final PetTypeRepository petTypeRepository;
-  private final BreedRepository breedRepository;
-  private final PetRepository petRepository;
+  private final AuthenticationService authenticationService;
 
-  public GetPetType create(PostPetType dto, User loggedInUser) {
+  public GetPetType create(PostPetType dto) {
+    User loggedInUser = authenticationService.getAuthenticatedUser();
     ColoredLogger.prettyInPink(loggedInUser.getRole().toString());
     if (!loggedInUser.hasModeratorRole() && !loggedInUser.hasAdminRole())
       throw new ForbiddenException(
@@ -34,7 +33,8 @@ public class PetTypeService {
     return GetPetType.from(createdType);
   }
 
-  public List<GetPetType> getAll(User loggedInUser) {
+  public List<GetPetType> getAll() {
+    User loggedInUser = authenticationService.getAuthenticatedUser();
     List<PetType> petTypes;
     if (loggedInUser.hasAdminRole()) {
       petTypes = petTypeRepository.findAll();

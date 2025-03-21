@@ -21,11 +21,9 @@ public class DiseaseController {
   private final DiseaseService diseaseService;
 
   @PostMapping
-  public ResponseEntity<GetDisease> create(
-      @RequestBody @Valid PostDisease body, Authentication authentication) {
-    User loggedInUser = (User) authentication.getPrincipal();
+  public ResponseEntity<GetDisease> create(@RequestBody @Valid PostDisease body) {
 
-    GetDisease disease = diseaseService.create(body, loggedInUser);
+    GetDisease disease = diseaseService.create(body);
     URI location =
         ServletUriComponentsBuilder.fromCurrentRequest()
             .path("/{id}")
@@ -35,9 +33,8 @@ public class DiseaseController {
   }
 
   @GetMapping
-  public ResponseEntity<List<GetDisease>> getAll(Authentication authentication) {
-    User loggedInUser = (User) authentication.getPrincipal();
-    List<GetDisease> diseases = diseaseService.getAll(loggedInUser);
+  public ResponseEntity<List<GetDisease>> getAll() {
+    List<GetDisease> diseases = diseaseService.getAll();
 
     if (diseases.isEmpty()) {
       return ResponseEntity.noContent().build();

@@ -1,5 +1,6 @@
 package com.laila.pet_symptom_tracker.entities.breed;
 
+import com.laila.pet_symptom_tracker.entities.authentication.AuthenticationService;
 import com.laila.pet_symptom_tracker.entities.breed.dto.GetBreed;
 import com.laila.pet_symptom_tracker.entities.breed.dto.PatchBreed;
 import com.laila.pet_symptom_tracker.entities.breed.dto.PostBreed;
@@ -17,8 +18,10 @@ import org.springframework.stereotype.Service;
 public class BreedService {
   private final BreedRepository breedRepository;
   private final PetTypeRepository petTypeRepository;
+  private final AuthenticationService authenticationService;
 
-  public GetBreed create(PostBreed postBreed, User loggedInUser) {
+  public GetBreed create(PostBreed postBreed) {
+    User loggedInUser = authenticationService.getAuthenticatedUser();
     PetType type =
         petTypeRepository
             .findById(postBreed.petTypeId())
