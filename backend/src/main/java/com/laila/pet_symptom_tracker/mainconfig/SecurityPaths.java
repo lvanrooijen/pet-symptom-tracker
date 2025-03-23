@@ -18,5 +18,5 @@ public class SecurityPaths {
   };
 
   public static String[] OPEN_GET_PATHS = {};
-  public static String[] ADMIN_ONLY_PATHS = {USERS};
+  public static String[] ADMIN_ONLY_PATHS = {USERS, BLACK_LISTED_WORDS};
 }

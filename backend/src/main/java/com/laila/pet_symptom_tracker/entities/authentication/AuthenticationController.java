@@ -12,7 +12,6 @@ import com.laila.pet_symptom_tracker.securityconfig.JwtService;
 import com.laila.pet_symptom_tracker.securityconfig.JwtToken;
 import jakarta.validation.Valid;
 import java.net.URI;
-import java.util.logging.Logger;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -22,7 +21,6 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 @RequiredArgsConstructor
 @RequestMapping(Routes.BASE_ROUTE)
 public class AuthenticationController {
-  private final Logger log = Logger.getLogger(AuthenticationController.class.getName());
   private final UserService userService;
   private final JwtService jwtService;
 

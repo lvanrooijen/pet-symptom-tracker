@@ -37,6 +37,10 @@ public class Routes {
   public static final String SYMPTOM_LOG = BASE_ROUTE + "/symptom-logs";
   public static final String SYMPTOM_LOG_SUB_PATH = addSingleSubPath(SYMPTOM_LOG);
   public static final String SYMPTOM_LOG_ALL_SUB_PATHS = addAllSubPaths(SYMPTOM_LOG);
+  // black listed words
+  public static final String BLACK_LISTED_WORDS = BASE_ROUTE + "/black-listed-words";
+  public static final String BLACK_LISTED_WORDS_SUB_PATH = addSingleSubPath(BLACK_LISTED_WORDS);
+  public static final String BLACK_LISTED_WORDS_ALL_SUB_PATHS = addAllSubPaths(BLACK_LISTED_WORDS);
 
   //  public static final String PLACEHOLDER = BASE_ROUTE + "/placeholder" ;
 

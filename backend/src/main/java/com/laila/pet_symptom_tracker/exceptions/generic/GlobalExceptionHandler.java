@@ -76,4 +76,11 @@ public class GlobalExceptionHandler {
             HttpStatus.BAD_REQUEST, "Request body is missing or incorrectly formatted");
     return ResponseEntity.badRequest().body(problemDetail);
   }
+
+  @ExceptionHandler(DuplicateValueException.class)
+  public ResponseEntity<ProblemDetail> duplicateValueHandler(DuplicateValueException exception) {
+    String msg = exception.getMessage();
+    ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, msg);
+    return ResponseEntity.badRequest().body(problemDetail);
+  }
 }
