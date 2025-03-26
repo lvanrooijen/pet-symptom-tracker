@@ -29,7 +29,10 @@ public class SecurityConfiguration {
         .authorizeHttpRequests(
             request ->
                 request
-                    // Non-Authenticated paths
+                    // Non-authenticated Get paths
+                    .requestMatchers(HttpMethod.GET, SecurityPaths.OPEN_GET_PATHS)
+                    .permitAll()
+                    // Non-authenticated Post paths
                     .requestMatchers(HttpMethod.POST, SecurityPaths.OPEN_POST_PATHS)
                     .permitAll()
                     // Get Paths

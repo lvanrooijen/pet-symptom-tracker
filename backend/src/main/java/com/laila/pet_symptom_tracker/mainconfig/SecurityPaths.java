@@ -17,6 +17,6 @@ public class SecurityPaths {
     PET_TYPES, PET_TYPES_SUB_PATH, BREEDS, BREEDS_SUB_PATH, DISEASE, DISEASE_SUB_PATH
   };
 
-  public static String[] OPEN_GET_PATHS = {};
+  public static String[] OPEN_GET_PATHS = {"/actuator/*/**", "/swagger-ui/**", "/v3/api-docs*/**"};
   public static String[] ADMIN_ONLY_PATHS = {USERS, BLACK_LISTED_WORDS};
 }

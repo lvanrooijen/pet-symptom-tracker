@@ -4,6 +4,7 @@ import com.laila.pet_symptom_tracker.entities.symptomlog.dto.GetSymptomLog;
 import com.laila.pet_symptom_tracker.entities.symptomlog.dto.PatchSymptomLog;
 import com.laila.pet_symptom_tracker.entities.symptomlog.dto.PostSymptomLog;
 import com.laila.pet_symptom_tracker.mainconfig.Routes;
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import java.net.URI;
 import java.util.List;
@@ -30,6 +31,10 @@ public class SymptomLogController {
     return ResponseEntity.created(location).body(createdSymptom);
   }
 
+  // TODO voeg documentatie toe aan alle endpoints!
+  @Operation(
+      summary =
+          "Returns a List of Symptom logs that connected to user, if an admin calls this endpoint all symptom logs are returned")
   @GetMapping
   public ResponseEntity<List<GetSymptomLog>> getAll() {
     List<GetSymptomLog> symptomLogs = symptomLogService.findAll();

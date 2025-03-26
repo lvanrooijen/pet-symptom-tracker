@@ -52,8 +52,7 @@ class BreedControllerTest {
   public void init() {
     breedId = 1L;
     postBreed = new PostBreed("Siamese", 1L);
-    getBreed =
-        new GetBreed(Long.valueOf(1), "Siamese", new GetPetTypeCompact(1L, "Cat"), "Moderator");
+    getBreed = new GetBreed(1L, "Siamese", new GetPetTypeCompact(1L, "Cat"), "Moderator");
     petType = new GetPetTypeCompact(1L, "Cat");
     breeds =
         List.of(
@@ -166,4 +165,6 @@ class BreedControllerTest {
 
     response.andExpect(MockMvcResultMatchers.status().isNotFound());
   }
+
+  // TODO add unhappy paths!
 }
