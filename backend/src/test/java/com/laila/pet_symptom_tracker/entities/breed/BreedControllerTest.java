@@ -117,6 +117,86 @@ class BreedControllerTest {
   }
 
   @Test
+  @DisplayName("Create breed with empty name should return 404")
+  void create_breed_with_blank_name_should_return_status_code_400() throws Exception {
+    ResultActions response =
+        mvc.perform(
+            post(Routes.BREEDS)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(new PostBreed("", 1L))));
+
+    response.andExpect(MockMvcResultMatchers.status().isBadRequest());
+  }
+
+  @Test
+  @DisplayName("Create breed with name that has less then 3 characters should return 404")
+  void create_breed_with_too_short_name_should_return_status_code_400() throws Exception {
+    ResultActions response =
+        mvc.perform(
+            post(Routes.BREEDS)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(new PostBreed("ca", 1L))));
+
+    response.andExpect(MockMvcResultMatchers.status().isBadRequest());
+  }
+
+  @Test
+  @DisplayName("Create breed with name that has more then 30 characters should return 404")
+  void create_breed_with_too_long_name_should_return_status_code_400() throws Exception {
+    ResultActions response =
+        mvc.perform(
+            post(Routes.BREEDS)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(
+                    objectMapper.writeValueAsString(
+                        new PostBreed("catcatcatcatcatcatcatcatcatcatcat", 1L))));
+
+    response.andExpect(MockMvcResultMatchers.status().isBadRequest());
+  }
+
+  @Test
+  @DisplayName("Create breed with missing name should return 404")
+  void create_breed_with_missing_name_should_return_status_code_400() throws Exception {
+    ResultActions response =
+        mvc.perform(
+            post(Routes.BREEDS)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(new PostBreed(null, 1L))));
+
+    response.andExpect(MockMvcResultMatchers.status().isBadRequest());
+  }
+
+  @Test
+  @DisplayName("Create breed with missing pet type id should return 404")
+  void create_breed_with_missing_pet_type_id_should_return_status_code_400() throws Exception {
+    ResultActions response =
+        mvc.perform(
+            post(Routes.BREEDS)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(new PostBreed("Cat", null))));
+
+    response.andExpect(MockMvcResultMatchers.status().isBadRequest());
+  }
+
+  @Test
+  @DisplayName("Create breed where the pet type id is not a number should return 404")
+  void create_breed_with_missing_pet_type_id_NaN_should_return_status_code_400() throws Exception {
+    String invalidJson =
+        """
+        {
+            "name": "Cat",
+            "petTypeId": "He"
+        }
+        """;
+
+    ResultActions response =
+        mvc.perform(
+            post(Routes.BREEDS).contentType(MediaType.APPLICATION_JSON).content(invalidJson));
+
+    response.andExpect(MockMvcResultMatchers.status().isBadRequest());
+  }
+
+  @Test
   @DisplayName("Get all breeds should return all available breeds")
   void get_all_should_return_all() throws Exception {
     when(breedService.getAll()).thenReturn(breeds);
