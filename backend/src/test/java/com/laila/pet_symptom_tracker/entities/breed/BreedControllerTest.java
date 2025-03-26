@@ -16,9 +16,11 @@ import com.laila.pet_symptom_tracker.entities.user.UserService;
 import com.laila.pet_symptom_tracker.exceptions.generic.NotFoundException;
 import com.laila.pet_symptom_tracker.mainconfig.Routes;
 import com.laila.pet_symptom_tracker.securityconfig.JwtAuthFilter;
+import java.util.ArrayList;
 import java.util.List;
 import org.hamcrest.CoreMatchers;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentMatchers;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +28,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
@@ -63,8 +64,22 @@ class BreedControllerTest {
   }
 
   @Test
-  @WithMockUser(username = "user")
-  void createBreed() throws Exception {
+  @DisplayName("Creating a new breed should return status code 201")
+  void successful_post_breed_should_return_201() throws Exception {
+    given(breedService.create(postBreed)).willReturn(getBreed);
+
+    ResultActions response =
+        mvc.perform(
+            post(Routes.BREEDS)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(postBreed)));
+
+    response.andExpect(MockMvcResultMatchers.status().isCreated());
+  }
+
+  @Test
+  @DisplayName("Creating a new breed should return the right response body")
+  void create_breed_should_return_get_breed_dto() throws Exception {
     given(breedService.create(ArgumentMatchers.any())).willReturn(getBreed);
 
     ResultActions response =
@@ -74,7 +89,6 @@ class BreedControllerTest {
                 .content(objectMapper.writeValueAsString(postBreed)));
 
     response
-        .andExpect(MockMvcResultMatchers.status().isCreated())
         .andExpect(
             MockMvcResultMatchers.jsonPath("$.id", CoreMatchers.is(getBreed.id().intValue())))
         .andExpect(MockMvcResultMatchers.jsonPath("$.name", CoreMatchers.is(getBreed.name())))
@@ -89,19 +103,55 @@ class BreedControllerTest {
   }
 
   @Test
-  void getAllBreeds() throws Exception {
+  @DisplayName("Creating a breed without a request body should return status code 400 ")
+  void create_breed_without_request_body_should_return_status_code_400() throws Exception {
+    given(breedService.create(postBreed)).willReturn(getBreed);
+
+    ResultActions response =
+        mvc.perform(
+            post(Routes.BREEDS)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(null)));
+
+    response.andExpect(MockMvcResultMatchers.status().isBadRequest());
+  }
+
+  @Test
+  @DisplayName("Get all breeds should return all available breeds")
+  void get_all_should_return_all() throws Exception {
     when(breedService.getAll()).thenReturn(breeds);
 
     ResultActions response =
         mvc.perform(get(Routes.BREEDS).contentType(MediaType.APPLICATION_JSON));
 
-    response
-        .andExpect(MockMvcResultMatchers.status().isOk())
-        .andExpect(MockMvcResultMatchers.jsonPath("$.size()", CoreMatchers.is(breeds.size())));
+    response.andExpect(MockMvcResultMatchers.jsonPath("$.size()", CoreMatchers.is(breeds.size())));
   }
 
   @Test
-  void GetBreedById() throws Exception {
+  @DisplayName("Getting all breeds should return status code 200")
+  void get_all_should_return_status_200() throws Exception {
+    when(breedService.getAll()).thenReturn(breeds);
+
+    ResultActions response =
+        mvc.perform(get(Routes.BREEDS).contentType(MediaType.APPLICATION_JSON));
+
+    response.andExpect(MockMvcResultMatchers.status().isOk());
+  }
+
+  @Test
+  @DisplayName("If get all breeds is an empty list it should return status code 204")
+  void get_all_should_return_status_204_when_no_content() throws Exception {
+    when(breedService.getAll()).thenReturn(new ArrayList<>());
+
+    ResultActions response =
+        mvc.perform(get(Routes.BREEDS).contentType(MediaType.APPLICATION_JSON));
+
+    response.andExpect(MockMvcResultMatchers.status().isNoContent());
+  }
+
+  @Test
+  @DisplayName("Get breed by id should return the right dto")
+  void get_by_id_should_return_getBreed() throws Exception {
     when(breedService.getById(1L)).thenReturn(getBreed);
 
     mvc.perform(get(Routes.BREEDS + "/1"))
@@ -114,14 +164,16 @@ class BreedControllerTest {
   }
 
   @Test
-  void GetNonExistentBreedById() throws Exception {
+  @DisplayName("Fetching a non existing breed should return status code 404")
+  void get_non_existent_breed_by_id_should_return_status_code_404() throws Exception {
     when(breedService.getById(breedId)).thenThrow(new NotFoundException());
 
     mvc.perform(get(Routes.BREEDS + "/" + breedId.intValue())).andExpect(status().isNotFound());
   }
 
   @Test
-  public void updateBreed() throws Exception {
+  @DisplayName("Patching a breed should return a patched breed")
+  public void patch_breed_should_return_patched_breed() throws Exception {
     PatchBreed patch = new PatchBreed("Changed", null);
     GetBreed patchedBreed = new GetBreed(breedId, "Changed", petType, "Moderator");
 
@@ -143,7 +195,37 @@ class BreedControllerTest {
   }
 
   @Test
-  public void deleteBreed() throws Exception {
+  @DisplayName("Patching a breed should return status code 200")
+  public void patch_breed_should_return_status_code_200() throws Exception {
+    PatchBreed patch = new PatchBreed("Changed", null);
+    GetBreed patchedBreed = new GetBreed(breedId, "Changed", petType, "Moderator");
+
+    when(breedService.patch(breedId, patch)).thenReturn(patchedBreed);
+
+    ResultActions response =
+        mvc.perform(
+            patch(Routes.BREEDS + "/" + breedId.intValue())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(patch)));
+
+    response.andExpect(MockMvcResultMatchers.status().isOk());
+  }
+
+  @Test
+  @DisplayName("Patching a breed without a request body should return status code 400")
+  public void patch_breed_empty_request_body_should_return_status_code_400() throws Exception {
+    ResultActions response =
+        mvc.perform(
+            patch(Routes.BREEDS + "/" + breedId.intValue())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(null)));
+
+    response.andExpect(MockMvcResultMatchers.status().isBadRequest());
+  }
+
+  @Test
+  @DisplayName("Deleting a breed should return status code 200")
+  public void delete_breed_should_return_status_code_200() throws Exception {
     doNothing().when(breedService).deleteById(breedId);
 
     ResultActions response =
@@ -155,7 +237,8 @@ class BreedControllerTest {
   }
 
   @Test
-  public void deleteNonExistingBreed() throws Exception {
+  @DisplayName("Deleting a non-existing breed should return status code 404")
+  public void delete_non_existing_breed_should_return_status_code_404() throws Exception {
     doThrow(new NotFoundException()).when(breedService).deleteById(breedId);
 
     ResultActions response =
@@ -165,6 +248,4 @@ class BreedControllerTest {
 
     response.andExpect(MockMvcResultMatchers.status().isNotFound());
   }
-
-  // TODO add unhappy paths!
 }

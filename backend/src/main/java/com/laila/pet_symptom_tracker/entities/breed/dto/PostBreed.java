@@ -6,6 +6,6 @@ import jakarta.validation.constraints.Size;
 import org.springframework.format.annotation.NumberFormat;
 
 public record PostBreed(
-    @NotBlank @Size(min = 3, max = 30, message = "Name must be between 3 and 30 charachters")
+    @NotBlank @Size(min = 3, max = 30, message = "Name must be between 3 and 30 characters")
         String name,
     @NotNull @NumberFormat(style = NumberFormat.Style.NUMBER) Long petTypeId) {}

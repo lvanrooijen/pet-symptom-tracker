@@ -31,7 +31,12 @@ public class BreedController {
 
   @GetMapping
   public ResponseEntity<List<GetBreed>> getAll() {
-    return ResponseEntity.ok(breedService.getAll());
+    List<GetBreed> breeds = breedService.getAll();
+    if (breeds.isEmpty()) {
+      return ResponseEntity.noContent().build();
+    }
+
+    return ResponseEntity.ok(breeds);
   }
 
   @GetMapping("/{id}")
