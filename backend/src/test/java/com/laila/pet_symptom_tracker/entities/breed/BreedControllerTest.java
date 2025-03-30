@@ -40,8 +40,6 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 @WebMvcTest(controllers = BreedController.class)
 @AutoConfigureMockMvc(addFilters = false)
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
-@EnabledOnOs(OS.WINDOWS)
-@EnabledForJreRange(min = JRE.JAVA_8, max = JRE.JAVA_21)
 class BreedControllerTest {
   PostBreed postBreed;
   GetBreed getBreed;
@@ -71,6 +69,8 @@ class BreedControllerTest {
             new GetBreed(4L, "Parrot", new GetPetTypeCompact(4L, "Bird"), "ModOne"));
   }
 
+  @EnabledOnOs(OS.WINDOWS)
+  @EnabledForJreRange(min = JRE.JAVA_8, max = JRE.JAVA_21)
   @Test
   void post_breed_should_execute_in_3_seconds() throws InterruptedException, Exception {
     given(breedService.create(postBreed)).willReturn(getBreed);
