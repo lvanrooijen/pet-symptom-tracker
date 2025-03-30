@@ -22,6 +22,10 @@ import java.util.ArrayList;
 import java.util.List;
 import org.hamcrest.CoreMatchers;
 import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.condition.EnabledForJreRange;
+import org.junit.jupiter.api.condition.EnabledOnOs;
+import org.junit.jupiter.api.condition.JRE;
+import org.junit.jupiter.api.condition.OS;
 import org.mockito.ArgumentMatchers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -36,6 +40,8 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 @WebMvcTest(controllers = BreedController.class)
 @AutoConfigureMockMvc(addFilters = false)
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
+@EnabledOnOs(OS.WINDOWS)
+@EnabledForJreRange(min = JRE.JAVA_8, max = JRE.JAVA_21)
 class BreedControllerTest {
   PostBreed postBreed;
   GetBreed getBreed;
