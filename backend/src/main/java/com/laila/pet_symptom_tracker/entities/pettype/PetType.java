@@ -30,4 +30,12 @@ public class PetType {
     this.name = name;
     this.createdBy = createdBy;
   }
+
+  // TODO for testing purposes
+  public PetType(Long id, String name, boolean deleted, User createdBy) {
+    this.id = id;
+    this.name = name;
+    this.deleted = deleted;
+    this.createdBy = createdBy;
+  }
 }

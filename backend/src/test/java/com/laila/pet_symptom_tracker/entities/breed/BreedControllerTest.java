@@ -1,5 +1,6 @@
 package com.laila.pet_symptom_tracker.entities.breed;
 
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -16,12 +17,11 @@ import com.laila.pet_symptom_tracker.entities.user.UserService;
 import com.laila.pet_symptom_tracker.exceptions.generic.NotFoundException;
 import com.laila.pet_symptom_tracker.mainconfig.Routes;
 import com.laila.pet_symptom_tracker.securityconfig.JwtAuthFilter;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import org.hamcrest.CoreMatchers;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.mockito.ArgumentMatchers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -35,14 +35,16 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 @WebMvcTest(controllers = BreedController.class)
 @AutoConfigureMockMvc(addFilters = false)
+@DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 class BreedControllerTest {
-  @Autowired MockMvc mvc;
   PostBreed postBreed;
   GetBreed getBreed;
   GetPetTypeCompact petType;
   List<GetBreed> breeds;
   Long breedId;
+  @Autowired private MockMvc mvc;
   @Autowired private ObjectMapper objectMapper;
+
   @MockitoBean private BreedService breedService;
   @MockitoBean private UserService userService;
   @MockitoBean private JwtAuthFilter jwtAuthFilter;
@@ -64,7 +66,19 @@ class BreedControllerTest {
   }
 
   @Test
-  @DisplayName("Creating a new breed should return status code 201")
+  void post_breed_should_execute_in_3_seconds() throws InterruptedException, Exception {
+    given(breedService.create(postBreed)).willReturn(getBreed);
+
+    assertTimeoutPreemptively(
+        Duration.ofSeconds(3),
+        () ->
+            mvc.perform(
+                post(Routes.BREEDS)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(objectMapper.writeValueAsString(postBreed))));
+  }
+
+  @Test
   void successful_post_breed_should_return_201() throws Exception {
     given(breedService.create(postBreed)).willReturn(getBreed);
 
@@ -78,7 +92,6 @@ class BreedControllerTest {
   }
 
   @Test
-  @DisplayName("Creating a new breed should return the right response body")
   void create_breed_should_return_get_breed_dto() throws Exception {
     given(breedService.create(ArgumentMatchers.any())).willReturn(getBreed);
 
@@ -103,7 +116,6 @@ class BreedControllerTest {
   }
 
   @Test
-  @DisplayName("Creating a breed without a request body should return status code 400 ")
   void create_breed_without_request_body_should_return_status_code_400() throws Exception {
     given(breedService.create(postBreed)).willReturn(getBreed);
 
@@ -117,7 +129,6 @@ class BreedControllerTest {
   }
 
   @Test
-  @DisplayName("Create breed with empty name should return 404")
   void create_breed_with_blank_name_should_return_status_code_400() throws Exception {
     ResultActions response =
         mvc.perform(
@@ -129,8 +140,8 @@ class BreedControllerTest {
   }
 
   @Test
-  @DisplayName("Create breed with name that has less then 3 characters should return 404")
-  void create_breed_with_too_short_name_should_return_status_code_400() throws Exception {
+  void create_breed_with_name_that_has_less_then_3_characters_should_return_status_code_400()
+      throws Exception {
     ResultActions response =
         mvc.perform(
             post(Routes.BREEDS)
@@ -141,8 +152,8 @@ class BreedControllerTest {
   }
 
   @Test
-  @DisplayName("Create breed with name that has more then 30 characters should return 404")
-  void create_breed_with_too_long_name_should_return_status_code_400() throws Exception {
+  void create_breed_with_name_that_has_more_then_30_characters_should_return_status_code_400()
+      throws Exception {
     ResultActions response =
         mvc.perform(
             post(Routes.BREEDS)
@@ -155,7 +166,6 @@ class BreedControllerTest {
   }
 
   @Test
-  @DisplayName("Create breed with missing name should return 404")
   void create_breed_with_missing_name_should_return_status_code_400() throws Exception {
     ResultActions response =
         mvc.perform(
@@ -167,7 +177,6 @@ class BreedControllerTest {
   }
 
   @Test
-  @DisplayName("Create breed with missing pet type id should return 404")
   void create_breed_with_missing_pet_type_id_should_return_status_code_400() throws Exception {
     ResultActions response =
         mvc.perform(
@@ -179,8 +188,8 @@ class BreedControllerTest {
   }
 
   @Test
-  @DisplayName("Create breed where the pet type id is not a number should return 404")
-  void create_breed_with_missing_pet_type_id_NaN_should_return_status_code_400() throws Exception {
+  void create_breed_with_missing_pet_type_id_not_a_number_should_return_status_code_400()
+      throws Exception {
     String invalidJson =
         """
         {
@@ -197,8 +206,7 @@ class BreedControllerTest {
   }
 
   @Test
-  @DisplayName("Get all breeds should return all available breeds")
-  void get_all_should_return_all() throws Exception {
+  void get_all_should_return_all_available_breeds() throws Exception {
     when(breedService.getAll()).thenReturn(breeds);
 
     ResultActions response =
@@ -208,7 +216,6 @@ class BreedControllerTest {
   }
 
   @Test
-  @DisplayName("Getting all breeds should return status code 200")
   void get_all_should_return_status_200() throws Exception {
     when(breedService.getAll()).thenReturn(breeds);
 
@@ -219,7 +226,6 @@ class BreedControllerTest {
   }
 
   @Test
-  @DisplayName("If get all breeds is an empty list it should return status code 204")
   void get_all_should_return_status_204_when_no_content() throws Exception {
     when(breedService.getAll()).thenReturn(new ArrayList<>());
 
@@ -230,7 +236,6 @@ class BreedControllerTest {
   }
 
   @Test
-  @DisplayName("Get breed by id should return the right dto")
   void get_by_id_should_return_getBreed() throws Exception {
     when(breedService.getById(1L)).thenReturn(getBreed);
 
@@ -244,7 +249,6 @@ class BreedControllerTest {
   }
 
   @Test
-  @DisplayName("Fetching a non existing breed should return status code 404")
   void get_non_existent_breed_by_id_should_return_status_code_404() throws Exception {
     when(breedService.getById(breedId)).thenThrow(new NotFoundException());
 
@@ -252,7 +256,6 @@ class BreedControllerTest {
   }
 
   @Test
-  @DisplayName("Patching a breed should return a patched breed")
   public void patch_breed_should_return_patched_breed() throws Exception {
     PatchBreed patch = new PatchBreed("Changed", null);
     GetBreed patchedBreed = new GetBreed(breedId, "Changed", petType, "Moderator");
@@ -275,7 +278,6 @@ class BreedControllerTest {
   }
 
   @Test
-  @DisplayName("Patching a breed should return status code 200")
   public void patch_breed_should_return_status_code_200() throws Exception {
     PatchBreed patch = new PatchBreed("Changed", null);
     GetBreed patchedBreed = new GetBreed(breedId, "Changed", petType, "Moderator");
@@ -292,8 +294,7 @@ class BreedControllerTest {
   }
 
   @Test
-  @DisplayName("Patching a breed without a request body should return status code 400")
-  public void patch_breed_empty_request_body_should_return_status_code_400() throws Exception {
+  public void patch_breed_with_empty_request_body_should_return_status_code_400() throws Exception {
     ResultActions response =
         mvc.perform(
             patch(Routes.BREEDS + "/" + breedId.intValue())
@@ -304,7 +305,6 @@ class BreedControllerTest {
   }
 
   @Test
-  @DisplayName("Deleting a breed should return status code 200")
   public void delete_breed_should_return_status_code_200() throws Exception {
     doNothing().when(breedService).deleteById(breedId);
 
@@ -317,7 +317,6 @@ class BreedControllerTest {
   }
 
   @Test
-  @DisplayName("Deleting a non-existing breed should return status code 404")
   public void delete_non_existing_breed_should_return_status_code_404() throws Exception {
     doThrow(new NotFoundException()).when(breedService).deleteById(breedId);
 
