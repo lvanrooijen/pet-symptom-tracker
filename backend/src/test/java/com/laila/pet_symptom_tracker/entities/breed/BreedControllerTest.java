@@ -20,12 +20,9 @@ import com.laila.pet_symptom_tracker.securityconfig.JwtAuthFilter;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 import org.hamcrest.CoreMatchers;
 import org.junit.jupiter.api.*;
-import org.junit.jupiter.api.condition.EnabledForJreRange;
-import org.junit.jupiter.api.condition.EnabledOnOs;
-import org.junit.jupiter.api.condition.JRE;
-import org.junit.jupiter.api.condition.OS;
 import org.mockito.ArgumentMatchers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -46,9 +43,11 @@ class BreedControllerTest {
   GetPetTypeCompact petType;
   List<GetBreed> breeds;
   Long breedId;
+  UUID creatorId;
   @Autowired private MockMvc mvc;
   @Autowired private ObjectMapper objectMapper;
 
+  // TODO remember me then delete me :D mockito bean gooit m in de spring context
   @MockitoBean private BreedService breedService;
   @MockitoBean private UserService userService;
   @MockitoBean private JwtAuthFilter jwtAuthFilter;
@@ -58,19 +57,18 @@ class BreedControllerTest {
   @BeforeEach
   public void init() {
     breedId = 1L;
+    creatorId = UUID.randomUUID();
     postBreed = new PostBreed("Siamese", 1L);
-    getBreed = new GetBreed(1L, "Siamese", new GetPetTypeCompact(1L, "Cat"), "Moderator");
+    getBreed = new GetBreed(1L, "Siamese", new GetPetTypeCompact(1L, "Cat"), creatorId);
     petType = new GetPetTypeCompact(1L, "Cat");
     breeds =
         List.of(
-            new GetBreed(1L, "Siamese", new GetPetTypeCompact(1L, "Cat"), "Moderator"),
-            new GetBreed(2L, "Rotweiler", new GetPetTypeCompact(2L, "Dog"), "Moderator"),
-            new GetBreed(3L, "Flemish Giant", new GetPetTypeCompact(3L, "Rabbit"), "Moderator"),
-            new GetBreed(4L, "Parrot", new GetPetTypeCompact(4L, "Bird"), "ModOne"));
+            new GetBreed(1L, "Siamese", new GetPetTypeCompact(1L, "Cat"), creatorId),
+            new GetBreed(2L, "Rotweiler", new GetPetTypeCompact(2L, "Dog"), creatorId),
+            new GetBreed(3L, "Flemish Giant", new GetPetTypeCompact(3L, "Rabbit"), creatorId),
+            new GetBreed(4L, "Parrot", new GetPetTypeCompact(4L, "Bird"), creatorId));
   }
 
-  @EnabledOnOs(OS.WINDOWS)
-  @EnabledForJreRange(min = JRE.JAVA_8, max = JRE.JAVA_21)
   @Test
   void post_breed_should_execute_in_3_seconds() throws InterruptedException, Exception {
     given(breedService.create(postBreed)).willReturn(getBreed);
@@ -118,7 +116,8 @@ class BreedControllerTest {
             MockMvcResultMatchers.jsonPath(
                 "$.petType.id", CoreMatchers.is(getBreed.id().intValue())))
         .andExpect(
-            MockMvcResultMatchers.jsonPath("$.createdBy", CoreMatchers.is(getBreed.createdBy())));
+            MockMvcResultMatchers.jsonPath(
+                "$.creatorId", CoreMatchers.is(getBreed.creatorId().toString())));
   }
 
   @Test
@@ -251,7 +250,7 @@ class BreedControllerTest {
         .andExpect(jsonPath("$.name").value("Siamese"))
         .andExpect(jsonPath("$.petType.id").value(1L))
         .andExpect(jsonPath("$.petType.name").value("Cat"))
-        .andExpect(jsonPath("$.createdBy").value("Moderator"));
+        .andExpect(jsonPath("$.creatorId").value(creatorId.toString()));
   }
 
   @Test
@@ -264,7 +263,7 @@ class BreedControllerTest {
   @Test
   public void patch_breed_should_return_patched_breed() throws Exception {
     PatchBreed patch = new PatchBreed("Changed", null);
-    GetBreed patchedBreed = new GetBreed(breedId, "Changed", petType, "Moderator");
+    GetBreed patchedBreed = new GetBreed(breedId, "Changed", petType, creatorId);
 
     when(breedService.patch(breedId, patch)).thenReturn(patchedBreed);
 
@@ -280,13 +279,13 @@ class BreedControllerTest {
         .andExpect(jsonPath("$.name").value(patch.name()))
         .andExpect(jsonPath("$.petType.id").value(patchedBreed.petType().id().intValue()))
         .andExpect(jsonPath("$.petType.name").value(patchedBreed.petType().name()))
-        .andExpect(jsonPath("$.createdBy").value(patchedBreed.createdBy()));
+        .andExpect(jsonPath("$.creatorId").value(patchedBreed.creatorId().toString()));
   }
 
   @Test
   public void patch_breed_should_return_status_code_200() throws Exception {
     PatchBreed patch = new PatchBreed("Changed", null);
-    GetBreed patchedBreed = new GetBreed(breedId, "Changed", petType, "Moderator");
+    GetBreed patchedBreed = new GetBreed(breedId, "Changed", petType, creatorId);
 
     when(breedService.patch(breedId, patch)).thenReturn(patchedBreed);
 

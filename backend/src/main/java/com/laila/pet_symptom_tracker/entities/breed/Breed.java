@@ -28,4 +28,11 @@ public class Breed {
     this.petType = petType;
     this.createdBy = createdBy;
   }
+
+  public Breed(Long id, String name, PetType petType, User createdBy) {
+    this.id = id;
+    this.name = name;
+    this.petType = petType;
+    this.createdBy = createdBy;
+  }
 }

@@ -48,7 +48,9 @@ public class BlackListedWordService {
       word.setWord(patch.word());
     }
 
-    return blackListedWordRepository.save(word);
+    blackListedWordRepository.save(word);
+
+    return word;
   }
 
   public void delete(Long id) {
