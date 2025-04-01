@@ -35,4 +35,12 @@ public class Disease {
     this.description = description;
     this.createdBy = createdBy;
   }
+
+  public Disease(Long id, String name, String description, boolean deleted, User createdBy) {
+    this.id = id;
+    this.name = name;
+    this.description = description;
+    this.deleted = deleted;
+    this.createdBy = createdBy;
+  }
 }

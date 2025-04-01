@@ -1,10 +1,13 @@
 package com.laila.pet_symptom_tracker.entities.disease;
 
+import static com.laila.pet_symptom_tracker.exceptions.GenericExceptionMessages.onlyAdminAndModCanPerformAction;
+
 import com.laila.pet_symptom_tracker.entities.authentication.AuthenticationService;
 import com.laila.pet_symptom_tracker.entities.disease.dto.GetDisease;
 import com.laila.pet_symptom_tracker.entities.disease.dto.PatchDisease;
 import com.laila.pet_symptom_tracker.entities.disease.dto.PostDisease;
 import com.laila.pet_symptom_tracker.entities.user.User;
+import com.laila.pet_symptom_tracker.exceptions.generic.ForbiddenException;
 import com.laila.pet_symptom_tracker.exceptions.generic.NotFoundException;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +21,9 @@ public class DiseaseService {
 
   public GetDisease create(PostDisease body) {
     User loggedInUser = authenticationService.getAuthenticatedUser();
+    if (loggedInUser.hasUserRole()) {
+      throw new ForbiddenException(onlyAdminAndModCanPerformAction);
+    }
     Disease createdDisease =
         Disease.builder()
             .name(body.name())
