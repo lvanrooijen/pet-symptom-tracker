@@ -1,7 +1,7 @@
 package com.laila.pet_symptom_tracker.entities.pettype;
 
-import com.laila.pet_symptom_tracker.entities.pettype.dto.GetPetType;
 import com.laila.pet_symptom_tracker.entities.pettype.dto.PatchPetType;
+import com.laila.pet_symptom_tracker.entities.pettype.dto.PetTypeResponse;
 import com.laila.pet_symptom_tracker.entities.pettype.dto.PostPetType;
 import com.laila.pet_symptom_tracker.mainconfig.Routes;
 import java.net.URI;
@@ -18,8 +18,8 @@ public class PetTypeController {
   private final PetTypeService petTypeService;
 
   @PostMapping
-  public ResponseEntity<GetPetType> create(@RequestBody PostPetType postPetType) {
-    GetPetType createdPetType = petTypeService.create(postPetType);
+  public ResponseEntity<PetTypeResponse> create(@RequestBody PostPetType postPetType) {
+    PetTypeResponse createdPetType = petTypeService.create(postPetType);
 
     URI location =
         ServletUriComponentsBuilder.fromCurrentRequest()
@@ -31,20 +31,21 @@ public class PetTypeController {
   }
 
   @GetMapping
-  public ResponseEntity<List<GetPetType>> getAll() {
-    List<GetPetType> petTypes = petTypeService.getAll();
+  public ResponseEntity<List<PetTypeResponse>> getAll() {
+    List<PetTypeResponse> petTypes = petTypeService.getAll();
     return ResponseEntity.ok(petTypes);
   }
 
   @GetMapping("/{id}")
-  public ResponseEntity<GetPetType> getById(@PathVariable Long id) {
-    GetPetType petType = petTypeService.getById(id);
+  public ResponseEntity<PetTypeResponse> getById(@PathVariable Long id) {
+    PetTypeResponse petType = petTypeService.getById(id);
     return ResponseEntity.ok(petType);
   }
 
   @PatchMapping("/{id}")
-  public ResponseEntity<GetPetType> update(@PathVariable Long id, @RequestBody PatchPetType patch) {
-    GetPetType updatedPetType = petTypeService.patch(id, patch);
+  public ResponseEntity<PetTypeResponse> update(
+      @PathVariable Long id, @RequestBody PatchPetType patch) {
+    PetTypeResponse updatedPetType = petTypeService.patch(id, patch);
     return ResponseEntity.ok(updatedPetType);
   }
 

@@ -5,9 +5,9 @@ import com.laila.pet_symptom_tracker.entities.pet.Pet;
 import com.laila.pet_symptom_tracker.entities.pet.PetRepository;
 import com.laila.pet_symptom_tracker.entities.symptom.Symptom;
 import com.laila.pet_symptom_tracker.entities.symptom.SymptomRepository;
-import com.laila.pet_symptom_tracker.entities.symptomlog.dto.GetSymptomLog;
 import com.laila.pet_symptom_tracker.entities.symptomlog.dto.PatchSymptomLog;
 import com.laila.pet_symptom_tracker.entities.symptomlog.dto.PostSymptomLog;
+import com.laila.pet_symptom_tracker.entities.symptomlog.dto.SymptomLogResponse;
 import com.laila.pet_symptom_tracker.entities.user.User;
 import com.laila.pet_symptom_tracker.exceptions.generic.BadRequestException;
 import com.laila.pet_symptom_tracker.exceptions.generic.ForbiddenException;
@@ -24,7 +24,7 @@ public class SymptomLogService {
   private final PetRepository petRepository;
   private final AuthenticationService authenticationService;
 
-  public GetSymptomLog create(PostSymptomLog postBody) {
+  public SymptomLogResponse create(PostSymptomLog postBody) {
     User loggedInUser = authenticationService.getAuthenticatedUser();
     Pet pet =
         petRepository
@@ -49,24 +49,24 @@ public class SymptomLogService {
             .build();
 
     symptomLogRepository.save(createdSymptomLog);
-    return GetSymptomLog.from(createdSymptomLog);
+    return SymptomLogResponse.from(createdSymptomLog);
   }
 
-  public List<GetSymptomLog> findAll() {
+  public List<SymptomLogResponse> findAll() {
     User loggedInUser = authenticationService.getAuthenticatedUser();
     List<SymptomLog> symptomLogs = symptomLogRepository.findAll();
 
     if (loggedInUser.hasUserRole()) {
       return symptomLogs.stream()
           .filter(log -> log.pet.isOwner(loggedInUser))
-          .map(GetSymptomLog::from)
+          .map(SymptomLogResponse::from)
           .toList();
     }
 
-    return symptomLogs.stream().map(GetSymptomLog::from).toList();
+    return symptomLogs.stream().map(SymptomLogResponse::from).toList();
   }
 
-  public GetSymptomLog getById(Long id) {
+  public SymptomLogResponse getById(Long id) {
     User loggedInUser = authenticationService.getAuthenticatedUser();
     SymptomLog log = symptomLogRepository.findById(id).orElseThrow(NotFoundException::new);
     Pet pet = log.pet;
@@ -74,14 +74,14 @@ public class SymptomLogService {
     if (pet.isOwner(loggedInUser)
         || loggedInUser.hasAdminRole()
         || loggedInUser.hasModeratorRole()) {
-      return GetSymptomLog.from(log);
+      return SymptomLogResponse.from(log);
 
     } else {
       throw new ForbiddenException("Forbidden");
     }
   }
 
-  public GetSymptomLog update(Long id, PatchSymptomLog patch) {
+  public SymptomLogResponse update(Long id, PatchSymptomLog patch) {
     User loggedInUser = authenticationService.getAuthenticatedUser();
     SymptomLog updatedLog = symptomLogRepository.findById(id).orElseThrow(NotFoundException::new);
 
@@ -102,7 +102,7 @@ public class SymptomLogService {
       updatedLog.setSymptom(symptom);
     }
 
-    return GetSymptomLog.from(updatedLog);
+    return SymptomLogResponse.from(updatedLog);
   }
 
   public void delete(Long id) {

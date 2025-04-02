@@ -1,6 +1,6 @@
 package com.laila.pet_symptom_tracker.entities.breed;
 
-import com.laila.pet_symptom_tracker.entities.breed.dto.GetBreed;
+import com.laila.pet_symptom_tracker.entities.breed.dto.BreedResponse;
 import com.laila.pet_symptom_tracker.entities.breed.dto.PatchBreed;
 import com.laila.pet_symptom_tracker.entities.breed.dto.PostBreed;
 import com.laila.pet_symptom_tracker.mainconfig.Routes;
@@ -19,8 +19,8 @@ public class BreedController {
   private final BreedService breedService;
 
   @PostMapping
-  public ResponseEntity<GetBreed> create(@RequestBody @Valid PostBreed postBreed) {
-    GetBreed breed = breedService.create(postBreed);
+  public ResponseEntity<BreedResponse> create(@RequestBody @Valid PostBreed postBreed) {
+    BreedResponse breed = breedService.create(postBreed);
     URI location =
         ServletUriComponentsBuilder.fromCurrentRequest()
             .path("/{id}")
@@ -30,8 +30,8 @@ public class BreedController {
   }
 
   @GetMapping
-  public ResponseEntity<List<GetBreed>> getAll() {
-    List<GetBreed> breeds = breedService.getAll();
+  public ResponseEntity<List<BreedResponse>> getAll() {
+    List<BreedResponse> breeds = breedService.getAll();
     if (breeds.isEmpty()) {
       return ResponseEntity.noContent().build();
     }
@@ -40,12 +40,12 @@ public class BreedController {
   }
 
   @GetMapping("/{id}")
-  public ResponseEntity<GetBreed> getById(@PathVariable Long id) {
+  public ResponseEntity<BreedResponse> getById(@PathVariable Long id) {
     return ResponseEntity.ok(breedService.getById(id));
   }
 
   @PatchMapping("/{id}")
-  public ResponseEntity<GetBreed> update(
+  public ResponseEntity<BreedResponse> update(
       @PathVariable Long id, @RequestBody @Valid PatchBreed patch) {
     return ResponseEntity.ok(breedService.patch(id, patch));
   }

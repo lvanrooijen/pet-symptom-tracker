@@ -1,6 +1,6 @@
 package com.laila.pet_symptom_tracker.entities.symptom;
 
-import com.laila.pet_symptom_tracker.entities.symptom.dto.GetSymptom;
+import com.laila.pet_symptom_tracker.entities.symptom.dto.SymptomResponse;
 import com.laila.pet_symptom_tracker.entities.symptom.dto.PatchSymptom;
 import com.laila.pet_symptom_tracker.entities.symptom.dto.PostSymptom;
 import com.laila.pet_symptom_tracker.mainconfig.Routes;
@@ -19,8 +19,8 @@ public class SymptomController {
   private final SymptomService symptomService;
 
   @PostMapping
-  public ResponseEntity<GetSymptom> create(@RequestBody PostSymptom postSymptom) {
-    GetSymptom symptom = symptomService.create(postSymptom);
+  public ResponseEntity<SymptomResponse> create(@RequestBody PostSymptom postSymptom) {
+    SymptomResponse symptom = symptomService.create(postSymptom);
     URI location =
         ServletUriComponentsBuilder.fromCurrentRequest()
             .path("/{id}")
@@ -30,20 +30,21 @@ public class SymptomController {
   }
 
   @GetMapping
-  public ResponseEntity<List<GetSymptom>> getAll() {
-    List<GetSymptom> symptoms = symptomService.getAll();
+  public ResponseEntity<List<SymptomResponse>> getAll() {
+    List<SymptomResponse> symptoms = symptomService.getAll();
 
     return ResponseEntity.ok(symptoms);
   }
 
   @GetMapping("/{id}")
-  public ResponseEntity<GetSymptom> getById(@PathVariable Long id) {
+  public ResponseEntity<SymptomResponse> getById(@PathVariable Long id) {
     return ResponseEntity.ok(symptomService.getById(id));
   }
 
   @PatchMapping("/{id}")
-  public ResponseEntity<GetSymptom> update(@PathVariable Long id, @RequestBody PatchSymptom patch) {
-    GetSymptom updatedSymptom = symptomService.update(id, patch);
+  public ResponseEntity<SymptomResponse> update(
+      @PathVariable Long id, @RequestBody PatchSymptom patch) {
+    SymptomResponse updatedSymptom = symptomService.update(id, patch);
     return ResponseEntity.ok(updatedSymptom);
   }
 

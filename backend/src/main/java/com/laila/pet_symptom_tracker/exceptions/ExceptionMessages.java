@@ -1,0 +1,16 @@
+package com.laila.pet_symptom_tracker.exceptions;
+
+public class ExceptionMessages {
+  // authentication
+  public static String ADMIN_ONLY_ACTION = "Only an admin is allowed to perform this action.";
+  public static String ADMIN_OR_MODERATOR_ONLY_ACTION =
+      "Only an admin or moderator is allowed to perform this action.";
+
+  public static String OWNER_OR_ADMIN_ONLY_ACTION =
+      "Only the owner or admin is allowed to perform this action";
+
+  // bad requests and miscellaneous
+  public static String NON_EXISTENT_DISEASE = "This disease does not exist.";
+  public static String NON_EXISTENT_PET_TYPE = "This pet type does not exist.";
+  public static String DUPLICATE_BLACKLIST_WORD = "This word is already on the blacklist.";
+}

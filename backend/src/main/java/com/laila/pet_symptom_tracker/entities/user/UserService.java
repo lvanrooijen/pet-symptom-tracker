@@ -21,12 +21,12 @@ public class UserService implements UserDetailsManager {
   /* ~~~~~~~~~~~~~~ Controller methods ~~~~~~~~~~~~~~ */
   public User register(RegisterRequest registerRequest) {
     User user =
-        new User.Builder()
+        User.builder()
             .username(registerRequest.username())
             .email(registerRequest.email())
             .password(passwordEncoder.encode(registerRequest.password()))
-            .firstname(registerRequest.firstname())
-            .lastname(registerRequest.lastname())
+            .firstName(registerRequest.firstname())
+            .lastName(registerRequest.lastname())
             .role(Role.USER)
             .build();
 

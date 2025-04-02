@@ -3,8 +3,8 @@ package com.laila.pet_symptom_tracker.entities.pet;
 import com.laila.pet_symptom_tracker.entities.authentication.AuthenticationService;
 import com.laila.pet_symptom_tracker.entities.breed.Breed;
 import com.laila.pet_symptom_tracker.entities.breed.BreedRepository;
-import com.laila.pet_symptom_tracker.entities.pet.dto.GetPet;
 import com.laila.pet_symptom_tracker.entities.pet.dto.PatchPet;
+import com.laila.pet_symptom_tracker.entities.pet.dto.PetResponse;
 import com.laila.pet_symptom_tracker.entities.pet.dto.PostPet;
 import com.laila.pet_symptom_tracker.entities.user.User;
 import com.laila.pet_symptom_tracker.entities.user.UserRepository;
@@ -24,7 +24,7 @@ public class PetService {
   private final UserRepository userRepository;
   private final AuthenticationService authenticationService;
 
-  public GetPet create(PostPet dto) {
+  public PetResponse create(PostPet dto) {
     User loggedInUser = authenticationService.getAuthenticatedUser();
     Breed breed =
         breedRepository
@@ -40,22 +40,22 @@ public class PetService {
             .isAlive(true)
             .build();
 
-    return GetPet.from(petRepository.save(pet));
+    return PetResponse.from(petRepository.save(pet));
   }
 
-  public GetPet getById(Long id) {
+  public PetResponse getById(Long id) {
     User loggedInUser = authenticationService.getAuthenticatedUser();
     Pet pet = petRepository.findById(id).orElseThrow(() -> new NotFoundException("Pet not found"));
     if (pet.isOwner(loggedInUser)
         || loggedInUser.hasAdminRole()
         || loggedInUser.hasModeratorRole()) {
-      return GetPet.from(pet);
+      return PetResponse.from(pet);
     } else {
       throw new ForbiddenException();
     }
   }
 
-  public List<GetPet> getAll() {
+  public List<PetResponse> getAll() {
     User loggedInUser = authenticationService.getAuthenticatedUser();
     List<Pet> pets;
 
@@ -67,10 +67,10 @@ public class PetService {
 
     if (pets.isEmpty()) throw new NoContentException();
 
-    return pets.stream().map(GetPet::from).toList();
+    return pets.stream().map(PetResponse::from).toList();
   }
 
-  public GetPet update(Long id, PatchPet patch) {
+  public PetResponse update(Long id, PatchPet patch) {
     User loggedInUser = authenticationService.getAuthenticatedUser();
     Pet updatedPet = petRepository.findById(id).orElseThrow(NotFoundException::new);
 
@@ -104,7 +104,7 @@ public class PetService {
     }
 
     petRepository.save(updatedPet);
-    return GetPet.from(updatedPet);
+    return PetResponse.from(updatedPet);
   }
 
   public void delete(Long id) {

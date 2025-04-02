@@ -1,14 +1,17 @@
 package com.laila.pet_symptom_tracker.entities.diseaselog;
 
+import static com.laila.pet_symptom_tracker.exceptions.ExceptionMessages.*;
+
 import com.laila.pet_symptom_tracker.entities.authentication.AuthenticationService;
 import com.laila.pet_symptom_tracker.entities.disease.Disease;
 import com.laila.pet_symptom_tracker.entities.disease.DiseaseRepository;
-import com.laila.pet_symptom_tracker.entities.diseaselog.dto.GetDiseaseLog;
+import com.laila.pet_symptom_tracker.entities.diseaselog.dto.DiseaseLogResponse;
 import com.laila.pet_symptom_tracker.entities.diseaselog.dto.PatchDiseaseLog;
 import com.laila.pet_symptom_tracker.entities.diseaselog.dto.PostDiseaseLog;
 import com.laila.pet_symptom_tracker.entities.pet.Pet;
 import com.laila.pet_symptom_tracker.entities.pet.PetRepository;
 import com.laila.pet_symptom_tracker.entities.user.User;
+import com.laila.pet_symptom_tracker.exceptions.generic.BadRequestException;
 import com.laila.pet_symptom_tracker.exceptions.generic.ForbiddenException;
 import com.laila.pet_symptom_tracker.exceptions.generic.NotFoundException;
 import java.time.LocalDate;
@@ -24,21 +27,21 @@ public class DiseaseLogService {
   private final PetRepository petRepository;
   private final AuthenticationService authenticationService;
 
-  public GetDiseaseLog create(PostDiseaseLog postBody) {
+  public DiseaseLogResponse create(PostDiseaseLog postBody) {
     User loggedInUser = authenticationService.getAuthenticatedUser();
     Pet pet =
         petRepository
             .findById(postBody.petId())
-            .orElseThrow(() -> new NotFoundException("Pet does not exist"));
+            .orElseThrow(() -> new BadRequestException(NON_EXISTENT_PET_TYPE));
 
     if (pet.isNotOwner(loggedInUser) && loggedInUser.hasUserRole()) {
-      throw new ForbiddenException("Only the owner or admin is allowed to perform this action");
+      throw new ForbiddenException(OWNER_OR_ADMIN_ONLY_ACTION);
     }
 
     Disease disease =
         diseaseRepository
             .findById(postBody.diseaseId())
-            .orElseThrow(() -> new NotFoundException("Disease does not exist"));
+            .orElseThrow(() -> new BadRequestException(NON_EXISTENT_DISEASE));
 
     DiseaseLog createdDiseaseLog =
         DiseaseLog.builder()
@@ -51,41 +54,41 @@ public class DiseaseLogService {
 
     diseaseLogRepository.save(createdDiseaseLog);
 
-    return GetDiseaseLog.from(createdDiseaseLog);
+    return DiseaseLogResponse.from(createdDiseaseLog);
   }
 
-  public List<GetDiseaseLog> getAll() {
+  public List<DiseaseLogResponse> getAll() {
     User loggedInUser = authenticationService.getAuthenticatedUser();
     List<DiseaseLog> diseaseLogs = diseaseLogRepository.findAll();
 
     if (loggedInUser.hasUserRole()) {
       return diseaseLogs.stream()
           .filter(log -> log.getPet().isOwner(loggedInUser))
-          .map(GetDiseaseLog::from)
+          .map(DiseaseLogResponse::from)
           .toList();
     }
 
-    return diseaseLogs.stream().map(GetDiseaseLog::from).toList();
+    return diseaseLogs.stream().map(DiseaseLogResponse::from).toList();
   }
 
-  public GetDiseaseLog getById(Long id) {
+  public DiseaseLogResponse getById(Long id) {
     User loggedInUser = authenticationService.getAuthenticatedUser();
     DiseaseLog diseaseLog = diseaseLogRepository.findById(id).orElseThrow(NotFoundException::new);
     if (diseaseLog.getPet().isOwner(loggedInUser)
         || loggedInUser.hasModeratorRole()
         || loggedInUser.hasAdminRole()) {
-      return GetDiseaseLog.from(diseaseLog);
+      return DiseaseLogResponse.from(diseaseLog);
     } else {
-      throw new ForbiddenException("Only the owner or admin may perform this action.");
+      throw new ForbiddenException(OWNER_OR_ADMIN_ONLY_ACTION);
     }
   }
 
-  public GetDiseaseLog update(Long id, PatchDiseaseLog patch) {
+  public DiseaseLogResponse update(Long id, PatchDiseaseLog patch) {
     User loggedInUser = authenticationService.getAuthenticatedUser();
     DiseaseLog update = diseaseLogRepository.findById(id).orElseThrow(NotFoundException::new);
 
     if (update.getPet().isNotOwner(loggedInUser) && loggedInUser.hasUserRole()) {
-      throw new ForbiddenException("Only the owner or admin is allowed to perform this action");
+      throw new ForbiddenException(OWNER_OR_ADMIN_ONLY_ACTION);
     }
 
     if (patch.isHealed() != null) {
@@ -98,21 +101,21 @@ public class DiseaseLogService {
       Disease disease =
           diseaseRepository
               .findById(patch.diseaseId())
-              .orElseThrow(() -> new NotFoundException("Disease not found"));
+              .orElseThrow(() -> new NotFoundException(NON_EXISTENT_DISEASE));
       update.setDisease(disease);
     }
     if (patch.discoveryDate() != null) {
       update.setDiscoveryDate(patch.discoveryDate());
     }
     diseaseLogRepository.save(update);
-    return GetDiseaseLog.from(update);
+    return DiseaseLogResponse.from(update);
   }
 
   public void delete(Long id) {
     User loggedInUser = authenticationService.getAuthenticatedUser();
     DiseaseLog log = diseaseLogRepository.findById(id).orElseThrow(NotFoundException::new);
     if (log.getPet().isNotOwner(loggedInUser) && loggedInUser.hasUserRole()) {
-      throw new ForbiddenException("Only the owner or admin may perform this action");
+      throw new ForbiddenException(OWNER_OR_ADMIN_ONLY_ACTION);
     }
     diseaseLogRepository.deleteById(id);
   }

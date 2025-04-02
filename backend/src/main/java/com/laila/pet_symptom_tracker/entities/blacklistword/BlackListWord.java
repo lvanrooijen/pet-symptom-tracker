@@ -1,4 +1,4 @@
-package com.laila.pet_symptom_tracker.entities.blacklistedword;
+package com.laila.pet_symptom_tracker.entities.blacklistword;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -11,14 +11,14 @@ import lombok.Setter;
 @Entity
 @Getter
 @NoArgsConstructor
-public class BlackListedWord {
+public class BlackListWord {
   @Id @GeneratedValue private Long id;
 
   @Setter
   @Column(unique = true, nullable = false)
   private String word;
 
-  public BlackListedWord(String word) {
+  public BlackListWord(String word) {
     this.word = word;
   }
 }

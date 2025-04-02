@@ -12,7 +12,6 @@ import lombok.Setter;
 @Entity(name = "pets")
 @NoArgsConstructor
 @Getter
-@Builder
 public class Pet {
   @Setter @ManyToOne User owner;
   @Id @GeneratedValue private Long id;
@@ -30,6 +29,7 @@ public class Pet {
   @Setter
   private LocalDate dateOfDeath;
 
+  @Builder
   private Pet(
       User owner,
       Long id,

@@ -1,16 +1,14 @@
 package com.laila.pet_symptom_tracker.entities.diseaselog;
 
-import com.laila.pet_symptom_tracker.entities.diseaselog.dto.GetDiseaseLog;
+import com.laila.pet_symptom_tracker.entities.diseaselog.dto.DiseaseLogResponse;
 import com.laila.pet_symptom_tracker.entities.diseaselog.dto.PatchDiseaseLog;
 import com.laila.pet_symptom_tracker.entities.diseaselog.dto.PostDiseaseLog;
-import com.laila.pet_symptom_tracker.entities.user.User;
 import com.laila.pet_symptom_tracker.mainconfig.Routes;
 import jakarta.validation.Valid;
 import java.net.URI;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -21,8 +19,8 @@ public class DiseaseLogController {
   private final DiseaseLogService diseaseLogService;
 
   @PostMapping
-  public ResponseEntity<GetDiseaseLog> create(@RequestBody @Valid PostDiseaseLog diseaseLog) {
-    GetDiseaseLog createdDiseaseLog = diseaseLogService.create(diseaseLog);
+  public ResponseEntity<DiseaseLogResponse> create(@RequestBody @Valid PostDiseaseLog diseaseLog) {
+    DiseaseLogResponse createdDiseaseLog = diseaseLogService.create(diseaseLog);
 
     URI location =
         ServletUriComponentsBuilder.fromCurrentRequest()
@@ -33,8 +31,8 @@ public class DiseaseLogController {
   }
 
   @GetMapping
-  public ResponseEntity<List<GetDiseaseLog>> getAll() {
-    List<GetDiseaseLog> logs = diseaseLogService.getAll();
+  public ResponseEntity<List<DiseaseLogResponse>> getAll() {
+    List<DiseaseLogResponse> logs = diseaseLogService.getAll();
 
     if (logs.isEmpty()) {
       return ResponseEntity.noContent().build();
@@ -43,16 +41,16 @@ public class DiseaseLogController {
   }
 
   @GetMapping("/{id}")
-  public ResponseEntity<GetDiseaseLog> getById(@PathVariable Long id) {
-    GetDiseaseLog diseaseLog = diseaseLogService.getById(id);
+  public ResponseEntity<DiseaseLogResponse> getById(@PathVariable Long id) {
+    DiseaseLogResponse diseaseLog = diseaseLogService.getById(id);
 
     return ResponseEntity.ok(diseaseLog);
   }
 
   @PatchMapping("/{id}")
-  public ResponseEntity<GetDiseaseLog> update(
+  public ResponseEntity<DiseaseLogResponse> update(
       @PathVariable Long id, @RequestBody PatchDiseaseLog patch) {
-    GetDiseaseLog updateDiseaseLog = diseaseLogService.update(id, patch);
+    DiseaseLogResponse updateDiseaseLog = diseaseLogService.update(id, patch);
     return ResponseEntity.ok(updateDiseaseLog);
   }
 

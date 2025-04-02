@@ -1,7 +1,7 @@
 package com.laila.pet_symptom_tracker.entities.pet;
 
-import com.laila.pet_symptom_tracker.entities.pet.dto.GetPet;
 import com.laila.pet_symptom_tracker.entities.pet.dto.PatchPet;
+import com.laila.pet_symptom_tracker.entities.pet.dto.PetResponse;
 import com.laila.pet_symptom_tracker.entities.pet.dto.PostPet;
 import com.laila.pet_symptom_tracker.mainconfig.Routes;
 import jakarta.validation.Valid;
@@ -19,8 +19,8 @@ public class PetController {
   private final PetService petService;
 
   @PostMapping
-  public ResponseEntity<GetPet> create(@RequestBody @Valid PostPet petDto) {
-    GetPet createdPet = petService.create(petDto);
+  public ResponseEntity<PetResponse> create(@RequestBody @Valid PostPet petDto) {
+    PetResponse createdPet = petService.create(petDto);
 
     URI location =
         ServletUriComponentsBuilder.fromCurrentRequest()
@@ -32,17 +32,17 @@ public class PetController {
   }
 
   @GetMapping("/{id}")
-  public ResponseEntity<GetPet> getById(@PathVariable Long id) {
+  public ResponseEntity<PetResponse> getById(@PathVariable Long id) {
     return ResponseEntity.ok(petService.getById(id));
   }
 
   @GetMapping
-  public ResponseEntity<List<GetPet>> getAll() {
+  public ResponseEntity<List<PetResponse>> getAll() {
     return ResponseEntity.ok(petService.getAll());
   }
 
   @PatchMapping("/{id}")
-  public ResponseEntity<GetPet> update(@PathVariable Long id, @RequestBody PatchPet patch) {
+  public ResponseEntity<PetResponse> update(@PathVariable Long id, @RequestBody PatchPet patch) {
     return ResponseEntity.ok(petService.update(id, patch));
   }
 

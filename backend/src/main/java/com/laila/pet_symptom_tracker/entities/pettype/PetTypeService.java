@@ -1,8 +1,8 @@
 package com.laila.pet_symptom_tracker.entities.pettype;
 
 import com.laila.pet_symptom_tracker.entities.authentication.AuthenticationService;
-import com.laila.pet_symptom_tracker.entities.pettype.dto.GetPetType;
 import com.laila.pet_symptom_tracker.entities.pettype.dto.PatchPetType;
+import com.laila.pet_symptom_tracker.entities.pettype.dto.PetTypeResponse;
 import com.laila.pet_symptom_tracker.entities.pettype.dto.PostPetType;
 import com.laila.pet_symptom_tracker.entities.user.User;
 import com.laila.pet_symptom_tracker.exceptions.generic.ForbiddenException;
@@ -18,7 +18,7 @@ public class PetTypeService {
   private final PetTypeRepository petTypeRepository;
   private final AuthenticationService authenticationService;
 
-  public GetPetType create(PostPetType dto) {
+  public PetTypeResponse create(PostPetType dto) {
     User loggedInUser = authenticationService.getAuthenticatedUser();
     ColoredLogger.prettyInPink(loggedInUser.getRole().toString());
     if (!loggedInUser.hasModeratorRole() && !loggedInUser.hasAdminRole())
@@ -30,10 +30,10 @@ public class PetTypeService {
 
     petTypeRepository.save(createdType);
 
-    return GetPetType.from(createdType);
+    return PetTypeResponse.from(createdType);
   }
 
-  public List<GetPetType> getAll() {
+  public List<PetTypeResponse> getAll() {
     User loggedInUser = authenticationService.getAuthenticatedUser();
     List<PetType> petTypes;
     if (loggedInUser.hasAdminRole()) {
@@ -42,16 +42,16 @@ public class PetTypeService {
       petTypes = petTypeRepository.findByDeletedFalse();
     }
 
-    return petTypes.stream().map(GetPetType::from).toList();
+    return petTypes.stream().map(PetTypeResponse::from).toList();
   }
 
-  public GetPetType getById(Long id) {
+  public PetTypeResponse getById(Long id) {
     PetType petType = petTypeRepository.findById(id).orElseThrow(NotFoundException::new);
-    return GetPetType.from(petType);
+    return PetTypeResponse.from(petType);
   }
 
   // TODO bijhouden wie wanneer aanpassing heeft gemaakt
-  public GetPetType patch(Long id, PatchPetType patch) {
+  public PetTypeResponse patch(Long id, PatchPetType patch) {
     PetType petType = petTypeRepository.findById(id).orElseThrow(NotFoundException::new);
 
     if (patch.name() != null) {
@@ -59,7 +59,7 @@ public class PetTypeService {
     }
 
     petTypeRepository.save(petType);
-    return GetPetType.from(petType);
+    return PetTypeResponse.from(petType);
   }
 
   public void delete(Long id) {

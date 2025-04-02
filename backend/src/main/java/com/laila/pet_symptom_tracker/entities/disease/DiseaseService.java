@@ -1,9 +1,9 @@
 package com.laila.pet_symptom_tracker.entities.disease;
 
-import static com.laila.pet_symptom_tracker.exceptions.GenericExceptionMessages.onlyAdminAndModCanPerformAction;
+import static com.laila.pet_symptom_tracker.exceptions.ExceptionMessages.ADMIN_OR_MODERATOR_ONLY_ACTION;
 
 import com.laila.pet_symptom_tracker.entities.authentication.AuthenticationService;
-import com.laila.pet_symptom_tracker.entities.disease.dto.GetDisease;
+import com.laila.pet_symptom_tracker.entities.disease.dto.DiseaseResponse;
 import com.laila.pet_symptom_tracker.entities.disease.dto.PatchDisease;
 import com.laila.pet_symptom_tracker.entities.disease.dto.PostDisease;
 import com.laila.pet_symptom_tracker.entities.user.User;
@@ -19,10 +19,10 @@ public class DiseaseService {
   private final DiseaseRepository diseaseRepository;
   private final AuthenticationService authenticationService;
 
-  public GetDisease create(PostDisease body) {
+  public DiseaseResponse create(PostDisease body) {
     User loggedInUser = authenticationService.getAuthenticatedUser();
     if (loggedInUser.hasUserRole()) {
-      throw new ForbiddenException(onlyAdminAndModCanPerformAction);
+      throw new ForbiddenException(ADMIN_OR_MODERATOR_ONLY_ACTION);
     }
     Disease createdDisease =
         Disease.builder()
@@ -33,10 +33,10 @@ public class DiseaseService {
 
     diseaseRepository.save(createdDisease);
 
-    return GetDisease.from(createdDisease);
+    return DiseaseResponse.from(createdDisease);
   }
 
-  public List<GetDisease> getAll() {
+  public List<DiseaseResponse> getAll() {
     User loggedInUser = authenticationService.getAuthenticatedUser();
     List<Disease> diseases;
     if (loggedInUser.hasAdminRole()) {
@@ -44,15 +44,15 @@ public class DiseaseService {
     } else {
       diseases = diseaseRepository.findByDeletedFalse();
     }
-    return diseases.stream().map(GetDisease::from).toList();
+    return diseases.stream().map(DiseaseResponse::from).toList();
   }
 
-  public GetDisease getById(Long id) {
+  public DiseaseResponse getById(Long id) {
     Disease disease = diseaseRepository.findById(id).orElseThrow(NotFoundException::new);
-    return GetDisease.from(disease);
+    return DiseaseResponse.from(disease);
   }
 
-  public GetDisease update(Long id, PatchDisease patch) {
+  public DiseaseResponse update(Long id, PatchDisease patch) {
     Disease updatedDisease = diseaseRepository.findById(id).orElseThrow(NotFoundException::new);
     if (patch.name() != null) {
       updatedDisease.setName(patch.name());
@@ -61,7 +61,7 @@ public class DiseaseService {
       updatedDisease.setDescription(patch.description());
     }
     diseaseRepository.save(updatedDisease);
-    return GetDisease.from(updatedDisease);
+    return DiseaseResponse.from(updatedDisease);
   }
 
   public void delete(Long id) {

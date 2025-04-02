@@ -1,9 +1,9 @@
 package com.laila.pet_symptom_tracker.entities.breed;
 
-import static com.laila.pet_symptom_tracker.exceptions.GenericExceptionMessages.nonExistentPetType;
+import static com.laila.pet_symptom_tracker.exceptions.ExceptionMessages.NON_EXISTENT_PET_TYPE;
 
 import com.laila.pet_symptom_tracker.entities.authentication.AuthenticationService;
-import com.laila.pet_symptom_tracker.entities.breed.dto.GetBreed;
+import com.laila.pet_symptom_tracker.entities.breed.dto.BreedResponse;
 import com.laila.pet_symptom_tracker.entities.breed.dto.PatchBreed;
 import com.laila.pet_symptom_tracker.entities.breed.dto.PostBreed;
 import com.laila.pet_symptom_tracker.entities.pettype.PetType;
@@ -22,29 +22,29 @@ public class BreedService {
   private final PetTypeRepository petTypeRepository;
   private final AuthenticationService authenticationService;
 
-  public GetBreed create(PostBreed postBreed) {
+  public BreedResponse create(PostBreed postBreed) {
     User loggedInUser = authenticationService.getAuthenticatedUser();
     PetType type =
         petTypeRepository
             .findById(postBreed.petTypeId())
-            .orElseThrow(() -> new BadRequestException(nonExistentPetType));
+            .orElseThrow(() -> new BadRequestException(NON_EXISTENT_PET_TYPE));
     Breed createdBreed =
         Breed.builder().name(postBreed.name()).petType(type).createdBy(loggedInUser).build();
     breedRepository.save(createdBreed);
-    return GetBreed.from(createdBreed);
+    return BreedResponse.from(createdBreed);
   }
 
-  public List<GetBreed> getAll() {
-    return breedRepository.findAll().stream().map(GetBreed::from).toList();
+  public List<BreedResponse> getAll() {
+    return breedRepository.findAll().stream().map(BreedResponse::from).toList();
   }
 
-  public GetBreed getById(Long id) {
+  public BreedResponse getById(Long id) {
     Breed breed = breedRepository.findById(id).orElseThrow(NotFoundException::new);
-    return GetBreed.from(breed);
+    return BreedResponse.from(breed);
   }
 
   // TODO bijhouden wie wanneer aanpassing heeft gemaakt
-  public GetBreed patch(Long id, PatchBreed patch) {
+  public BreedResponse patch(Long id, PatchBreed patch) {
     Breed updatedBreed = breedRepository.findById(id).orElseThrow(NotFoundException::new);
 
     if (patch.name() != null) {
@@ -55,11 +55,11 @@ public class BreedService {
       PetType type =
           petTypeRepository
               .findById(patch.petTypeId())
-              .orElseThrow(() -> new BadRequestException(nonExistentPetType));
+              .orElseThrow(() -> new BadRequestException(NON_EXISTENT_PET_TYPE));
       updatedBreed.setPetType(type);
     }
 
-    return GetBreed.from(updatedBreed);
+    return BreedResponse.from(updatedBreed);
   }
 
   public void deleteById(Long id) {

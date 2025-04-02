@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -59,15 +60,26 @@ public class User implements UserDetails {
     this.role = role;
   }
 
-  public User(Builder builder) {
-    this.username = builder.username;
-    this.email = builder.email;
-    this.password = builder.password;
-    this.firstName = builder.firstname;
-    this.lastName = builder.lastname;
-    this.role = builder.role;
-    this.enabled = (builder.enabled == null) ? true : builder.enabled;
-    this.locked = (builder.locked == null) ? true : builder.locked;
+  @Builder
+  private User(
+      UUID id,
+      String email,
+      String password,
+      String username,
+      Role role,
+      String firstName,
+      String lastName,
+      Boolean enabled,
+      Boolean locked) {
+    this.id = id;
+    this.email = email;
+    this.password = password;
+    this.username = username;
+    this.role = role;
+    this.firstName = firstName;
+    this.lastName = lastName;
+    this.enabled = enabled;
+    this.locked = locked;
   }
 
   public boolean hasRole(Role role) {
@@ -111,61 +123,5 @@ public class User implements UserDetails {
 
   public Boolean hasUserRole() {
     return hasRole(Role.USER);
-  }
-
-  /*  ~~~~~~~~~~~ Builder Class ~~~~~~~~~~~  */
-  public static class Builder {
-    private String username;
-    private String email;
-    private String password;
-    private String firstname;
-    private String lastname;
-    private Role role;
-    private Boolean enabled;
-    private Boolean locked;
-
-    public Builder username(String username) {
-      this.username = username;
-      return this;
-    }
-
-    public Builder email(String email) {
-      this.email = email;
-      return this;
-    }
-
-    public Builder password(String password) {
-      this.password = password;
-      return this;
-    }
-
-    public Builder firstname(String firstname) {
-      this.firstname = firstname;
-      return this;
-    }
-
-    public Builder lastname(String lastname) {
-      this.lastname = lastname;
-      return this;
-    }
-
-    public Builder role(Role role) {
-      this.role = role;
-      return this;
-    }
-
-    public Builder enabled(Boolean enabled) {
-      this.enabled = enabled;
-      return this;
-    }
-
-    public Builder locked(Boolean locked) {
-      this.locked = locked;
-      return this;
-    }
-
-    public User build() {
-      return new User(this);
-    }
   }
 }

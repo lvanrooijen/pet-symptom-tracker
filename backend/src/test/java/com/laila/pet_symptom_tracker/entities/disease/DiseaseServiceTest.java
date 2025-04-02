@@ -1,13 +1,16 @@
 package com.laila.pet_symptom_tracker.entities.disease;
 
+import static com.laila.pet_symptom_tracker.TestDataFactory.INVALID_ID;
+import static com.laila.pet_symptom_tracker.TestDataFactory.VALID_ID;
+import static com.laila.pet_symptom_tracker.exceptions.ExceptionMessages.ADMIN_OR_MODERATOR_ONLY_ACTION;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import com.laila.pet_symptom_tracker.TestDataFactory;
 import com.laila.pet_symptom_tracker.entities.authentication.AuthenticationService;
-import com.laila.pet_symptom_tracker.entities.authentication.Role;
-import com.laila.pet_symptom_tracker.entities.disease.dto.GetDisease;
+import com.laila.pet_symptom_tracker.entities.disease.dto.DiseaseResponse;
 import com.laila.pet_symptom_tracker.entities.disease.dto.PatchDisease;
 import com.laila.pet_symptom_tracker.entities.disease.dto.PostDisease;
 import com.laila.pet_symptom_tracker.entities.user.User;
@@ -15,8 +18,6 @@ import com.laila.pet_symptom_tracker.exceptions.generic.ForbiddenException;
 import com.laila.pet_symptom_tracker.exceptions.generic.NotFoundException;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.Test;
@@ -32,118 +33,108 @@ class DiseaseServiceTest {
   @Mock AuthenticationService authenticationService;
   @InjectMocks DiseaseService diseaseService;
 
-  Disease disease;
-  GetDisease getDisease;
-  PostDisease postDisease;
-  PatchDisease patchDisease;
-  User user;
-  User moderator;
-  User admin;
-  Long validId;
-  Long invalidId;
-  UUID creatorId;
-  List<Disease> diseaseList;
-  List<Disease> diseaseListWithDeleted;
-
-  @BeforeEach
-  public void init() {
-    validId = 1L;
-    invalidId = 999L;
-    creatorId = UUID.randomUUID();
-    user = new User("user@gmail.com", "Password123!", "User", Role.USER);
-    admin = new User("admin@gmail.com", "Password123!", "Admin", Role.ADMIN);
-    moderator = new User("mod@gmail.com", "Password123!", "Moderator", Role.MODERATOR);
-    disease = new Disease(validId, "Rabies", "description on rabies", false, admin);
-    getDisease = new GetDisease(validId, "Rabies", "description on rabies", creatorId);
-    postDisease = new PostDisease(disease.getName(), disease.getDescription());
-    patchDisease = new PatchDisease("TestName", "TestDescription");
-    diseaseList =
-        List.of(
-            new Disease(1L, "A", "description on A", false, admin),
-            new Disease(2L, "B", "description on B", false, admin));
-    diseaseListWithDeleted =
-        List.of(
-            new Disease(1L, "A", "description on A", false, admin),
-            new Disease(2L, "B", "description on B", false, admin),
-            new Disease(3L, "C", "description on C", true, moderator),
-            new Disease(4L, "D", "description on D", true, moderator));
-  }
-
   @Test
   public void create_disease_by_user_should_throw_forbidden_exception_with_correct_message() {
+    User user = TestDataFactory.getRegularUser();
+    PostDisease postDisease = TestDataFactory.getPostDisease();
+
     when(authenticationService.getAuthenticatedUser()).thenReturn(user);
 
     ForbiddenException exception =
         assertThrows(ForbiddenException.class, () -> diseaseService.create(postDisease));
 
-    assertEquals(
-        "Only an admin or moderator is allowed to perform this action.", exception.getMessage());
+    assertEquals(ADMIN_OR_MODERATOR_ONLY_ACTION, exception.getMessage());
   }
 
   @Test
   public void mod_can_create_disease() {
+    User moderator = TestDataFactory.getModerator();
+    PostDisease requestBody = TestDataFactory.getPostDisease();
+
     when(authenticationService.getAuthenticatedUser()).thenReturn(moderator);
-    GetDisease result = diseaseService.create(postDisease);
+    DiseaseResponse result = diseaseService.create(requestBody);
+
     assertNotNull(result);
     verify(diseaseRepository).save(any(Disease.class));
   }
 
   @Test
   public void admin_can_create_disease() {
+    User admin = TestDataFactory.getAdmin();
+    PostDisease requestBody = TestDataFactory.getPostDisease();
+
     when(authenticationService.getAuthenticatedUser()).thenReturn(admin);
-    GetDisease result = diseaseService.create(postDisease);
+    DiseaseResponse result = diseaseService.create(requestBody);
+
     assertNotNull(result);
     verify(diseaseRepository).save(any(Disease.class));
   }
 
   @Test
   public void create_disease_returns_right_values() {
+    User admin = TestDataFactory.getAdmin();
+    PostDisease requestBody = TestDataFactory.getPostDisease();
+
     when(authenticationService.getAuthenticatedUser()).thenReturn(admin);
-    GetDisease result = diseaseService.create(postDisease);
-    assertEquals(postDisease.name(), result.name());
-    assertEquals(postDisease.description(), result.description());
+    DiseaseResponse result = diseaseService.create(requestBody);
+
+    assertEquals(requestBody.name(), result.name());
+    assertEquals(requestBody.description(), result.description());
     verify(diseaseRepository).save(any(Disease.class));
   }
 
   @Test
   public void get_all_as_admin_should_show_soft_deleted_diseases() {
+    User admin = TestDataFactory.getAdmin();
+    List<Disease> adminDiseaseList = TestDataFactory.getAdminDiseaseList();
+
     when(authenticationService.getAuthenticatedUser()).thenReturn(admin);
-    when(diseaseRepository.findAll()).thenReturn(diseaseListWithDeleted);
-    List<GetDisease> result = diseaseService.getAll();
-    assertEquals(diseaseListWithDeleted.size(), result.size());
+    when(diseaseRepository.findAll()).thenReturn(adminDiseaseList);
+
+    List<DiseaseResponse> result = diseaseService.getAll();
+    assertEquals(adminDiseaseList.size(), result.size());
   }
 
   @Test
   public void get_all_as_user_should_not_show_soft_deleted_diseases() {
+    User user = TestDataFactory.getRegularUser();
+    List<Disease> diseaseList = TestDataFactory.getDiseaseList();
+
     when(authenticationService.getAuthenticatedUser()).thenReturn(user);
     when(diseaseRepository.findByDeletedFalse()).thenReturn(diseaseList);
-    List<GetDisease> result = diseaseService.getAll();
+
+    List<DiseaseResponse> result = diseaseService.getAll();
     assertEquals(diseaseList.size(), result.size());
   }
 
   @Test
   public void get_disease_with_invalid_id_should_throw_not_found_exception() {
-    when(diseaseRepository.findById(invalidId)).thenReturn(Optional.empty());
-    assertThrows(NotFoundException.class, () -> diseaseService.getById(invalidId));
+    when(diseaseRepository.findById(INVALID_ID)).thenReturn(Optional.empty());
+    assertThrows(NotFoundException.class, () -> diseaseService.getById(INVALID_ID));
   }
 
   @Test
   public void patch_disease_with_invalid_id_should_throw_not_found_exception() {
-    when(diseaseRepository.findById(invalidId)).thenReturn(Optional.empty());
-    assertThrows(NotFoundException.class, () -> diseaseService.update(invalidId, patchDisease));
+    PatchDisease patch = TestDataFactory.getPatchDisease();
+
+    when(diseaseRepository.findById(INVALID_ID)).thenReturn(Optional.empty());
+    assertThrows(NotFoundException.class, () -> diseaseService.update(INVALID_ID, patch));
   }
 
   @Test
   public void patch_disease_should_return_patched_disease() {
-    when(diseaseRepository.findById(validId)).thenReturn(Optional.of(disease));
-    GetDisease result = diseaseService.update(validId, patchDisease);
-    assertEquals(patchDisease.name(), result.name());
-    assertEquals(patchDisease.description(), result.description());
+    Disease disease = TestDataFactory.getDisease();
+    PatchDisease patch = TestDataFactory.getPatchDisease();
+
+    when(diseaseRepository.findById(VALID_ID)).thenReturn(Optional.of(disease));
+    DiseaseResponse result = diseaseService.update(VALID_ID, patch);
+    assertEquals(patch.name(), result.name());
+    assertEquals(patch.description(), result.description());
   }
 
   @Test
   public void delete_disease_with_invalid_id_should_throw_not_found_exception() {
-    when(diseaseRepository.findById(invalidId)).thenReturn(Optional.empty());
-    assertThrows(NotFoundException.class, () -> diseaseService.delete(invalidId));
+    when(diseaseRepository.findById(INVALID_ID)).thenReturn(Optional.empty());
+    assertThrows(NotFoundException.class, () -> diseaseService.delete(INVALID_ID));
   }
 }

@@ -9,10 +9,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.laila.pet_symptom_tracker.entities.authentication.AuthenticationService;
-import com.laila.pet_symptom_tracker.entities.breed.dto.GetBreed;
+import com.laila.pet_symptom_tracker.entities.breed.dto.BreedResponse;
 import com.laila.pet_symptom_tracker.entities.breed.dto.PatchBreed;
 import com.laila.pet_symptom_tracker.entities.breed.dto.PostBreed;
-import com.laila.pet_symptom_tracker.entities.pettype.dto.GetPetTypeCompact;
+import com.laila.pet_symptom_tracker.entities.pettype.dto.PetTypeCompactResponse;
 import com.laila.pet_symptom_tracker.entities.user.UserService;
 import com.laila.pet_symptom_tracker.exceptions.generic.NotFoundException;
 import com.laila.pet_symptom_tracker.mainconfig.Routes;
@@ -39,9 +39,9 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 class BreedControllerTest {
   PostBreed postBreed;
-  GetBreed getBreed;
-  GetPetTypeCompact petType;
-  List<GetBreed> breeds;
+  BreedResponse breedResponse;
+  PetTypeCompactResponse petType;
+  List<BreedResponse> breeds;
   Long breedId;
   UUID creatorId;
   @Autowired private MockMvc mvc;
@@ -59,19 +59,21 @@ class BreedControllerTest {
     breedId = 1L;
     creatorId = UUID.randomUUID();
     postBreed = new PostBreed("Siamese", 1L);
-    getBreed = new GetBreed(1L, "Siamese", new GetPetTypeCompact(1L, "Cat"), creatorId);
-    petType = new GetPetTypeCompact(1L, "Cat");
+    breedResponse =
+        new BreedResponse(1L, "Siamese", new PetTypeCompactResponse(1L, "Cat"), creatorId);
+    petType = new PetTypeCompactResponse(1L, "Cat");
     breeds =
         List.of(
-            new GetBreed(1L, "Siamese", new GetPetTypeCompact(1L, "Cat"), creatorId),
-            new GetBreed(2L, "Rotweiler", new GetPetTypeCompact(2L, "Dog"), creatorId),
-            new GetBreed(3L, "Flemish Giant", new GetPetTypeCompact(3L, "Rabbit"), creatorId),
-            new GetBreed(4L, "Parrot", new GetPetTypeCompact(4L, "Bird"), creatorId));
+            new BreedResponse(1L, "Siamese", new PetTypeCompactResponse(1L, "Cat"), creatorId),
+            new BreedResponse(2L, "Rotweiler", new PetTypeCompactResponse(2L, "Dog"), creatorId),
+            new BreedResponse(
+                3L, "Flemish Giant", new PetTypeCompactResponse(3L, "Rabbit"), creatorId),
+            new BreedResponse(4L, "Parrot", new PetTypeCompactResponse(4L, "Bird"), creatorId));
   }
 
   @Test
   void post_breed_should_execute_in_3_seconds() throws InterruptedException, Exception {
-    given(breedService.create(postBreed)).willReturn(getBreed);
+    given(breedService.create(postBreed)).willReturn(breedResponse);
 
     assertTimeoutPreemptively(
         Duration.ofSeconds(3),
@@ -84,7 +86,7 @@ class BreedControllerTest {
 
   @Test
   void successful_post_breed_should_return_201() throws Exception {
-    given(breedService.create(postBreed)).willReturn(getBreed);
+    given(breedService.create(postBreed)).willReturn(breedResponse);
 
     ResultActions response =
         mvc.perform(
@@ -97,7 +99,7 @@ class BreedControllerTest {
 
   @Test
   void create_breed_should_return_get_breed_dto() throws Exception {
-    given(breedService.create(ArgumentMatchers.any())).willReturn(getBreed);
+    given(breedService.create(ArgumentMatchers.any())).willReturn(breedResponse);
 
     ResultActions response =
         mvc.perform(
@@ -107,22 +109,22 @@ class BreedControllerTest {
 
     response
         .andExpect(
-            MockMvcResultMatchers.jsonPath("$.id", CoreMatchers.is(getBreed.id().intValue())))
-        .andExpect(MockMvcResultMatchers.jsonPath("$.name", CoreMatchers.is(getBreed.name())))
+            MockMvcResultMatchers.jsonPath("$.id", CoreMatchers.is(breedResponse.id().intValue())))
+        .andExpect(MockMvcResultMatchers.jsonPath("$.name", CoreMatchers.is(breedResponse.name())))
         .andExpect(
             MockMvcResultMatchers.jsonPath(
-                "$.petType.name", CoreMatchers.is(getBreed.petType().name())))
+                "$.petType.name", CoreMatchers.is(breedResponse.petType().name())))
         .andExpect(
             MockMvcResultMatchers.jsonPath(
-                "$.petType.id", CoreMatchers.is(getBreed.id().intValue())))
+                "$.petType.id", CoreMatchers.is(breedResponse.id().intValue())))
         .andExpect(
             MockMvcResultMatchers.jsonPath(
-                "$.creatorId", CoreMatchers.is(getBreed.creatorId().toString())));
+                "$.creatorId", CoreMatchers.is(breedResponse.creatorId().toString())));
   }
 
   @Test
   void create_breed_without_request_body_should_return_status_code_400() throws Exception {
-    given(breedService.create(postBreed)).willReturn(getBreed);
+    given(breedService.create(postBreed)).willReturn(breedResponse);
 
     ResultActions response =
         mvc.perform(
@@ -242,7 +244,7 @@ class BreedControllerTest {
 
   @Test
   void get_by_id_should_return_getBreed() throws Exception {
-    when(breedService.getById(1L)).thenReturn(getBreed);
+    when(breedService.getById(1L)).thenReturn(breedResponse);
 
     mvc.perform(get(Routes.BREEDS + "/1"))
         .andExpect(status().isOk())
@@ -263,7 +265,7 @@ class BreedControllerTest {
   @Test
   public void patch_breed_should_return_patched_breed() throws Exception {
     PatchBreed patch = new PatchBreed("Changed", null);
-    GetBreed patchedBreed = new GetBreed(breedId, "Changed", petType, creatorId);
+    BreedResponse patchedBreed = new BreedResponse(breedId, "Changed", petType, creatorId);
 
     when(breedService.patch(breedId, patch)).thenReturn(patchedBreed);
 
@@ -285,7 +287,7 @@ class BreedControllerTest {
   @Test
   public void patch_breed_should_return_status_code_200() throws Exception {
     PatchBreed patch = new PatchBreed("Changed", null);
-    GetBreed patchedBreed = new GetBreed(breedId, "Changed", petType, creatorId);
+    BreedResponse patchedBreed = new BreedResponse(breedId, "Changed", petType, creatorId);
 
     when(breedService.patch(breedId, patch)).thenReturn(patchedBreed);
 

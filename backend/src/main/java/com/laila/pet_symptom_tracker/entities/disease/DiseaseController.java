@@ -1,16 +1,14 @@
 package com.laila.pet_symptom_tracker.entities.disease;
 
-import com.laila.pet_symptom_tracker.entities.disease.dto.GetDisease;
+import com.laila.pet_symptom_tracker.entities.disease.dto.DiseaseResponse;
 import com.laila.pet_symptom_tracker.entities.disease.dto.PatchDisease;
 import com.laila.pet_symptom_tracker.entities.disease.dto.PostDisease;
-import com.laila.pet_symptom_tracker.entities.user.User;
 import com.laila.pet_symptom_tracker.mainconfig.Routes;
 import jakarta.validation.Valid;
 import java.net.URI;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -21,9 +19,9 @@ public class DiseaseController {
   private final DiseaseService diseaseService;
 
   @PostMapping
-  public ResponseEntity<GetDisease> create(@RequestBody @Valid PostDisease body) {
+  public ResponseEntity<DiseaseResponse> create(@RequestBody @Valid PostDisease body) {
 
-    GetDisease disease = diseaseService.create(body);
+    DiseaseResponse disease = diseaseService.create(body);
     URI location =
         ServletUriComponentsBuilder.fromCurrentRequest()
             .path("/{id}")
@@ -33,8 +31,8 @@ public class DiseaseController {
   }
 
   @GetMapping
-  public ResponseEntity<List<GetDisease>> getAll() {
-    List<GetDisease> diseases = diseaseService.getAll();
+  public ResponseEntity<List<DiseaseResponse>> getAll() {
+    List<DiseaseResponse> diseases = diseaseService.getAll();
 
     if (diseases.isEmpty()) {
       return ResponseEntity.noContent().build();
@@ -44,13 +42,14 @@ public class DiseaseController {
   }
 
   @GetMapping("/{id}")
-  public ResponseEntity<GetDisease> getById(@PathVariable Long id) {
+  public ResponseEntity<DiseaseResponse> getById(@PathVariable Long id) {
     return ResponseEntity.ok(diseaseService.getById(id));
   }
 
   @PatchMapping("/{id}")
-  public ResponseEntity<GetDisease> update(@PathVariable Long id, @RequestBody PatchDisease patch) {
-    GetDisease updatedDisease = diseaseService.update(id, patch);
+  public ResponseEntity<DiseaseResponse> update(
+      @PathVariable Long id, @RequestBody PatchDisease patch) {
+    DiseaseResponse updatedDisease = diseaseService.update(id, patch);
     return ResponseEntity.ok(updatedDisease);
   }
 

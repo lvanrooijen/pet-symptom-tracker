@@ -5,7 +5,7 @@ import com.laila.pet_symptom_tracker.entities.authentication.dto.LoginResponse;
 import com.laila.pet_symptom_tracker.entities.authentication.dto.RegisterRequest;
 import com.laila.pet_symptom_tracker.entities.user.User;
 import com.laila.pet_symptom_tracker.entities.user.UserService;
-import com.laila.pet_symptom_tracker.entities.user.dto.GetUser;
+import com.laila.pet_symptom_tracker.entities.user.dto.UserResponse;
 import com.laila.pet_symptom_tracker.mainconfig.ColoredLogger;
 import com.laila.pet_symptom_tracker.mainconfig.Routes;
 import com.laila.pet_symptom_tracker.securityconfig.JwtService;
@@ -39,7 +39,7 @@ public class AuthenticationController {
 
     String token = jwtService.generateTokenForUser(createdUser);
 
-    LoginResponse response = new LoginResponse(token, GetUser.from(createdUser));
+    LoginResponse response = new LoginResponse(token, UserResponse.from(createdUser));
 
     return ResponseEntity.created(location).body(response);
   }
