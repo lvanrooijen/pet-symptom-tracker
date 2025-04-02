@@ -1,10 +1,6 @@
 # Pet symptom Tracker App - Project Plan
 
 ![pientje](https://github.com/user-attachments/assets/b60fddb0-63b9-4714-858f-5a2c6ecb0514)
-**Inspired by Josephine**,
-
-my beloved cat who tragically passed away during surgery for the romoval of a tumor in her colon, this app is being developed to help pet owners monitor and track their pets' health more effectively. Looking back, I realize there were symptoms that I should have paid more attention to, which could have helped discover the tumor earlier. This app aims to help others avoid a similar experience by offering a way to track symptoms, diseases, and easily share information with veterinarians.
-
 ## Project Overview
 
 The **Pet Health Tracker App** will be a tool for pet owners and veterinarians to improve pet care through better tracking of symptoms, diseases, and health logs. The app will provide valuable insights and enable pet owners to better communicate with their vets.
