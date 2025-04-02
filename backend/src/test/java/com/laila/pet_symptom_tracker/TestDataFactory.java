@@ -13,6 +13,7 @@ import com.laila.pet_symptom_tracker.entities.disease.dto.DiseaseCompactResponse
 import com.laila.pet_symptom_tracker.entities.disease.dto.DiseaseResponse;
 import com.laila.pet_symptom_tracker.entities.disease.dto.PatchDisease;
 import com.laila.pet_symptom_tracker.entities.disease.dto.PostDisease;
+import com.laila.pet_symptom_tracker.entities.diseaselog.DiseaseLog;
 import com.laila.pet_symptom_tracker.entities.diseaselog.dto.DiseaseLogResponse;
 import com.laila.pet_symptom_tracker.entities.diseaselog.dto.PatchDiseaseLog;
 import com.laila.pet_symptom_tracker.entities.diseaselog.dto.PostDiseaseLog;
@@ -214,6 +215,13 @@ public class TestDataFactory {
   }
 
   // Disease log
+  public static DiseaseLog getDiseaseLog() {
+    return DiseaseLog.builder().pet(getPet(DEFAULT_USER)).disease(getDisease()).build();
+  }
+
+  public static DiseaseLog getDiseaseLog(User owner) {
+    return DiseaseLog.builder().pet(getPet(owner)).disease(getDisease()).build();
+  }
 
   public static DiseaseLogResponse getDiseaseLogResponse() {
     return new DiseaseLogResponse(
@@ -228,29 +236,51 @@ public class TestDataFactory {
     return new PatchDiseaseLog(VALID_ID, CREATION_DATE, true, HEAL_DATE);
   }
 
-  public static List<DiseaseLogResponse> diseaseLogList() {
+  public static List<DiseaseLog> diseaseLogList() {
     return List.of(
-        new DiseaseLogResponse(
-            1L, getDiseaseCompactResponse(), getPetCompactResponse(), CREATION_DATE, false, null),
-        new DiseaseLogResponse(
-            2L,
-            getDiseaseCompactResponse(),
-            getPetCompactResponse(),
-            CREATION_DATE,
-            true,
-            HEAL_DATE),
-        new DiseaseLogResponse(
-            3L,
-            getDiseaseCompactResponse(),
-            getPetCompactResponse(),
-            CREATION_DATE,
-            true,
-            HEAL_DATE));
+        DiseaseLog.builder()
+            .pet(getPet())
+            .disease(getDisease())
+            .isHealed(true)
+            .discoveryDate(CREATION_DATE)
+            .healedOnDate(HEAL_DATE)
+            .build(),
+        DiseaseLog.builder()
+            .pet(getPet())
+            .disease(getDisease())
+            .isHealed(true)
+            .discoveryDate(CREATION_DATE)
+            .healedOnDate(HEAL_DATE)
+            .build(),
+        DiseaseLog.builder()
+            .pet(getPet())
+            .disease(getDisease())
+            .isHealed(true)
+            .discoveryDate(CREATION_DATE)
+            .healedOnDate(HEAL_DATE)
+            .build());
   }
 
-  public static List<DiseaseLogResponse> ownedDiseaseLogList() {
+  public static List<DiseaseLog> diseaseLogListWithOneOwner(User owner) {
     return List.of(
-        new DiseaseLogResponse(
-            1L, getDiseaseCompactResponse(), getPetCompactResponse(), CREATION_DATE, false, null));
+        DiseaseLog.builder()
+            .pet(getPet(owner))
+            .disease(getDisease())
+            .isHealed(true)
+            .discoveryDate(CREATION_DATE)
+            .healedOnDate(HEAL_DATE)
+            .build(),
+        DiseaseLog.builder()
+            .pet(getPet(DEFAULT_USER))
+            .disease(getDisease())
+            .isHealed(false)
+            .discoveryDate(CREATION_DATE)
+            .build(),
+        DiseaseLog.builder()
+            .pet(getPet(DEFAULT_USER))
+            .disease(getDisease())
+            .isHealed(false)
+            .discoveryDate(CREATION_DATE)
+            .build());
   }
 }

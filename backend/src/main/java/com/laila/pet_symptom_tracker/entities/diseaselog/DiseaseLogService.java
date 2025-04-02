@@ -101,7 +101,7 @@ public class DiseaseLogService {
       Disease disease =
           diseaseRepository
               .findById(patch.diseaseId())
-              .orElseThrow(() -> new NotFoundException(NON_EXISTENT_DISEASE));
+              .orElseThrow(() -> new BadRequestException(NON_EXISTENT_DISEASE));
       update.setDisease(disease);
     }
     if (patch.discoveryDate() != null) {
