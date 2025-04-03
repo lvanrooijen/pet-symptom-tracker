@@ -18,7 +18,9 @@ import com.laila.pet_symptom_tracker.entities.diseaselog.dto.DiseaseLogResponse;
 import com.laila.pet_symptom_tracker.entities.diseaselog.dto.PatchDiseaseLog;
 import com.laila.pet_symptom_tracker.entities.diseaselog.dto.PostDiseaseLog;
 import com.laila.pet_symptom_tracker.entities.pet.Pet;
+import com.laila.pet_symptom_tracker.entities.pet.dto.PatchPet;
 import com.laila.pet_symptom_tracker.entities.pet.dto.PetCompactResponse;
+import com.laila.pet_symptom_tracker.entities.pet.dto.PostPet;
 import com.laila.pet_symptom_tracker.entities.pettype.PetType;
 import com.laila.pet_symptom_tracker.entities.pettype.dto.PetTypeCompactResponse;
 import com.laila.pet_symptom_tracker.entities.user.User;
@@ -33,6 +35,8 @@ public class TestDataFactory {
   public static final UUID ADMIN_ID = UUID.fromString("00000000-0000-0000-0000-000000000003");
   public static final UUID DEFAULT_USER_ID =
       UUID.fromString("00000000-0000-0000-0000-000000000004");
+  public static final UUID INVALID_USER_ID =
+      UUID.fromString("99999999-9999-9999-9999-999999999999");
   public static final Long VALID_ID = 1L;
   public static final Long INVALID_ID = 999L;
 
@@ -154,8 +158,29 @@ public class TestDataFactory {
         .build();
   }
 
+  public static PostPet getPostPet() {
+    return new PostPet("Garfield", CREATION_DATE, VALID_ID);
+  }
+
   public static PetCompactResponse getPetCompactResponse() {
     return new PetCompactResponse(VALID_ID, "Garfield");
+  }
+
+  public static PatchPet getPatchPet() {
+    return new PatchPet(DEFAULT_USER_ID, "Garfield", CREATION_DATE, true, null, VALID_ID);
+  }
+
+  public static List<Pet> getPetList() {
+    return List.of(
+        Pet.builder().name("Pookie").breed(getBreed()).owner(DEFAULT_USER).isAlive(true).build(),
+        Pet.builder().name("Cookie").breed(getBreed()).owner(DEFAULT_USER).isAlive(true).build(),
+        Pet.builder().name("Snookie").breed(getBreed()).owner(DEFAULT_USER).isAlive(true).build());
+  }
+
+  public static List<Pet> getOwnedPetList(User owner) {
+    return List.of(
+        Pet.builder().name("Pookie").breed(getBreed()).owner(owner).isAlive(true).build(),
+        Pet.builder().name("Cookie").breed(getBreed()).owner(owner).isAlive(true).build());
   }
 
   // Pet type

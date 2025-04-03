@@ -1,5 +1,7 @@
 package com.laila.pet_symptom_tracker.entities.pet;
 
+import static com.laila.pet_symptom_tracker.exceptions.ExceptionMessages.*;
+
 import com.laila.pet_symptom_tracker.entities.authentication.AuthenticationService;
 import com.laila.pet_symptom_tracker.entities.breed.Breed;
 import com.laila.pet_symptom_tracker.entities.breed.BreedRepository;
@@ -29,7 +31,7 @@ public class PetService {
     Breed breed =
         breedRepository
             .findById(dto.breedId())
-            .orElseThrow(() -> new BadRequestException("Breed not found"));
+            .orElseThrow(() -> new BadRequestException(NON_EXISTENT_BREED));
 
     Pet pet =
         Pet.builder()
@@ -40,18 +42,20 @@ public class PetService {
             .isAlive(true)
             .build();
 
-    return PetResponse.from(petRepository.save(pet));
+    petRepository.save(pet);
+
+    return PetResponse.from(pet);
   }
 
   public PetResponse getById(Long id) {
     User loggedInUser = authenticationService.getAuthenticatedUser();
-    Pet pet = petRepository.findById(id).orElseThrow(() -> new NotFoundException("Pet not found"));
+    Pet pet = petRepository.findById(id).orElseThrow(NotFoundException::new);
     if (pet.isOwner(loggedInUser)
         || loggedInUser.hasAdminRole()
         || loggedInUser.hasModeratorRole()) {
       return PetResponse.from(pet);
     } else {
-      throw new ForbiddenException();
+      throw new ForbiddenException(OWNER_OR_MODERATOR_ONLY_ACTION);
     }
   }
 
@@ -75,11 +79,16 @@ public class PetService {
     Pet updatedPet = petRepository.findById(id).orElseThrow(NotFoundException::new);
 
     if (updatedPet.isNotOwner(loggedInUser)) {
-      throw new ForbiddenException("You don't have permission to update this pet");
+      throw new ForbiddenException(OWNER_OR_ADMIN_ONLY_ACTION);
     }
 
     if (patch.userId() != null) {
-      User newOwner = userRepository.findById(patch.userId()).orElseThrow(NotFoundException::new);
+      User newOwner =
+          userRepository
+              .findById(patch.userId())
+              .orElseThrow(
+                  () ->
+                      new BadRequestException("Can not transfer ownership to non-existent user."));
       updatedPet.setOwner(newOwner);
     }
     if (patch.name() != null) {
@@ -99,7 +108,7 @@ public class PetService {
       Breed breed =
           breedRepository
               .findById(patch.breedId())
-              .orElseThrow(() -> new BadRequestException("Breed does not exist"));
+              .orElseThrow(() -> new BadRequestException(NON_EXISTENT_BREED));
       updatedPet.setBreed(breed);
     }
 
@@ -114,7 +123,7 @@ public class PetService {
     if (pet.isOwner(loggedInUser) || loggedInUser.hasAdminRole()) {
       petRepository.deleteById(id);
     } else {
-      throw new ForbiddenException();
+      throw new ForbiddenException(OWNER_OR_ADMIN_ONLY_ACTION);
     }
   }
 }
