@@ -1,13 +1,12 @@
 package com.laila.pet_symptom_tracker.entities.breed;
 
-import static com.laila.pet_symptom_tracker.TestDataFactory.INVALID_ID;
-import static com.laila.pet_symptom_tracker.TestDataFactory.VALID_ID;
 import static com.laila.pet_symptom_tracker.exceptions.ExceptionMessages.NON_EXISTENT_PET_TYPE;
+import static com.laila.pet_symptom_tracker.testdata.TestDataProvider.INVALID_ID;
+import static com.laila.pet_symptom_tracker.testdata.TestDataProvider.VALID_ID;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
-import com.laila.pet_symptom_tracker.TestDataFactory;
 import com.laila.pet_symptom_tracker.entities.authentication.AuthenticationService;
 import com.laila.pet_symptom_tracker.entities.breed.dto.BreedResponse;
 import com.laila.pet_symptom_tracker.entities.breed.dto.PatchBreed;
@@ -17,6 +16,7 @@ import com.laila.pet_symptom_tracker.entities.pettype.PetTypeRepository;
 import com.laila.pet_symptom_tracker.entities.user.User;
 import com.laila.pet_symptom_tracker.exceptions.generic.BadRequestException;
 import com.laila.pet_symptom_tracker.exceptions.generic.NotFoundException;
+import com.laila.pet_symptom_tracker.testdata.TestDataProvider;
 import java.util.Optional;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;
@@ -37,9 +37,9 @@ class BreedServiceTest {
 
   @Test
   public void create_breed_should_not_return_null() {
-    PostBreed postBreed = TestDataFactory.getPostBreed();
-    User admin = TestDataFactory.getAdmin();
-    PetType petType = TestDataFactory.getPetType(admin);
+    PostBreed postBreed = TestDataProvider.BREED.getPostBreed();
+    User admin = TestDataProvider.getAdmin();
+    PetType petType = TestDataProvider.PET_TYPE.getPetType(admin);
 
     when(petTypeRepository.findById(postBreed.petTypeId())).thenReturn(Optional.of(petType));
     when(authenticationService.getAuthenticatedUser()).thenReturn(admin);
@@ -54,7 +54,7 @@ class BreedServiceTest {
   @Test
   public void
       create_breed_with_non_existing_pet_type_throws_exception_and_has_correct_exception_message() {
-    PostBreed postBreed = TestDataFactory.getPostBreed();
+    PostBreed postBreed = TestDataProvider.BREED.getPostBreed();
 
     when(petTypeRepository.findById(postBreed.petTypeId())).thenReturn(Optional.empty());
 
@@ -73,7 +73,7 @@ class BreedServiceTest {
 
   @Test
   public void patch_breed_with_invalid_id_throws_not_found_exception() {
-    PatchBreed patch = TestDataFactory.getPatchBreed();
+    PatchBreed patch = TestDataProvider.BREED.getPatchBreed();
 
     when(breedRepository.findById(INVALID_ID)).thenReturn(Optional.empty());
     assertThrows(NotFoundException.class, () -> breedService.patch(INVALID_ID, patch));
@@ -82,23 +82,21 @@ class BreedServiceTest {
   @Test
   public void
       patch_breed_with_invalid_pet_type_id_should_throw_bad_request_exception_with_correct_message() {
-    Breed breed = TestDataFactory.getBreed();
-    PatchBreed patch = TestDataFactory.getPatchBreed(INVALID_ID);
+    Breed breed = TestDataProvider.BREED.getBreed();
+    PatchBreed patch = TestDataProvider.BREED.getPatchBreed(INVALID_ID);
 
     when(breedRepository.findById(VALID_ID)).thenReturn(Optional.of(breed));
     when(petTypeRepository.findById(INVALID_ID)).thenReturn(Optional.empty());
     BadRequestException exception =
-        assertThrows(
-            BadRequestException.class,
-            () -> breedService.patch(VALID_ID, patch)); // TODO WERKT DIT NOG?
+        assertThrows(BadRequestException.class, () -> breedService.patch(VALID_ID, patch));
     assertEquals(NON_EXISTENT_PET_TYPE, exception.getMessage());
   }
 
   @Test
   public void patch_breed_should_return_patched_breed() {
-    Breed breed = TestDataFactory.getBreed();
-    PetType petType = TestDataFactory.getPetType();
-    PatchBreed patch = TestDataFactory.getPatchBreed();
+    Breed breed = TestDataProvider.BREED.getBreed();
+    PetType petType = TestDataProvider.PET_TYPE.getPetType();
+    PatchBreed patch = TestDataProvider.BREED.getPatchBreed();
 
     when(breedRepository.findById(VALID_ID)).thenReturn(Optional.of(breed));
     when(petTypeRepository.findById(VALID_ID)).thenReturn(Optional.of(petType));

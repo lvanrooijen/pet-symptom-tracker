@@ -1,14 +1,13 @@
 package com.laila.pet_symptom_tracker.entities.disease;
 
-import static com.laila.pet_symptom_tracker.TestDataFactory.INVALID_ID;
-import static com.laila.pet_symptom_tracker.TestDataFactory.VALID_ID;
 import static com.laila.pet_symptom_tracker.exceptions.ExceptionMessages.ADMIN_OR_MODERATOR_ONLY_ACTION;
+import static com.laila.pet_symptom_tracker.testdata.TestDataProvider.INVALID_ID;
+import static com.laila.pet_symptom_tracker.testdata.TestDataProvider.VALID_ID;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import com.laila.pet_symptom_tracker.TestDataFactory;
 import com.laila.pet_symptom_tracker.entities.authentication.AuthenticationService;
 import com.laila.pet_symptom_tracker.entities.disease.dto.DiseaseResponse;
 import com.laila.pet_symptom_tracker.entities.disease.dto.PatchDisease;
@@ -16,6 +15,7 @@ import com.laila.pet_symptom_tracker.entities.disease.dto.PostDisease;
 import com.laila.pet_symptom_tracker.entities.user.User;
 import com.laila.pet_symptom_tracker.exceptions.generic.ForbiddenException;
 import com.laila.pet_symptom_tracker.exceptions.generic.NotFoundException;
+import com.laila.pet_symptom_tracker.testdata.TestDataProvider;
 import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.DisplayNameGeneration;
@@ -35,8 +35,8 @@ class DiseaseServiceTest {
 
   @Test
   public void create_disease_by_user_should_throw_forbidden_exception_with_correct_message() {
-    User user = TestDataFactory.getRegularUser();
-    PostDisease postDisease = TestDataFactory.getPostDisease();
+    User user = TestDataProvider.getUser();
+    PostDisease postDisease = TestDataProvider.DISEASE.getPostDisease();
 
     when(authenticationService.getAuthenticatedUser()).thenReturn(user);
 
@@ -48,8 +48,8 @@ class DiseaseServiceTest {
 
   @Test
   public void mod_can_create_disease() {
-    User moderator = TestDataFactory.getModerator();
-    PostDisease requestBody = TestDataFactory.getPostDisease();
+    User moderator = TestDataProvider.getModerator();
+    PostDisease requestBody = TestDataProvider.DISEASE.getPostDisease();
 
     when(authenticationService.getAuthenticatedUser()).thenReturn(moderator);
     DiseaseResponse result = diseaseService.create(requestBody);
@@ -60,8 +60,8 @@ class DiseaseServiceTest {
 
   @Test
   public void admin_can_create_disease() {
-    User admin = TestDataFactory.getAdmin();
-    PostDisease requestBody = TestDataFactory.getPostDisease();
+    User admin = TestDataProvider.getAdmin();
+    PostDisease requestBody = TestDataProvider.DISEASE.getPostDisease();
 
     when(authenticationService.getAuthenticatedUser()).thenReturn(admin);
     DiseaseResponse result = diseaseService.create(requestBody);
@@ -72,8 +72,8 @@ class DiseaseServiceTest {
 
   @Test
   public void create_disease_returns_right_values() {
-    User admin = TestDataFactory.getAdmin();
-    PostDisease requestBody = TestDataFactory.getPostDisease();
+    User admin = TestDataProvider.getAdmin();
+    PostDisease requestBody = TestDataProvider.DISEASE.getPostDisease();
 
     when(authenticationService.getAuthenticatedUser()).thenReturn(admin);
     DiseaseResponse result = diseaseService.create(requestBody);
@@ -85,8 +85,8 @@ class DiseaseServiceTest {
 
   @Test
   public void get_all_as_admin_should_show_soft_deleted_diseases() {
-    User admin = TestDataFactory.getAdmin();
-    List<Disease> adminDiseaseList = TestDataFactory.getAdminDiseaseList();
+    User admin = TestDataProvider.getAdmin();
+    List<Disease> adminDiseaseList = TestDataProvider.DISEASE.getAdminDiseaseList();
 
     when(authenticationService.getAuthenticatedUser()).thenReturn(admin);
     when(diseaseRepository.findAll()).thenReturn(adminDiseaseList);
@@ -97,8 +97,8 @@ class DiseaseServiceTest {
 
   @Test
   public void get_all_as_user_should_not_show_soft_deleted_diseases() {
-    User user = TestDataFactory.getRegularUser();
-    List<Disease> diseaseList = TestDataFactory.getDiseaseList();
+    User user = TestDataProvider.getUser();
+    List<Disease> diseaseList = TestDataProvider.DISEASE.getDiseaseList();
 
     when(authenticationService.getAuthenticatedUser()).thenReturn(user);
     when(diseaseRepository.findByDeletedFalse()).thenReturn(diseaseList);
@@ -115,7 +115,7 @@ class DiseaseServiceTest {
 
   @Test
   public void patch_disease_with_invalid_id_should_throw_not_found_exception() {
-    PatchDisease patch = TestDataFactory.getPatchDisease();
+    PatchDisease patch = TestDataProvider.DISEASE.getPatchDisease();
 
     when(diseaseRepository.findById(INVALID_ID)).thenReturn(Optional.empty());
     assertThrows(NotFoundException.class, () -> diseaseService.update(INVALID_ID, patch));
@@ -123,8 +123,8 @@ class DiseaseServiceTest {
 
   @Test
   public void patch_disease_should_return_patched_disease() {
-    Disease disease = TestDataFactory.getDisease();
-    PatchDisease patch = TestDataFactory.getPatchDisease();
+    Disease disease = TestDataProvider.DISEASE.getDisease();
+    PatchDisease patch = TestDataProvider.DISEASE.getPatchDisease();
 
     when(diseaseRepository.findById(VALID_ID)).thenReturn(Optional.of(disease));
     DiseaseResponse result = diseaseService.update(VALID_ID, patch);

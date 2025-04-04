@@ -1,12 +1,11 @@
 package com.laila.pet_symptom_tracker.entities.blacklistword;
 
-import static com.laila.pet_symptom_tracker.TestDataFactory.*;
 import static com.laila.pet_symptom_tracker.exceptions.ExceptionMessages.ADMIN_ONLY_ACTION;
 import static com.laila.pet_symptom_tracker.exceptions.ExceptionMessages.DUPLICATE_BLACKLIST_WORD;
+import static com.laila.pet_symptom_tracker.testdata.TestDataProvider.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
-import com.laila.pet_symptom_tracker.TestDataFactory;
 import com.laila.pet_symptom_tracker.entities.authentication.AuthenticationService;
 import com.laila.pet_symptom_tracker.entities.blacklistword.dto.PatchBlackListWord;
 import com.laila.pet_symptom_tracker.entities.blacklistword.dto.PostBlackListWord;
@@ -14,6 +13,7 @@ import com.laila.pet_symptom_tracker.entities.user.User;
 import com.laila.pet_symptom_tracker.exceptions.generic.DuplicateValueException;
 import com.laila.pet_symptom_tracker.exceptions.generic.ForbiddenException;
 import com.laila.pet_symptom_tracker.exceptions.generic.NotFoundException;
+import com.laila.pet_symptom_tracker.testdata.TestDataProvider;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -29,8 +29,8 @@ class BlackListWordServiceTest {
 
   @Test
   public void user_created_blacklisted_word_throws_forbidden_exception_with_right_message() {
-    User user = TestDataFactory.getRegularUser();
-    PostBlackListWord requestBody = TestDataFactory.getPostBlacklistWord();
+    User user = TestDataProvider.getUser();
+    PostBlackListWord requestBody = TestDataProvider.BLACK_LIST_WORD.getPostBlacklistWord();
 
     when(authenticationService.getAuthenticatedUser()).thenReturn(user);
     ForbiddenException exception =
@@ -40,8 +40,8 @@ class BlackListWordServiceTest {
 
   @Test
   public void moderator_created_blacklisted_word_throws_forbidden_exception_with_right_message() {
-    User moderator = TestDataFactory.getModerator();
-    PostBlackListWord requestBody = TestDataFactory.getPostBlacklistWord();
+    User moderator = TestDataProvider.getModerator();
+    PostBlackListWord requestBody = TestDataProvider.BLACK_LIST_WORD.getPostBlacklistWord();
 
     when(authenticationService.getAuthenticatedUser()).thenReturn(moderator);
     ForbiddenException exception =
@@ -52,9 +52,9 @@ class BlackListWordServiceTest {
 
   @Test
   public void admin_created_blacklisted_word_returns_created_word() {
-    User admin = TestDataFactory.getAdmin();
-    BlackListWord word = TestDataFactory.getBlackListWord();
-    PostBlackListWord postBlackListWord = TestDataFactory.getPostBlacklistWord();
+    User admin = TestDataProvider.getAdmin();
+    BlackListWord word = TestDataProvider.BLACK_LIST_WORD.getBlackListWord();
+    PostBlackListWord postBlackListWord = TestDataProvider.BLACK_LIST_WORD.getPostBlacklistWord();
 
     when(authenticationService.getAuthenticatedUser()).thenReturn(admin);
     when(blackListWordRepository.findByWordIgnoreCase(word.getWord())).thenReturn(Optional.empty());
@@ -65,9 +65,9 @@ class BlackListWordServiceTest {
 
   @Test
   public void creating_duplicate_word_throws_duplicate_value_exception_with_correct_message() {
-    User admin = TestDataFactory.getAdmin();
-    BlackListWord word = TestDataFactory.getBlackListWord();
-    PostBlackListWord postBlackListWord = TestDataFactory.getPostBlacklistWord();
+    User admin = TestDataProvider.getAdmin();
+    BlackListWord word = TestDataProvider.BLACK_LIST_WORD.getBlackListWord();
+    PostBlackListWord postBlackListWord = TestDataProvider.BLACK_LIST_WORD.getPostBlacklistWord();
 
     when(authenticationService.getAuthenticatedUser()).thenReturn(admin);
     when(blackListWordRepository.findByWordIgnoreCase(word.getWord()))
@@ -90,7 +90,7 @@ class BlackListWordServiceTest {
 
   @Test
   public void update_non_blacklisted_word_with_invalid_id_throws_not_found_exception() {
-    PatchBlackListWord postBlackListWord = TestDataFactory.getPatchBlackListWord();
+    PatchBlackListWord postBlackListWord = TestDataProvider.BLACK_LIST_WORD.getPatchBlackListWord();
 
     when(blackListWordRepository.findById(INVALID_ID)).thenReturn(Optional.empty());
 
@@ -100,8 +100,8 @@ class BlackListWordServiceTest {
 
   @Test
   public void update_blacklisted_word_works() {
-    BlackListWord blackListWord = TestDataFactory.getBlackListWord();
-    PatchBlackListWord patch = TestDataFactory.getPatchBlackListWord();
+    BlackListWord blackListWord = TestDataProvider.BLACK_LIST_WORD.getBlackListWord();
+    PatchBlackListWord patch = TestDataProvider.BLACK_LIST_WORD.getPatchBlackListWord();
 
     when(blackListWordRepository.findById(VALID_ID)).thenReturn(Optional.of(blackListWord));
 

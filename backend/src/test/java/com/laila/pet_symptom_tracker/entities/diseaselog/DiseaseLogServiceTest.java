@@ -1,12 +1,11 @@
 package com.laila.pet_symptom_tracker.entities.diseaselog;
 
-import static com.laila.pet_symptom_tracker.TestDataFactory.INVALID_ID;
-import static com.laila.pet_symptom_tracker.TestDataFactory.VALID_ID;
 import static com.laila.pet_symptom_tracker.exceptions.ExceptionMessages.*;
+import static com.laila.pet_symptom_tracker.testdata.TestDataProvider.INVALID_ID;
+import static com.laila.pet_symptom_tracker.testdata.TestDataProvider.VALID_ID;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
-import com.laila.pet_symptom_tracker.TestDataFactory;
 import com.laila.pet_symptom_tracker.entities.authentication.AuthenticationService;
 import com.laila.pet_symptom_tracker.entities.disease.Disease;
 import com.laila.pet_symptom_tracker.entities.disease.DiseaseRepository;
@@ -19,6 +18,7 @@ import com.laila.pet_symptom_tracker.entities.user.User;
 import com.laila.pet_symptom_tracker.exceptions.generic.BadRequestException;
 import com.laila.pet_symptom_tracker.exceptions.generic.ForbiddenException;
 import com.laila.pet_symptom_tracker.exceptions.generic.NotFoundException;
+import com.laila.pet_symptom_tracker.testdata.TestDataProvider;
 import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.DisplayNameGeneration;
@@ -42,8 +42,8 @@ class DiseaseLogServiceTest {
   @Test
   public void
       create_disease_log_with_invalid_pet_id_should_throw_bad_request_exception_with_message() {
-    PostDiseaseLog requestBody = TestDataFactory.getPostDiseaseLog();
-    User user = TestDataFactory.getRegularUser();
+    PostDiseaseLog requestBody = TestDataProvider.DISEASE_LOG.getPostDiseaseLog();
+    User user = TestDataProvider.getUser();
 
     when(authenticationService.getAuthenticatedUser()).thenReturn(user);
     when(petRepository.findById(requestBody.petId())).thenReturn(Optional.empty());
@@ -55,9 +55,9 @@ class DiseaseLogServiceTest {
 
   @Test
   public void create_when_not_owner_should_throw_forbidden_exception_with_message() {
-    User user = TestDataFactory.getRegularUser();
-    PostDiseaseLog requestBody = TestDataFactory.getPostDiseaseLog();
-    Pet pet = TestDataFactory.getPet();
+    User user = TestDataProvider.getUser();
+    PostDiseaseLog requestBody = TestDataProvider.DISEASE_LOG.getPostDiseaseLog();
+    Pet pet = TestDataProvider.PET.getPet();
 
     when(authenticationService.getAuthenticatedUser()).thenReturn(user);
     when(petRepository.findById(requestBody.petId())).thenReturn(Optional.of(pet));
@@ -71,9 +71,9 @@ class DiseaseLogServiceTest {
   @Test
   public void
       create_disease_log_with_invalid_disease_should_throw_bad_request_exception_with_message() {
-    User user = TestDataFactory.getRegularUser();
-    PostDiseaseLog requestBody = TestDataFactory.getPostDiseaseLog();
-    Pet pet = TestDataFactory.getPet(user);
+    User user = TestDataProvider.getUser();
+    PostDiseaseLog requestBody = TestDataProvider.DISEASE_LOG.getPostDiseaseLog();
+    Pet pet = TestDataProvider.PET.getPet(user);
 
     when(authenticationService.getAuthenticatedUser()).thenReturn(user);
     when(petRepository.findById(requestBody.petId())).thenReturn(Optional.of(pet));
@@ -86,10 +86,10 @@ class DiseaseLogServiceTest {
 
   @Test
   public void create_disease_log_should_save_and_return_disease_log() {
-    User user = TestDataFactory.getRegularUser();
-    PostDiseaseLog requestBody = TestDataFactory.getPostDiseaseLog();
-    Pet pet = TestDataFactory.getPet(user);
-    Disease disease = TestDataFactory.getDisease();
+    User user = TestDataProvider.getUser();
+    PostDiseaseLog requestBody = TestDataProvider.DISEASE_LOG.getPostDiseaseLog();
+    Pet pet = TestDataProvider.PET.getPet(user);
+    Disease disease = TestDataProvider.DISEASE.getDisease();
 
     when(authenticationService.getAuthenticatedUser()).thenReturn(user);
     when(petRepository.findById(requestBody.petId())).thenReturn(Optional.of(pet));
@@ -104,8 +104,8 @@ class DiseaseLogServiceTest {
 
   @Test
   public void get_all_disease_logs_as_owner_should_return_owned_logs() {
-    User user = TestDataFactory.getRegularUser();
-    List<DiseaseLog> diseaseLogList = TestDataFactory.diseaseLogListWithOneOwner(user);
+    User user = TestDataProvider.getUser();
+    List<DiseaseLog> diseaseLogList = TestDataProvider.DISEASE_LOG.diseaseLogListWithOneOwner(user);
 
     when(authenticationService.getAuthenticatedUser()).thenReturn(user);
     when(diseaseLogRepository.findAll()).thenReturn(diseaseLogList);
@@ -117,8 +117,8 @@ class DiseaseLogServiceTest {
 
   @Test
   public void get_all_disease_logs_as_admin_should_return_all_logs() {
-    User admin = TestDataFactory.getAdmin();
-    List<DiseaseLog> diseaseLogList = TestDataFactory.diseaseLogList();
+    User admin = TestDataProvider.getAdmin();
+    List<DiseaseLog> diseaseLogList = TestDataProvider.DISEASE_LOG.diseaseLogList();
 
     when(authenticationService.getAuthenticatedUser()).thenReturn(admin);
     when(diseaseLogRepository.findAll()).thenReturn(diseaseLogList);
@@ -130,7 +130,7 @@ class DiseaseLogServiceTest {
 
   @Test
   public void get_disease_log_by_invalid_id_should_throw_not_found_exception() {
-    User user = TestDataFactory.getRegularUser();
+    User user = TestDataProvider.getUser();
 
     when(diseaseLogRepository.findById(VALID_ID)).thenReturn(Optional.empty());
 
@@ -139,8 +139,8 @@ class DiseaseLogServiceTest {
 
   @Test
   public void get_disease_log_by_id_by_non_owner_should_throw_forbidden_exception_with_message() {
-    User user = TestDataFactory.getRegularUser();
-    DiseaseLog diseaseLog = TestDataFactory.getDiseaseLog();
+    User user = TestDataProvider.getUser();
+    DiseaseLog diseaseLog = TestDataProvider.DISEASE_LOG.getDiseaseLog();
 
     when(authenticationService.getAuthenticatedUser()).thenReturn(user);
     when(diseaseLogRepository.findById(VALID_ID)).thenReturn(Optional.of(diseaseLog));
@@ -153,8 +153,8 @@ class DiseaseLogServiceTest {
 
   @Test
   public void get_disease_log_as_owner_by_id_should_return_disease_log() {
-    User user = TestDataFactory.getRegularUser();
-    DiseaseLog diseaseLog = TestDataFactory.getDiseaseLog(user);
+    User user = TestDataProvider.getUser();
+    DiseaseLog diseaseLog = TestDataProvider.DISEASE_LOG.getDiseaseLog(user);
 
     when(authenticationService.getAuthenticatedUser()).thenReturn(user);
     when(diseaseLogRepository.findById(VALID_ID)).thenReturn(Optional.of(diseaseLog));
@@ -167,8 +167,8 @@ class DiseaseLogServiceTest {
 
   @Test
   public void get_disease_log_by_id_as_moderator_should_return_disease_log() {
-    User moderator = TestDataFactory.getModerator();
-    DiseaseLog diseaseLog = TestDataFactory.getDiseaseLog(moderator);
+    User moderator = TestDataProvider.getModerator();
+    DiseaseLog diseaseLog = TestDataProvider.DISEASE_LOG.getDiseaseLog(moderator);
 
     when(authenticationService.getAuthenticatedUser()).thenReturn(moderator);
     when(diseaseLogRepository.findById(VALID_ID)).thenReturn(Optional.of(diseaseLog));
@@ -179,8 +179,8 @@ class DiseaseLogServiceTest {
 
   @Test
   public void get_disease_log_by_id_as_admin_should_return_disease_log() {
-    User admin = TestDataFactory.getAdmin();
-    DiseaseLog diseaseLog = TestDataFactory.getDiseaseLog(admin);
+    User admin = TestDataProvider.getAdmin();
+    DiseaseLog diseaseLog = TestDataProvider.DISEASE_LOG.getDiseaseLog(admin);
 
     when(authenticationService.getAuthenticatedUser()).thenReturn(admin);
     when(diseaseLogRepository.findById(VALID_ID)).thenReturn(Optional.of(diseaseLog));
@@ -191,8 +191,8 @@ class DiseaseLogServiceTest {
 
   @Test
   public void patch_disease_log_with_invalid_id_throws_not_found_exception() {
-    User user = TestDataFactory.getRegularUser();
-    PatchDiseaseLog patch = TestDataFactory.getPatchDiseaseLog();
+    User user = TestDataProvider.getUser();
+    PatchDiseaseLog patch = TestDataProvider.DISEASE_LOG.getPatchDiseaseLog();
 
     when(authenticationService.getAuthenticatedUser()).thenReturn(user);
     when(diseaseLogRepository.findById(INVALID_ID)).thenReturn(Optional.empty());
@@ -202,9 +202,9 @@ class DiseaseLogServiceTest {
 
   @Test
   public void patch_disease_log_if_not_owner_should_throw_forbidden_exception_with_message() {
-    User user = TestDataFactory.getRegularUser();
-    DiseaseLog diseaseLog = TestDataFactory.getDiseaseLog();
-    PatchDiseaseLog patch = TestDataFactory.getPatchDiseaseLog();
+    User user = TestDataProvider.getUser();
+    DiseaseLog diseaseLog = TestDataProvider.DISEASE_LOG.getDiseaseLog();
+    PatchDiseaseLog patch = TestDataProvider.DISEASE_LOG.getPatchDiseaseLog();
 
     when(authenticationService.getAuthenticatedUser()).thenReturn(user);
     when(diseaseLogRepository.findById(VALID_ID)).thenReturn(Optional.of(diseaseLog));
@@ -217,9 +217,9 @@ class DiseaseLogServiceTest {
   @Test
   public void
       patch_disease_log_with_invalid_disease_id_should_bad_request_exception_with_message() {
-    User user = TestDataFactory.getRegularUser();
-    DiseaseLog diseaseLog = TestDataFactory.getDiseaseLog(user);
-    PatchDiseaseLog patch = TestDataFactory.getPatchDiseaseLog();
+    User user = TestDataProvider.getUser();
+    DiseaseLog diseaseLog = TestDataProvider.DISEASE_LOG.getDiseaseLog(user);
+    PatchDiseaseLog patch = TestDataProvider.DISEASE_LOG.getPatchDiseaseLog();
 
     when(authenticationService.getAuthenticatedUser()).thenReturn(user);
     when(diseaseLogRepository.findById(VALID_ID)).thenReturn(Optional.of(diseaseLog));
@@ -232,10 +232,10 @@ class DiseaseLogServiceTest {
 
   @Test
   public void patch_disease_log_should_return_updated_disease_log() {
-    User user = TestDataFactory.getRegularUser();
-    DiseaseLog diseaseLog = TestDataFactory.getDiseaseLog(user);
-    Disease disease = TestDataFactory.getDisease(user);
-    PatchDiseaseLog patch = TestDataFactory.getPatchDiseaseLog();
+    User user = TestDataProvider.getUser();
+    DiseaseLog diseaseLog = TestDataProvider.DISEASE_LOG.getDiseaseLog(user);
+    Disease disease = TestDataProvider.DISEASE.getDisease(user);
+    PatchDiseaseLog patch = TestDataProvider.DISEASE_LOG.getPatchDiseaseLog();
 
     when(authenticationService.getAuthenticatedUser()).thenReturn(user);
     when(diseaseLogRepository.findById(VALID_ID)).thenReturn(Optional.of(diseaseLog));
@@ -250,7 +250,7 @@ class DiseaseLogServiceTest {
 
   @Test
   public void delete_non_existent_disease_log_should_throw_not_found_exception() {
-    User user = TestDataFactory.getRegularUser();
+    User user = TestDataProvider.getUser();
 
     when(authenticationService.getAuthenticatedUser()).thenReturn(user);
     when(diseaseLogRepository.findById(VALID_ID)).thenReturn(Optional.empty());
@@ -261,8 +261,8 @@ class DiseaseLogServiceTest {
   @Test
   public void
       delete_non_disease_by_non_owner_log_should_throw_not_forbidden_exception_with_message() {
-    User user = TestDataFactory.getRegularUser();
-    DiseaseLog diseaseLog = TestDataFactory.getDiseaseLog();
+    User user = TestDataProvider.getUser();
+    DiseaseLog diseaseLog = TestDataProvider.DISEASE_LOG.getDiseaseLog();
 
     when(authenticationService.getAuthenticatedUser()).thenReturn(user);
     when(diseaseLogRepository.findById(VALID_ID)).thenReturn(Optional.of(diseaseLog));
