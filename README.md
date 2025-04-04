@@ -1,9 +1,19 @@
-# Pet symptom Tracker App - Project Plan
-
 ![pientje](https://github.com/user-attachments/assets/b60fddb0-63b9-4714-858f-5a2c6ecb0514)
+# Pet symptom Tracker App
+
 ## Project Overview
 
-The **Pet Health Tracker App** will be a tool for pet owners and veterinarians to improve pet care through better tracking of symptoms, diseases, and health logs. The app will provide valuable insights and enable pet owners to better communicate with their vets.
+The **Pet Symptom Tracker App** will be a tool for pet owners and veterinarians to improve pet care through better tracking of symptoms, diseases, and health logs. The app will provide valuable insights and enable pet owners to better communicate with their vets.
+
+## Technologies Used
+- **Java**
+- **Spring Boot**
+- **Spring Web**
+- **Spring MVC**
+- **Spring JPA**
+- **Spring Security**
+- **JUnit**
+- **Mockito**
 
 ### Key Features
 
@@ -17,7 +27,4 @@ The **Pet Health Tracker App** will be a tool for pet owners and veterinarians t
 - **Disease Database**: Veterinarians will have the ability to upload and manage information about different pet diseases, their symptoms, and potential treatments.
 - **Symptom Database**: Vets will be able to upload details of common symptoms that could indicate specific illnesses, helping users identify potential issues early.
 - **Article Upload**: Veterinarians will be able to share educational articles with pet owners, providing insights into common health concerns, preventative care, and treatment options.
-
-#### 3. Statistical Insights (WIP):
-- **Trends and Patterns**: In the future, i plan to add a statistics feature that will analyze user data to provide insights on pet health trends. This will help both owners and veterinarians spot patterns in symptoms and diseases, potentially aiding in early detection.
   
