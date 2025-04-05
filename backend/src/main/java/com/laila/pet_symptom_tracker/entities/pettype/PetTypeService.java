@@ -1,5 +1,7 @@
 package com.laila.pet_symptom_tracker.entities.pettype;
 
+import static com.laila.pet_symptom_tracker.exceptions.ExceptionMessages.ADMIN_OR_MODERATOR_ONLY_ACTION;
+
 import com.laila.pet_symptom_tracker.entities.authentication.AuthenticationService;
 import com.laila.pet_symptom_tracker.entities.pettype.dto.PatchPetType;
 import com.laila.pet_symptom_tracker.entities.pettype.dto.PetTypeResponse;
@@ -22,15 +24,18 @@ public class PetTypeService {
     User loggedInUser = authenticationService.getAuthenticatedUser();
     ColoredLogger.prettyInPink(loggedInUser.getRole().toString());
     if (!loggedInUser.hasModeratorRole() && !loggedInUser.hasAdminRole())
-      throw new ForbiddenException(
-          "You must be an administrator or a moderator to perform this action");
+      throw new ForbiddenException(ADMIN_OR_MODERATOR_ONLY_ACTION);
 
     PetType createdType = PetType.builder().name(dto.name()).createdBy(loggedInUser).build();
-    ColoredLogger.prettyInPink(createdType.getName());
 
     petTypeRepository.save(createdType);
 
     return PetTypeResponse.from(createdType);
+  }
+
+  public PetTypeResponse getById(Long id) {
+    PetType petType = petTypeRepository.findById(id).orElseThrow(NotFoundException::new);
+    return PetTypeResponse.from(petType);
   }
 
   public List<PetTypeResponse> getAll() {
@@ -43,11 +48,6 @@ public class PetTypeService {
     }
 
     return petTypes.stream().map(PetTypeResponse::from).toList();
-  }
-
-  public PetTypeResponse getById(Long id) {
-    PetType petType = petTypeRepository.findById(id).orElseThrow(NotFoundException::new);
-    return PetTypeResponse.from(petType);
   }
 
   // TODO bijhouden wie wanneer aanpassing heeft gemaakt
