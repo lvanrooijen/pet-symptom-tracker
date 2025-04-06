@@ -8,6 +8,7 @@ import com.laila.pet_symptom_tracker.entities.diseaselog.DiseaseLog;
 import com.laila.pet_symptom_tracker.entities.pet.Pet;
 import com.laila.pet_symptom_tracker.entities.pet.dto.PetCompactResponse;
 import com.laila.pet_symptom_tracker.entities.pettype.PetType;
+import com.laila.pet_symptom_tracker.entities.symptom.Symptom;
 import com.laila.pet_symptom_tracker.entities.user.User;
 import java.time.LocalDate;
 import java.util.UUID;
@@ -91,4 +92,7 @@ public abstract class TestData {
 
   protected static DiseaseLog DEFAULT_DISEASE_LOG =
       DiseaseLog.builder().pet(DEFAULT_PET).disease(DEFAULT_DISEASE).build();
+
+  protected static Symptom DEFAULT_SYMPTOM =
+      Symptom.builder().name("Diarrhea").description("Fluid poops").isVerified(true).build();
 }

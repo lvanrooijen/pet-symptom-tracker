@@ -83,4 +83,12 @@ public class GlobalExceptionHandler {
     ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, msg);
     return ResponseEntity.badRequest().body(problemDetail);
   }
+
+  @ExceptionHandler(PatchDeletedEntityException.class)
+  public ResponseEntity<ProblemDetail> patchDeletedEntityHandler(
+      PatchDeletedEntityException exception) {
+    String msg = exception.getMessage();
+    ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, msg);
+    return ResponseEntity.badRequest().body(problemDetail);
+  }
 }

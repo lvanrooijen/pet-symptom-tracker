@@ -1,13 +1,17 @@
 package com.laila.pet_symptom_tracker.entities.symptom;
 
+import static com.laila.pet_symptom_tracker.exceptions.ExceptionMessages.ADMIN_OR_MODERATOR_ONLY_ACTION;
+import static com.laila.pet_symptom_tracker.exceptions.ExceptionMessages.PATCH_DELETED_ENTITY;
+
 import com.laila.pet_symptom_tracker.entities.authentication.AuthenticationService;
 import com.laila.pet_symptom_tracker.entities.symptom.dto.PatchSymptom;
 import com.laila.pet_symptom_tracker.entities.symptom.dto.PostSymptom;
 import com.laila.pet_symptom_tracker.entities.symptom.dto.SymptomResponse;
 import com.laila.pet_symptom_tracker.entities.user.User;
+import com.laila.pet_symptom_tracker.exceptions.ExceptionMessages;
 import com.laila.pet_symptom_tracker.exceptions.generic.ForbiddenException;
 import com.laila.pet_symptom_tracker.exceptions.generic.NotFoundException;
-import com.laila.pet_symptom_tracker.mainconfig.ColoredLogger;
+import com.laila.pet_symptom_tracker.exceptions.generic.PatchDeletedEntityException;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -31,6 +35,16 @@ public class SymptomService {
     return SymptomResponse.from(created);
   }
 
+  public SymptomResponse getById(Long id) {
+    User loggedInUser = authenticationService.getAuthenticatedUser();
+
+    Symptom symptom = symptomRepository.findById(id).orElseThrow(NotFoundException::new);
+    if (loggedInUser.hasUserRole() && symptom.getIsDeleted()) {
+      throw new ForbiddenException(ExceptionMessages.ADMIN_ONLY_ACTION);
+    }
+    return SymptomResponse.from(symptom);
+  }
+
   public List<SymptomResponse> getAll() {
     User loggedInUser = authenticationService.getAuthenticatedUser();
     List<Symptom> symptoms;
@@ -42,26 +56,18 @@ public class SymptomService {
     return symptoms.stream().map(SymptomResponse::from).toList();
   }
 
-  public SymptomResponse getById(Long id) {
-    Symptom symptom = symptomRepository.findById(id).orElseThrow(NotFoundException::new);
-    return SymptomResponse.from(symptom);
-  }
-
+  // TODO exception for soft deleted symptom hier!
   public SymptomResponse update(Long id, PatchSymptom patch) {
     User loggedInUser = authenticationService.getAuthenticatedUser();
     Symptom symptom = symptomRepository.findById(id).orElseThrow(NotFoundException::new);
 
+    if (symptom.getIsDeleted()) {
+      throw new PatchDeletedEntityException(PATCH_DELETED_ENTITY);
+    }
+
     if (patch.isVerified() != null) {
       if (loggedInUser.hasUserRole()) {
-        throw new ForbiddenException("Only an administrator or moderator can perform this action");
-      }
-      if (loggedInUser.hasAdminRole() || loggedInUser.hasModeratorRole()) {
-        ColoredLogger.prettyInPink(
-            "is admin:  "
-                + loggedInUser.hasAdminRole()
-                + " is Mod: "
-                + loggedInUser.hasModeratorRole());
-        symptom.setIsVerified(patch.isVerified());
+        throw new ForbiddenException(ADMIN_OR_MODERATOR_ONLY_ACTION);
       }
     }
 

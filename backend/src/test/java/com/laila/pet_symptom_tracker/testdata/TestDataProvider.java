@@ -12,6 +12,8 @@ public class TestDataProvider extends TestData {
   public static final PetTestData PET = new PetTestData();
   public static final PetTypeTestData PET_TYPE = new PetTypeTestData();
 
+  public static final SymptomTestData SYMPTOM = new SymptomTestData();
+
   public static User getUser() {
     return REGULAR_USER;
   }

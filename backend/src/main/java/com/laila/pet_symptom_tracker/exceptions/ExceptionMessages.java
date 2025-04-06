@@ -18,4 +18,5 @@ public class ExceptionMessages {
   public static String NON_EXISTENT_BREED = "This breed does not exist.";
   public static String NON_EXISTENT_PET = "This pet does not exist";
   public static String DUPLICATE_BLACKLIST_WORD = "This word is already on the blacklist.";
+  public static String PATCH_DELETED_ENTITY = "Can not alter a deleted entity.";
 }

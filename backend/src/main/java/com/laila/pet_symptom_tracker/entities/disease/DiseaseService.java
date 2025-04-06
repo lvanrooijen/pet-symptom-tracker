@@ -36,6 +36,12 @@ public class DiseaseService {
     return DiseaseResponse.from(createdDisease);
   }
 
+  // TODO aanpassen op softdelete, tests ook aanpassen!
+  public DiseaseResponse getById(Long id) {
+    Disease disease = diseaseRepository.findById(id).orElseThrow(NotFoundException::new);
+    return DiseaseResponse.from(disease);
+  }
+
   public List<DiseaseResponse> getAll() {
     User loggedInUser = authenticationService.getAuthenticatedUser();
     List<Disease> diseases;
@@ -45,11 +51,6 @@ public class DiseaseService {
       diseases = diseaseRepository.findByDeletedFalse();
     }
     return diseases.stream().map(DiseaseResponse::from).toList();
-  }
-
-  public DiseaseResponse getById(Long id) {
-    Disease disease = diseaseRepository.findById(id).orElseThrow(NotFoundException::new);
-    return DiseaseResponse.from(disease);
   }
 
   public DiseaseResponse update(Long id, PatchDisease patch) {

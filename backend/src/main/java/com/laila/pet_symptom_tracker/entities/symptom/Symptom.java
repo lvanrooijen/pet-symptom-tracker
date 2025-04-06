@@ -24,7 +24,7 @@ public class Symptom {
 
   @Column(nullable = false)
   @Setter
-  private Boolean deleted = false;
+  private Boolean isDeleted = false;
 
   @Column(nullable = false)
   @Setter
