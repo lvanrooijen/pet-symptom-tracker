@@ -32,4 +32,12 @@ public class SymptomLog {
     this.details = details;
     this.reportDate = reportDate;
   }
+
+  public SymptomLog(Long id, Pet pet, Symptom symptom, String details, LocalDate reportDate) {
+    this.id = id;
+    this.pet = pet;
+    this.symptom = symptom;
+    this.details = details;
+    this.reportDate = reportDate;
+  }
 }

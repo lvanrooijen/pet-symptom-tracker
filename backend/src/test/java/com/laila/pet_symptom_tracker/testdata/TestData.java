@@ -9,6 +9,7 @@ import com.laila.pet_symptom_tracker.entities.pet.Pet;
 import com.laila.pet_symptom_tracker.entities.pet.dto.PetCompactResponse;
 import com.laila.pet_symptom_tracker.entities.pettype.PetType;
 import com.laila.pet_symptom_tracker.entities.symptom.Symptom;
+import com.laila.pet_symptom_tracker.entities.symptomlog.SymptomLog;
 import com.laila.pet_symptom_tracker.entities.user.User;
 import java.time.LocalDate;
 import java.util.UUID;
@@ -94,5 +95,8 @@ public abstract class TestData {
       DiseaseLog.builder().pet(DEFAULT_PET).disease(DEFAULT_DISEASE).build();
 
   protected static Symptom DEFAULT_SYMPTOM =
-      Symptom.builder().name("Diarrhea").description("Fluid poops").isVerified(true).build();
+      new Symptom(VALID_ID, "Diarrhea", "Fluid poops", true, false);
+
+  protected static SymptomLog DEFAULT_SYMPTOM_LOG =
+      new SymptomLog(VALID_ID, DEFAULT_PET, DEFAULT_SYMPTOM, "Had a greenish color", CREATION_DATE);
 }

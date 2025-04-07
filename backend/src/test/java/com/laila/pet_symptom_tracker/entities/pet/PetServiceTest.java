@@ -86,7 +86,7 @@ class PetServiceTest {
     ForbiddenException exception =
         assertThrows(ForbiddenException.class, () -> petService.getById(VALID_ID));
 
-    assertEquals(OWNER_OR_MODERATOR_ONLY_ACTION, exception.getMessage());
+    assertEquals(OWNER_OR_MODERATOR_OR_ADMIN_ONLY_ACTION, exception.getMessage());
   }
 
   @Test

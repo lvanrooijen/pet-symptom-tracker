@@ -33,7 +33,6 @@ public class PetTypeService {
     return PetTypeResponse.from(createdType);
   }
 
-  // TODO aanpassen op softdelete, tests ook aanpassen!
   public PetTypeResponse getById(Long id) {
     PetType petType = petTypeRepository.findById(id).orElseThrow(NotFoundException::new);
     return PetTypeResponse.from(petType);

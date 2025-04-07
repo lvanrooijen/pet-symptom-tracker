@@ -36,4 +36,12 @@ public class Symptom {
     this.description = description;
     this.isVerified = isVerified;
   }
+
+  public Symptom(Long id, String name, String description, Boolean isDeleted, Boolean isVerified) {
+    this.id = id;
+    this.name = name;
+    this.description = description;
+    this.isDeleted = isDeleted;
+    this.isVerified = isVerified;
+  }
 }

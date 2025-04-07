@@ -55,7 +55,7 @@ public class PetService {
         || loggedInUser.hasModeratorRole()) {
       return PetResponse.from(pet);
     } else {
-      throw new ForbiddenException(OWNER_OR_MODERATOR_ONLY_ACTION);
+      throw new ForbiddenException(OWNER_OR_MODERATOR_OR_ADMIN_ONLY_ACTION);
     }
   }
 

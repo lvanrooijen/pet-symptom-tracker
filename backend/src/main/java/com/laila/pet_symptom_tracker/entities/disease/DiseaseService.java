@@ -36,7 +36,6 @@ public class DiseaseService {
     return DiseaseResponse.from(createdDisease);
   }
 
-  // TODO aanpassen op softdelete, tests ook aanpassen!
   public DiseaseResponse getById(Long id) {
     Disease disease = diseaseRepository.findById(id).orElseThrow(NotFoundException::new);
     return DiseaseResponse.from(disease);

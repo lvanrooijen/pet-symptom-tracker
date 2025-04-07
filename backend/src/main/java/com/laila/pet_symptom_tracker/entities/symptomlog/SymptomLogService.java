@@ -1,5 +1,7 @@
 package com.laila.pet_symptom_tracker.entities.symptomlog;
 
+import static com.laila.pet_symptom_tracker.exceptions.ExceptionMessages.*;
+
 import com.laila.pet_symptom_tracker.entities.authentication.AuthenticationService;
 import com.laila.pet_symptom_tracker.entities.pet.Pet;
 import com.laila.pet_symptom_tracker.entities.pet.PetRepository;
@@ -29,16 +31,16 @@ public class SymptomLogService {
     Pet pet =
         petRepository
             .findById(postBody.petId())
-            .orElseThrow(() -> new BadRequestException("Pet does not exist"));
+            .orElseThrow(() -> new BadRequestException(NON_EXISTENT_PET));
 
     if (pet.isNotOwner(loggedInUser)) {
-      throw new ForbiddenException("Logs for pets can only be created by their owners");
+      throw new ForbiddenException(OWNER_ONLY_ACTION);
     }
 
     Symptom symptom =
         symptomRepository
             .findById(postBody.symptomId())
-            .orElseThrow(() -> new BadRequestException("Symptom does not exist"));
+            .orElseThrow(() -> new BadRequestException(NON_EXISTENT_SYMPTOM));
 
     SymptomLog createdSymptomLog =
         SymptomLog.builder()
@@ -50,6 +52,21 @@ public class SymptomLogService {
 
     symptomLogRepository.save(createdSymptomLog);
     return SymptomLogResponse.from(createdSymptomLog);
+  }
+
+  public SymptomLogResponse getById(Long id) {
+    User loggedInUser = authenticationService.getAuthenticatedUser();
+    SymptomLog log = symptomLogRepository.findById(id).orElseThrow(NotFoundException::new);
+    Pet pet = log.pet;
+
+    if (pet.isOwner(loggedInUser)
+        || loggedInUser.hasAdminRole()
+        || loggedInUser.hasModeratorRole()) {
+      return SymptomLogResponse.from(log);
+
+    } else {
+      throw new ForbiddenException(OWNER_OR_MODERATOR_OR_ADMIN_ONLY_ACTION);
+    }
   }
 
   public List<SymptomLogResponse> findAll() {
@@ -66,21 +83,6 @@ public class SymptomLogService {
     return symptomLogs.stream().map(SymptomLogResponse::from).toList();
   }
 
-  public SymptomLogResponse getById(Long id) {
-    User loggedInUser = authenticationService.getAuthenticatedUser();
-    SymptomLog log = symptomLogRepository.findById(id).orElseThrow(NotFoundException::new);
-    Pet pet = log.pet;
-
-    if (pet.isOwner(loggedInUser)
-        || loggedInUser.hasAdminRole()
-        || loggedInUser.hasModeratorRole()) {
-      return SymptomLogResponse.from(log);
-
-    } else {
-      throw new ForbiddenException("Forbidden");
-    }
-  }
-
   public SymptomLogResponse update(Long id, PatchSymptomLog patch) {
     User loggedInUser = authenticationService.getAuthenticatedUser();
     SymptomLog updatedLog = symptomLogRepository.findById(id).orElseThrow(NotFoundException::new);
@@ -89,18 +91,25 @@ public class SymptomLogService {
       updatedLog.setDetails(patch.details());
     }
     if (patch.petId() != null) {
-      Pet pet = petRepository.findById(patch.petId()).orElseThrow(NotFoundException::new);
+      Pet pet =
+          petRepository
+              .findById(patch.petId())
+              .orElseThrow(() -> new BadRequestException(NON_EXISTENT_PET));
+
       if (pet.isNotOwner(loggedInUser) && loggedInUser.hasUserRole()) {
-        throw new ForbiddenException(
-            "Only the Owner of this pet or admin is allowed to perform this action.");
+        throw new ForbiddenException(OWNER_OR_MODERATOR_OR_ADMIN_ONLY_ACTION);
       }
       updatedLog.setPet(pet);
     }
     if (patch.symptomId() != null) {
       Symptom symptom =
-          symptomRepository.findById(patch.symptomId()).orElseThrow(NotFoundException::new);
+          symptomRepository
+              .findById(patch.symptomId())
+              .orElseThrow(() -> new BadRequestException(NON_EXISTENT_SYMPTOM));
       updatedLog.setSymptom(symptom);
     }
+
+    symptomLogRepository.save(updatedLog);
 
     return SymptomLogResponse.from(updatedLog);
   }
@@ -109,7 +118,7 @@ public class SymptomLogService {
     User loggedInUser = authenticationService.getAuthenticatedUser();
     SymptomLog log = symptomLogRepository.findById(id).orElseThrow(NotFoundException::new);
     if (log.pet.isNotOwner(loggedInUser) && loggedInUser.hasUserRole())
-      throw new ForbiddenException("Only the owner or admin is allowed to perform this action");
+      throw new ForbiddenException(OWNER_OR_MODERATOR_OR_ADMIN_ONLY_ACTION);
 
     symptomLogRepository.deleteById(id);
   }

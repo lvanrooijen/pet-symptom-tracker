@@ -56,7 +56,6 @@ public class SymptomService {
     return symptoms.stream().map(SymptomResponse::from).toList();
   }
 
-  // TODO exception for soft deleted symptom hier!
   public SymptomResponse update(Long id, PatchSymptom patch) {
     User loggedInUser = authenticationService.getAuthenticatedUser();
     Symptom symptom = symptomRepository.findById(id).orElseThrow(NotFoundException::new);
