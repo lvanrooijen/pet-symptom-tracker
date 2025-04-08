@@ -1,11 +1,9 @@
 package com.laila.pet_symptom_tracker.entities.authentication;
 
 import com.laila.pet_symptom_tracker.entities.authentication.dto.LoginRequest;
-import com.laila.pet_symptom_tracker.entities.authentication.dto.LoginResponse;
 import com.laila.pet_symptom_tracker.entities.authentication.dto.RegisterRequest;
-import com.laila.pet_symptom_tracker.entities.user.User;
+import com.laila.pet_symptom_tracker.entities.authentication.dto.RegisterResponse;
 import com.laila.pet_symptom_tracker.entities.user.UserService;
-import com.laila.pet_symptom_tracker.entities.user.dto.UserResponse;
 import com.laila.pet_symptom_tracker.mainconfig.ColoredLogger;
 import com.laila.pet_symptom_tracker.mainconfig.Routes;
 import com.laila.pet_symptom_tracker.securityconfig.JwtService;
@@ -26,31 +24,23 @@ public class AuthenticationController {
 
   // user registreren
   @PostMapping("/register")
-  public ResponseEntity<LoginResponse> register(
+  public ResponseEntity<RegisterResponse> register(
       @RequestBody @Valid RegisterRequest registerRequest) {
-    ColoredLogger.prettyInPink("Register attempt");
     ColoredLogger.prettyInPink("Register request: " + registerRequest);
-    User createdUser = userService.register(registerRequest);
+    RegisterResponse registerResponse = userService.register(registerRequest);
     URI location =
         ServletUriComponentsBuilder.fromCurrentRequest()
             .path("{/id}")
-            .buildAndExpand(createdUser.getId())
+            .buildAndExpand(registerResponse.user().id())
             .toUri();
-
-    String token = jwtService.generateTokenForUser(createdUser);
-
-    LoginResponse response = new LoginResponse(token, UserResponse.from(createdUser));
-
-    return ResponseEntity.created(location).body(response);
+    return ResponseEntity.created(location).body(registerResponse);
   }
 
   @PostMapping("/login")
   public ResponseEntity<JwtToken> login(@RequestBody LoginRequest loginRequest) {
     ColoredLogger.logInBlue("login attempt");
 
-    User user = userService.login(loginRequest);
-
-    JwtToken token = new JwtToken(jwtService.generateTokenForUser(user));
+    JwtToken token = userService.login(loginRequest);
 
     return ResponseEntity.ok(token);
   }

@@ -15,6 +15,8 @@ public class TestDataProvider extends TestData {
   public static final SymptomTestData SYMPTOM = new SymptomTestData();
   public static final SymptomLogTestData SYMPTOM_LOG = new SymptomLogTestData();
 
+  public static final UserTestData USER = new UserTestData();
+
   public static User getUser() {
     return REGULAR_USER;
   }

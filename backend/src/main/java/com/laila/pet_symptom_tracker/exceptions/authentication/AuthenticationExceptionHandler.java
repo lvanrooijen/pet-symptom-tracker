@@ -25,7 +25,14 @@ public class AuthenticationExceptionHandler {
   public ResponseEntity<ProblemDetail> usernameNotFoundHandler(
       UsernameNotFoundException exception) {
     ProblemDetail problemDetail =
-        ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, "Username not found");
+        ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, exception.getMessage());
+    return ResponseEntity.badRequest().body(problemDetail);
+  }
+
+  @ExceptionHandler(UserNotFoundException.class)
+  public ResponseEntity<ProblemDetail> userNotFoundHandler(UserNotFoundException exception) {
+    ProblemDetail problemDetail =
+        ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, exception.getMessage());
     return ResponseEntity.badRequest().body(problemDetail);
   }
 }

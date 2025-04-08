@@ -36,6 +36,8 @@ public abstract class TestData {
           .email("default@email.com")
           .password("Password123!")
           .username("default")
+          .firstName("firstname")
+          .lastName("lastname")
           .role(Role.USER)
           .build();
 

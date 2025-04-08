@@ -47,7 +47,6 @@ class BreedControllerTest {
   @Autowired private MockMvc mvc;
   @Autowired private ObjectMapper objectMapper;
 
-  // TODO remember me then delete me :D mockito bean gooit m in de spring context
   @MockitoBean private BreedService breedService;
   @MockitoBean private UserService userService;
   @MockitoBean private JwtAuthFilter jwtAuthFilter;

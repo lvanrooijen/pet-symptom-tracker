@@ -51,7 +51,7 @@ public class SymptomService {
     if (loggedInUser.hasAdminRole()) {
       symptoms = symptomRepository.findAll();
     } else {
-      symptoms = symptomRepository.findByDeletedFalse();
+      symptoms = symptomRepository.findByIsDeletedFalse();
     }
     return symptoms.stream().map(SymptomResponse::from).toList();
   }

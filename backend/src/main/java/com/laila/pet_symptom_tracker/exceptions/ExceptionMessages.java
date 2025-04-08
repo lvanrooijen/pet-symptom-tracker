@@ -14,6 +14,8 @@ public class ExceptionMessages {
 
   public static String OWNER_ONLY_ACTION = "Only the owner is allowed to perform this action.";
 
+  public static String USER_NOT_REGISTERED = "A user with this email or username can not be found.";
+
   // bad requests and miscellaneous
   public static String NON_EXISTENT_DISEASE = "This disease does not exist.";
   public static String NON_EXISTENT_PET_TYPE = "This pet type does not exist.";

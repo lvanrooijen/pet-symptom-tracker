@@ -120,7 +120,7 @@ class SymptomServiceTest {
     List<Symptom> symptomList = TestDataProvider.SYMPTOM.getSymptomList();
 
     when(authenticationService.getAuthenticatedUser()).thenReturn(user);
-    when(symptomRepository.findByDeletedFalse()).thenReturn(symptomList);
+    when(symptomRepository.findByIsDeletedFalse()).thenReturn(symptomList);
 
     List<SymptomResponse> result = symptomService.getAll();
 
