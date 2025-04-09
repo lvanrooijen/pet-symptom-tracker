@@ -29,7 +29,7 @@ public class DiseaseTestData extends TestData {
         DEFAULT_DISEASE.getName(),
         DEFAULT_DISEASE.getDescription(),
         true,
-        DEFAULT_DISEASE.getCreatedBy());
+        DEFAULT_DISEASE.getCreator());
   }
 
   public PostDisease getPostDisease() {
@@ -45,7 +45,7 @@ public class DiseaseTestData extends TestData {
         VALID_ID,
         DEFAULT_DISEASE.getName(),
         DEFAULT_DISEASE.getDescription(),
-        DEFAULT_DISEASE.getCreatedBy().getId());
+        DEFAULT_DISEASE.getCreator().getId());
   }
 
   public List<Disease> getAdminDiseaseList() {

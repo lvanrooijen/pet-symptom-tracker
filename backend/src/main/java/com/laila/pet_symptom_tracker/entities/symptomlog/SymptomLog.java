@@ -12,16 +12,28 @@ import lombok.Setter;
 @Entity
 @NoArgsConstructor
 @Getter
+@Table(name = "symptom_logs")
 public class SymptomLog {
-  @ManyToOne @Setter Pet pet;
-  @Id @GeneratedValue private Long id;
-  @ManyToOne @Setter private Symptom symptom;
+  @JoinColumn(name = "symptom_log_pet_id")
+  @ManyToOne
+  @Setter
+  Pet pet;
 
-  @Column(nullable = true)
+  @Column(name = "id")
+  @Id
+  @GeneratedValue
+  private Long id;
+
+  @JoinColumn(name = "symptom_log_symptom_id")
+  @ManyToOne
+  @Setter
+  private Symptom symptom;
+
+  @Column(nullable = true, name = "details")
   @Setter
   private String details;
 
-  @Column(nullable = false)
+  @Column(nullable = false, name = "report_date")
   @Setter
   private LocalDate reportDate;
 

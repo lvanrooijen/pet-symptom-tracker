@@ -17,37 +17,40 @@ import org.springframework.security.core.userdetails.UserDetails;
 @Getter
 @NoArgsConstructor
 public class User implements UserDetails {
+  @Column(name = "id")
   @Id
   @GeneratedValue(strategy = GenerationType.UUID)
   UUID id;
 
-  @Column(unique = true, nullable = false)
+  @Column(unique = true, nullable = false, name = "email")
   @Setter
   private String email;
 
-  @Column(nullable = false)
+  @Column(nullable = false, name = "password")
   @Setter
   private String password;
 
-  @Column(unique = true, nullable = false)
+  @Column(unique = true, nullable = false, name = "username")
   @Setter
   private String username;
 
-  @Setter private Role role;
+  @Column(name = "role", nullable = false)
+  @Setter
+  private Role role;
 
-  @Column(nullable = true)
+  @Column(nullable = true, name = "first_name")
   @Setter
   private String firstName;
 
-  @Column(nullable = true)
+  @Column(nullable = true, name = "last_name")
   @Setter
   private String lastName;
 
-  @Column(nullable = false)
+  @Column(nullable = false, name = "enabled")
   @Setter
   private Boolean enabled;
 
-  @Column(nullable = false)
+  @Column(nullable = false, name = "locked")
   @Setter
   private Boolean locked;
 
@@ -105,7 +108,6 @@ public class User implements UserDetails {
     return enabled;
   }
 
-  /*  ~~~~~~~~~~~  Helper methods ~~~~~~~~~~~  */
   public Boolean hasAdminRole() {
     return hasRole(Role.ADMIN);
   }

@@ -26,7 +26,7 @@ public class PetTypeService {
     if (!loggedInUser.hasModeratorRole() && !loggedInUser.hasAdminRole())
       throw new ForbiddenException(ADMIN_OR_MODERATOR_ONLY_ACTION);
 
-    PetType createdType = PetType.builder().name(dto.name()).createdBy(loggedInUser).build();
+    PetType createdType = PetType.builder().name(dto.name()).creator(loggedInUser).build();
 
     petTypeRepository.save(createdType);
 

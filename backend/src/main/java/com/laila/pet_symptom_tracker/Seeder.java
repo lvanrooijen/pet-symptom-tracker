@@ -92,7 +92,7 @@ public class Seeder implements CommandLineRunner {
                     Disease.builder()
                         .name(disease.name())
                         .description(disease.description())
-                        .createdBy(moderators.get(random.nextInt(0, maxMods)))
+                        .creator(moderators.get(random.nextInt(0, maxMods)))
                         .build())
             .toList();
     diseaseRepository.saveAll(diseases);
@@ -113,7 +113,7 @@ public class Seeder implements CommandLineRunner {
                   Breed.builder()
                       .name(breed.name())
                       .petType(petTypeRepository.findById(breed.petTypeId()).orElse(null))
-                      .createdBy(moderators.get(random.nextInt(0, maxMods)))
+                      .creator(moderators.get(random.nextInt(0, maxMods)))
                       .build();
               breedRepository.save(created);
             });
@@ -130,7 +130,7 @@ public class Seeder implements CommandLineRunner {
                 type ->
                     PetType.builder()
                         .name(type.name())
-                        .createdBy(moderators.get(random.nextInt(0, maxMods)))
+                        .creator(moderators.get(random.nextInt(0, maxMods)))
                         .build())
             .toList();
 

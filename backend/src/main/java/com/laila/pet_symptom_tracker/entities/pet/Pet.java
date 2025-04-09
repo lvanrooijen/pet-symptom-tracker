@@ -9,23 +9,39 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Entity(name = "pets")
+@Entity
 @NoArgsConstructor
 @Getter
+@Table(name = "pets")
 public class Pet {
-  @Setter @ManyToOne User owner;
-  @Id @GeneratedValue private Long id;
-  @Setter private String name;
+  @JoinColumn(name = "pet_owner_id")
+  @Setter
+  @ManyToOne
+  User owner;
 
-  @Setter @ManyToOne private Breed breed;
+  @Column(name = "id")
+  @Id
+  @GeneratedValue
+  private Long id;
 
-  @Setter private LocalDate dateOfBirth;
+  @Column(name = "name")
+  @Setter
+  private String name;
 
-  @Column(nullable = false)
+  @JoinColumn(name = "pet_breed_id")
+  @Setter
+  @ManyToOne
+  private Breed breed;
+
+  @Column(name = "date_of_birth")
+  @Setter
+  private LocalDate dateOfBirth;
+
+  @Column(nullable = false, name = "is_alive")
   @Setter
   private Boolean isAlive;
 
-  @Column(nullable = true)
+  @Column(nullable = true, name = "date_of_death")
   @Setter
   private LocalDate dateOfDeath;
 

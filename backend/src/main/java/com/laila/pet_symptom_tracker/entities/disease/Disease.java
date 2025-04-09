@@ -12,35 +12,41 @@ import org.hibernate.annotations.SQLDelete;
 @NoArgsConstructor
 @Getter
 @SQLDelete(sql = "UPDATE disease SET deleted = true WHERE id=?")
+@Table(name = "diseases")
 public class Disease {
-  @Id @GeneratedValue private Long id;
+  @Column(name = "id")
+  @Id
+  @GeneratedValue
+  private Long id;
 
-  @Column(nullable = false)
+  @Column(nullable = false, name = "name")
   @Setter
   private String name;
 
-  @Column(nullable = true)
+  @Column(nullable = true, name = "description")
   @Setter
   private String description;
 
-  @Column(nullable = false)
+  @Column(nullable = false, name = "deleted")
   @Setter
   private boolean deleted = false;
 
-  @ManyToOne private User createdBy;
+  @JoinColumn(name = "disease_creator_id", nullable = false)
+  @ManyToOne
+  private User creator;
 
   @Builder
-  private Disease(String name, String description, User createdBy) {
+  private Disease(String name, String description, User creator) {
     this.name = name;
     this.description = description;
-    this.createdBy = createdBy;
+    this.creator = creator;
   }
 
-  public Disease(Long id, String name, String description, boolean deleted, User createdBy) {
+  public Disease(Long id, String name, String description, boolean deleted, User creator) {
     this.id = id;
     this.name = name;
     this.description = description;
     this.deleted = deleted;
-    this.createdBy = createdBy;
+    this.creator = creator;
   }
 }

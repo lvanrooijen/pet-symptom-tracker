@@ -19,7 +19,7 @@ public class PetTypeTestData extends TestData {
 
   public PetTypeResponse getPetTypeResponse() {
     return new PetTypeResponse(
-        VALID_ID, DEFAULT_PET_TYPE.getName(), DEFAULT_PET_TYPE.getCreatedBy().getId(), false);
+        VALID_ID, DEFAULT_PET_TYPE.getName(), DEFAULT_PET_TYPE.getCreator().getId(), false);
   }
 
   public PostPetType getPostPetType() {
@@ -38,7 +38,7 @@ public class PetTypeTestData extends TestData {
     return List.of(
         DEFAULT_PET_TYPE,
         DEFAULT_PET_TYPE,
-        new PetType(VALID_ID, DEFAULT_PET_TYPE.getName(), true, DEFAULT_PET_TYPE.getCreatedBy()),
-        new PetType(VALID_ID, DEFAULT_PET_TYPE.getName(), true, DEFAULT_PET_TYPE.getCreatedBy()));
+        new PetType(VALID_ID, DEFAULT_PET_TYPE.getName(), true, DEFAULT_PET_TYPE.getCreator()),
+        new PetType(VALID_ID, DEFAULT_PET_TYPE.getName(), true, DEFAULT_PET_TYPE.getCreator()));
   }
 }

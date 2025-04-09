@@ -11,28 +11,37 @@ import lombok.Setter;
 @Entity
 @NoArgsConstructor
 @Getter
+@Table(name = "breeds")
 public class Breed {
-  @Id @GeneratedValue private Long id;
+  @Column(name = "id")
+  @Id
+  @GeneratedValue
+  private Long id;
 
-  @Column(nullable = false)
+  @Column(nullable = false, name = "name")
   @Setter
   private String name;
 
-  @Setter @ManyToOne private PetType petType;
+  @JoinColumn(name = "breed_pet_type_id", nullable = false)
+  @Setter
+  @ManyToOne
+  private PetType petType;
 
-  @ManyToOne private User createdBy;
+  @JoinColumn(name = "breed_creator_id", nullable = false)
+  @ManyToOne
+  private User creator;
 
   @Builder
-  private Breed(String name, PetType petType, User createdBy) {
+  private Breed(String name, PetType petType, User creator) {
     this.name = name;
     this.petType = petType;
-    this.createdBy = createdBy;
+    this.creator = creator;
   }
 
-  public Breed(Long id, String name, PetType petType, User createdBy) {
+  public Breed(Long id, String name, PetType petType, User creator) {
     this.id = id;
     this.name = name;
     this.petType = petType;
-    this.createdBy = createdBy;
+    this.creator = creator;
   }
 }

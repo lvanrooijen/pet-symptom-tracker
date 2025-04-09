@@ -28,7 +28,7 @@ public class DiseaseService {
         Disease.builder()
             .name(body.name())
             .description(body.description())
-            .createdBy(loggedInUser)
+            .creator(loggedInUser)
             .build();
 
     diseaseRepository.save(createdDisease);

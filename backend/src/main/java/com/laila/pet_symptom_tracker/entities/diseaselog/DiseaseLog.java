@@ -12,21 +12,31 @@ import lombok.Setter;
 @Entity
 @NoArgsConstructor
 @Getter
+@Table(name = "disease_logs")
 public class DiseaseLog {
-  @Id @GeneratedValue private Long id;
+  @Column(name = "id")
+  @Id
+  @GeneratedValue
+  private Long id;
 
-  @ManyToOne @Setter private Disease disease;
-  @ManyToOne private Pet pet;
+  @JoinColumn(name = "disease_log_disease_id")
+  @ManyToOne
+  @Setter
+  private Disease disease;
 
-  @Column(nullable = false)
+  @JoinColumn(name = "disease_log_pet_id", nullable = false)
+  @ManyToOne
+  private Pet pet;
+
+  @Column(nullable = false, name = "discovery_date")
   @Setter
   private LocalDate discoveryDate;
 
-  @Column(nullable = true)
+  @Column(nullable = true, name = "healed_on_date")
   @Setter
   private LocalDate healedOnDate;
 
-  @Column(nullable = false)
+  @Column(nullable = false, name = "is_healed")
   @Setter
   private Boolean isHealed;
 

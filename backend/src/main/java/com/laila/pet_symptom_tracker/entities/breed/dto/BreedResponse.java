@@ -10,6 +10,6 @@ public record BreedResponse(Long id, String name, PetTypeCompactResponse petType
         entity.getId(),
         entity.getName(),
         PetTypeCompactResponse.from(entity.getPetType()),
-        entity.getCreatedBy().getId());
+        entity.getCreator().getId());
   }
 }

@@ -29,7 +29,7 @@ public class BreedService {
             .findById(postBreed.petTypeId())
             .orElseThrow(() -> new BadRequestException(NON_EXISTENT_PET_TYPE));
     Breed createdBreed =
-        Breed.builder().name(postBreed.name()).petType(type).createdBy(loggedInUser).build();
+        Breed.builder().name(postBreed.name()).petType(type).creator(loggedInUser).build();
     breedRepository.save(createdBreed);
     return BreedResponse.from(createdBreed);
   }
