@@ -5,7 +5,6 @@ import com.laila.pet_symptom_tracker.entities.breed.dto.BreedResponse;
 import com.laila.pet_symptom_tracker.entities.breed.dto.PatchBreed;
 import com.laila.pet_symptom_tracker.entities.breed.dto.PostBreed;
 import com.laila.pet_symptom_tracker.entities.pettype.dto.PetTypeCompactResponse;
-import java.util.List;
 
 public class BreedTestData extends TestData {
 
@@ -29,14 +28,5 @@ public class BreedTestData extends TestData {
     PetTypeCompactResponse petTypeCompact =
         new PetTypeCompactResponse(VALID_ID, DEFAULT_BREED.getName());
     return new BreedResponse(VALID_ID, DEFAULT_BREED.getName(), petTypeCompact, REGULAR_USER_ID);
-  }
-
-  public List<BreedResponse> getBreedResponseList() {
-    PetTypeCompactResponse petTypeCompact =
-        new PetTypeCompactResponse(VALID_ID, DEFAULT_PET_TYPE.getName());
-    return List.of(
-        new BreedResponse(1L, "Siamese", petTypeCompact, REGULAR_USER_ID),
-        new BreedResponse(2L, "Short hair", petTypeCompact, REGULAR_USER_ID),
-        new BreedResponse(3L, "Sphinx", petTypeCompact, REGULAR_USER_ID));
   }
 }

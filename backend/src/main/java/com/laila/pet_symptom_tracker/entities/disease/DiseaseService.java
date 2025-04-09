@@ -37,7 +37,14 @@ public class DiseaseService {
   }
 
   public DiseaseResponse getById(Long id) {
-    Disease disease = diseaseRepository.findById(id).orElseThrow(NotFoundException::new);
+    User loggedInUser = authenticationService.getAuthenticatedUser();
+
+    Disease disease;
+    if (loggedInUser.hasAdminRole()) {
+      disease = diseaseRepository.findById(id).orElseThrow(NotFoundException::new);
+    } else {
+      disease = diseaseRepository.findByIdAndDeletedFalse(id).orElseThrow(NotFoundException::new);
+    }
     return DiseaseResponse.from(disease);
   }
 

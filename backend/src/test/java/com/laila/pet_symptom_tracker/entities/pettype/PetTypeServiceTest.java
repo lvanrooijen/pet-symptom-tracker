@@ -15,7 +15,6 @@ import com.laila.pet_symptom_tracker.entities.user.User;
 import com.laila.pet_symptom_tracker.exceptions.generic.ForbiddenException;
 import com.laila.pet_symptom_tracker.exceptions.generic.NotFoundException;
 import com.laila.pet_symptom_tracker.testdata.TestDataProvider;
-import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;
@@ -74,6 +73,9 @@ class PetTypeServiceTest {
 
   @Test
   public void get_pet_type_by_id_with_invalid_id_should_throw_not_found_exception() {
+    User admin = TestDataProvider.getAdmin();
+
+    when(authenticationService.getAuthenticatedUser()).thenReturn(admin);
     when(petTypeRepository.findById(INVALID_ID)).thenReturn(Optional.empty());
 
     assertThrows(NotFoundException.class, () -> petTypeService.getById(INVALID_ID));
@@ -81,8 +83,10 @@ class PetTypeServiceTest {
 
   @Test
   public void get_pet_type_by_id_should_return_pet_type_response() {
+    User admin = TestDataProvider.getAdmin();
     PetType petType = TestDataProvider.PET_TYPE.getPetType();
 
+    when(authenticationService.getAuthenticatedUser()).thenReturn(admin);
     when(petTypeRepository.findById(VALID_ID)).thenReturn(Optional.of(petType));
 
     PetTypeResponse result = petTypeService.getById(VALID_ID);
@@ -91,29 +95,51 @@ class PetTypeServiceTest {
   }
 
   @Test
-  public void get_all_pet_types_as_user_should_return_only_non_deleted_pet_types() {
+  public void get_pet_type_by_id_as_user_should_not_return_soft_deleted_pet_type() {
     User user = TestDataProvider.getUser();
-    List<PetType> petTypeList = TestDataProvider.PET_TYPE.getPetTypeList();
+    PetType petType = TestDataProvider.PET_TYPE.getPetType();
 
     when(authenticationService.getAuthenticatedUser()).thenReturn(user);
-    when(petTypeRepository.findByDeletedFalse()).thenReturn(petTypeList);
+    when(petTypeRepository.findByIdAndDeletedFalse(VALID_ID)).thenReturn(Optional.of(petType));
 
-    List<PetTypeResponse> result = petTypeService.getAll();
+    petTypeService.getById(VALID_ID);
 
-    assertEquals(petTypeList.size(), result.size());
+    verify(petTypeRepository).findByIdAndDeletedFalse(VALID_ID);
+  }
+
+  @Test
+  public void get_pet_type_by_id_as_admin_should_return_soft_deleted_pet_type() {
+    User admin = TestDataProvider.getAdmin();
+    PetType petType = TestDataProvider.PET_TYPE.getPetType();
+
+    when(authenticationService.getAuthenticatedUser()).thenReturn(admin);
+    when(petTypeRepository.findById(VALID_ID)).thenReturn(Optional.of(petType));
+
+    petTypeService.getById(VALID_ID);
+
+    verify(petTypeRepository).findById(VALID_ID);
+  }
+
+  @Test
+  public void get_all_pet_types_as_user_should_not_return_soft_deleted_pet_types() {
+    User user = TestDataProvider.getUser();
+
+    when(authenticationService.getAuthenticatedUser()).thenReturn(user);
+
+    petTypeService.getAll();
+
+    verify(petTypeRepository).findByDeletedFalse();
   }
 
   @Test
   public void get_all_pet_types_as_admin_should_return_all_pet_types() {
     User admin = TestDataProvider.getAdmin();
-    List<PetType> petTypeList = TestDataProvider.PET_TYPE.getAdminPetTypeList();
 
     when(authenticationService.getAuthenticatedUser()).thenReturn(admin);
-    when(petTypeRepository.findAll()).thenReturn(petTypeList);
 
-    List<PetTypeResponse> result = petTypeService.getAll();
+    petTypeService.getAll();
 
-    assertEquals(petTypeList.size(), result.size());
+    verify(petTypeRepository).findAll();
   }
 
   @Test

@@ -38,31 +38,6 @@ public class DiseaseLogTestData extends TestData {
     return new PatchDiseaseLog(VALID_ID, CREATION_DATE, true, HEAL_DATE);
   }
 
-  public List<DiseaseLog> diseaseLogList() {
-    return List.of(
-        DiseaseLog.builder()
-            .pet(DEFAULT_PET)
-            .disease(DEFAULT_DISEASE)
-            .isHealed(true)
-            .discoveryDate(CREATION_DATE)
-            .healedOnDate(HEAL_DATE)
-            .build(),
-        DiseaseLog.builder()
-            .pet(DEFAULT_PET)
-            .disease(DEFAULT_DISEASE)
-            .isHealed(true)
-            .discoveryDate(CREATION_DATE)
-            .healedOnDate(HEAL_DATE)
-            .build(),
-        DiseaseLog.builder()
-            .pet(DEFAULT_PET)
-            .disease(DEFAULT_DISEASE)
-            .isHealed(true)
-            .discoveryDate(CREATION_DATE)
-            .healedOnDate(HEAL_DATE)
-            .build());
-  }
-
   public List<DiseaseLog> diseaseLogListWithOneOwner(User owner) {
     Pet pet =
         Pet.builder()

@@ -16,9 +16,9 @@ public class SymptomTestData extends TestData {
         Symptom.builder()
             .name(DEFAULT_SYMPTOM.getName())
             .description(DEFAULT_SYMPTOM.getDescription())
-            .isVerified(false)
+            .verified(false)
             .build();
-    symptom.setIsDeleted(true);
+    symptom.setDeleted(true);
     return symptom;
   }
 
@@ -26,7 +26,7 @@ public class SymptomTestData extends TestData {
     return Symptom.builder()
         .name(DEFAULT_SYMPTOM.getName())
         .description(DEFAULT_SYMPTOM.getDescription())
-        .isVerified(false)
+        .verified(false)
         .build();
   }
 
@@ -37,22 +37,6 @@ public class SymptomTestData extends TestData {
 
   public PostSymptom getPostSymptom() {
     return new PostSymptom(DEFAULT_SYMPTOM.getName(), DEFAULT_SYMPTOM.getDescription());
-  }
-
-  public List<Symptom> getSymptomList() {
-    return List.of(DEFAULT_SYMPTOM, DEFAULT_SYMPTOM);
-  }
-
-  public List<Symptom> getAdminSymptomList() {
-    Symptom symptom =
-        Symptom.builder()
-            .name(DEFAULT_SYMPTOM.getName())
-            .description(DEFAULT_SYMPTOM.getDescription())
-            .isVerified(true)
-            .build();
-    symptom.setIsDeleted(true);
-
-    return List.of(DEFAULT_SYMPTOM, DEFAULT_SYMPTOM, symptom, symptom);
   }
 
   public PatchSymptom getPatchSymptom() {

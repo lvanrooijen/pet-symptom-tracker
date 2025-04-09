@@ -71,7 +71,7 @@ public abstract class TestData {
   protected static PetType DEFAULT_PET_TYPE = new PetType(VALID_ID, "Siamese", false, DEFAULT_USER);
 
   protected static Breed DEFAULT_BREED =
-      Breed.builder().name("Sphinx").petType(DEFAULT_PET_TYPE).createdBy(DEFAULT_USER).build();
+      Breed.builder().name("Sphinx").petType(DEFAULT_PET_TYPE).creator(DEFAULT_USER).build();
 
   protected static Pet DEFAULT_PET =
       Pet.builder()
@@ -97,7 +97,7 @@ public abstract class TestData {
       DiseaseLog.builder().pet(DEFAULT_PET).disease(DEFAULT_DISEASE).build();
 
   protected static Symptom DEFAULT_SYMPTOM =
-      new Symptom(VALID_ID, "Diarrhea", "Fluid poops", true, false);
+      new Symptom(VALID_ID, "Diarrhea", "Fluid poops", false, false);
 
   protected static SymptomLog DEFAULT_SYMPTOM_LOG =
       new SymptomLog(VALID_ID, DEFAULT_PET, DEFAULT_SYMPTOM, "Had a greenish color", CREATION_DATE);

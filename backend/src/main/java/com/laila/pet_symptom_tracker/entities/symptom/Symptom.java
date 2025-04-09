@@ -10,7 +10,7 @@ import org.hibernate.annotations.SQLDelete;
 @Entity
 @NoArgsConstructor
 @Getter
-@SQLDelete(sql = "UPDATE symptom SET deleted = true WHERE id=?")
+@SQLDelete(sql = "UPDATE symptoms SET deleted = true WHERE id=?")
 @Table(name = "symptoms")
 public class Symptom {
   @Column(name = "id")
@@ -28,24 +28,24 @@ public class Symptom {
 
   @Column(nullable = false, name = "is_deleted")
   @Setter
-  private Boolean isDeleted = false;
+  private Boolean deleted = false;
 
   @Column(nullable = false, name = "is_verified")
   @Setter
-  private Boolean isVerified;
+  private Boolean verified;
 
   @Builder
-  private Symptom(String name, String description, Boolean isVerified) {
+  private Symptom(String name, String description, Boolean verified) {
     this.name = name;
     this.description = description;
-    this.isVerified = isVerified;
+    this.verified = verified;
   }
 
-  public Symptom(Long id, String name, String description, Boolean isDeleted, Boolean isVerified) {
+  public Symptom(Long id, String name, String description, Boolean deleted, Boolean verified) {
     this.id = id;
     this.name = name;
     this.description = description;
-    this.isDeleted = isDeleted;
-    this.isVerified = isVerified;
+    this.deleted = deleted;
+    this.verified = verified;
   }
 }

@@ -7,10 +7,12 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.SQLDelete;
 
 @Entity
 @NoArgsConstructor
 @Getter
+@SQLDelete(sql = "UPDATE breeds SET deleted = true WHERE id=?")
 @Table(name = "breeds")
 public class Breed {
   @Column(name = "id")
@@ -21,6 +23,10 @@ public class Breed {
   @Column(nullable = false, name = "name")
   @Setter
   private String name;
+
+  @Column(nullable = false, name = "deleted")
+  @Setter
+  private boolean deleted = false;
 
   @JoinColumn(name = "breed_pet_type_id", nullable = false)
   @Setter

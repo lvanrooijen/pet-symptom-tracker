@@ -4,6 +4,7 @@ import static com.laila.pet_symptom_tracker.exceptions.ExceptionMessages.*;
 import static com.laila.pet_symptom_tracker.testdata.TestDataProvider.INVALID_ID;
 import static com.laila.pet_symptom_tracker.testdata.TestDataProvider.VALID_ID;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.laila.pet_symptom_tracker.entities.authentication.AuthenticationService;
@@ -118,14 +119,12 @@ class DiseaseLogServiceTest {
   @Test
   public void get_all_disease_logs_as_admin_should_return_all_logs() {
     User admin = TestDataProvider.getAdmin();
-    List<DiseaseLog> diseaseLogList = TestDataProvider.DISEASE_LOG.diseaseLogList();
 
     when(authenticationService.getAuthenticatedUser()).thenReturn(admin);
-    when(diseaseLogRepository.findAll()).thenReturn(diseaseLogList);
 
-    List<DiseaseLogResponse> result = diseaseLogService.getAll();
+    diseaseLogService.getAll();
 
-    assertEquals(diseaseLogList.size(), result.size());
+    verify(diseaseLogRepository).findAll();
   }
 
   @Test

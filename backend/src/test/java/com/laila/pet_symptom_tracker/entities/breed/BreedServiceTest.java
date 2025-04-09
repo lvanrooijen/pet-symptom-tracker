@@ -66,9 +66,38 @@ class BreedServiceTest {
 
   @Test
   public void get_non_existent_breed_by_id_throws_not_found_exception() {
+    User admin = TestDataProvider.getAdmin();
+
+    when(authenticationService.getAuthenticatedUser()).thenReturn(admin);
     when(breedRepository.findById(INVALID_ID)).thenReturn(Optional.empty());
 
     assertThrows(NotFoundException.class, () -> breedService.getById(INVALID_ID));
+  }
+
+  @Test
+  public void get_breed_by_id_as_admin_should_show_soft_deleted_breed() {
+    User admin = TestDataProvider.getAdmin();
+    Breed breed = TestDataProvider.BREED.getBreed();
+
+    when(authenticationService.getAuthenticatedUser()).thenReturn(admin);
+    when(breedRepository.findById(VALID_ID)).thenReturn(Optional.of(breed));
+
+    breedService.getById(VALID_ID);
+
+    verify(breedRepository).findById(VALID_ID);
+  }
+
+  @Test
+  public void get_breed_by_id_as_user_should_show_not_soft_deleted_breed() {
+    User user = TestDataProvider.getUser();
+    Breed breed = TestDataProvider.BREED.getBreed();
+
+    when(authenticationService.getAuthenticatedUser()).thenReturn(user);
+    when(breedRepository.findByIdAndDeletedFalse(VALID_ID)).thenReturn(Optional.of(breed));
+
+    breedService.getById(VALID_ID);
+
+    verify(breedRepository).findByIdAndDeletedFalse(VALID_ID);
   }
 
   @Test
@@ -111,5 +140,27 @@ class BreedServiceTest {
   public void delete_by_id_with_invalid_id_throws_not_found_exception() {
     when(breedRepository.findById(INVALID_ID)).thenReturn(Optional.empty());
     assertThrows(NotFoundException.class, () -> breedService.deleteById(INVALID_ID));
+  }
+
+  @Test
+  public void get_all_as_admin_should_call_return_soft_deleted_breeds() {
+    User admin = TestDataProvider.getAdmin();
+
+    when(authenticationService.getAuthenticatedUser()).thenReturn(admin);
+
+    breedService.getAll();
+
+    verify(breedRepository).findAll();
+  }
+
+  @Test
+  public void get_all_as_user_should_return_non_deleted_breeds_only() {
+    User user = TestDataProvider.getUser();
+
+    when(authenticationService.getAuthenticatedUser()).thenReturn(user);
+
+    breedService.getAll();
+
+    verify(breedRepository).findByDeletedFalse();
   }
 }

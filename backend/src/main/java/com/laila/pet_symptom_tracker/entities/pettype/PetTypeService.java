@@ -34,7 +34,14 @@ public class PetTypeService {
   }
 
   public PetTypeResponse getById(Long id) {
-    PetType petType = petTypeRepository.findById(id).orElseThrow(NotFoundException::new);
+    User loggedInUser = authenticationService.getAuthenticatedUser();
+
+    PetType petType;
+    if (loggedInUser.hasAdminRole()) {
+      petType = petTypeRepository.findById(id).orElseThrow(NotFoundException::new);
+    } else {
+      petType = petTypeRepository.findByIdAndDeletedFalse(id).orElseThrow(NotFoundException::new);
+    }
     return PetTypeResponse.from(petType);
   }
 

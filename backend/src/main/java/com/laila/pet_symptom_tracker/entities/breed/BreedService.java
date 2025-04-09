@@ -35,11 +35,25 @@ public class BreedService {
   }
 
   public List<BreedResponse> getAll() {
-    return breedRepository.findAll().stream().map(BreedResponse::from).toList();
+    User loggedInUser = authenticationService.getAuthenticatedUser();
+    List<Breed> breeds;
+    if (loggedInUser.hasAdminRole()) {
+      breeds = breedRepository.findAll();
+    } else {
+      breeds = breedRepository.findByDeletedFalse();
+    }
+    return breeds.stream().map(BreedResponse::from).toList();
   }
 
   public BreedResponse getById(Long id) {
-    Breed breed = breedRepository.findById(id).orElseThrow(NotFoundException::new);
+    User loggedInUser = authenticationService.getAuthenticatedUser();
+    Breed breed;
+    if (loggedInUser.hasAdminRole()) {
+      breed = breedRepository.findById(id).orElseThrow(NotFoundException::new);
+    } else {
+      breed = breedRepository.findByIdAndDeletedFalse(id).orElseThrow(NotFoundException::new);
+    }
+
     return BreedResponse.from(breed);
   }
 

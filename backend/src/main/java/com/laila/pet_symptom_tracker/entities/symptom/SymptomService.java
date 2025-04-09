@@ -8,7 +8,6 @@ import com.laila.pet_symptom_tracker.entities.symptom.dto.PatchSymptom;
 import com.laila.pet_symptom_tracker.entities.symptom.dto.PostSymptom;
 import com.laila.pet_symptom_tracker.entities.symptom.dto.SymptomResponse;
 import com.laila.pet_symptom_tracker.entities.user.User;
-import com.laila.pet_symptom_tracker.exceptions.ExceptionMessages;
 import com.laila.pet_symptom_tracker.exceptions.generic.ForbiddenException;
 import com.laila.pet_symptom_tracker.exceptions.generic.NotFoundException;
 import com.laila.pet_symptom_tracker.exceptions.generic.PatchDeletedEntityException;
@@ -28,7 +27,7 @@ public class SymptomService {
         Symptom.builder()
             .name(postSymptom.name())
             .description(postSymptom.description())
-            .isVerified(loggedInUser.hasAdminRole() || loggedInUser.hasModeratorRole())
+            .verified(loggedInUser.hasAdminRole() || loggedInUser.hasModeratorRole())
             .build();
 
     symptomRepository.save(created);
@@ -38,10 +37,14 @@ public class SymptomService {
   public SymptomResponse getById(Long id) {
     User loggedInUser = authenticationService.getAuthenticatedUser();
 
-    Symptom symptom = symptomRepository.findById(id).orElseThrow(NotFoundException::new);
-    if (loggedInUser.hasUserRole() && symptom.getIsDeleted()) {
-      throw new ForbiddenException(ExceptionMessages.ADMIN_ONLY_ACTION);
+    Symptom symptom;
+
+    if (loggedInUser.hasAdminRole()) {
+      symptom = symptomRepository.findById(id).orElseThrow(NotFoundException::new);
+    } else {
+      symptom = symptomRepository.findByIdAndDeletedFalse(id).orElseThrow(NotFoundException::new);
     }
+
     return SymptomResponse.from(symptom);
   }
 
@@ -51,7 +54,7 @@ public class SymptomService {
     if (loggedInUser.hasAdminRole()) {
       symptoms = symptomRepository.findAll();
     } else {
-      symptoms = symptomRepository.findByIsDeletedFalse();
+      symptoms = symptomRepository.findByDeletedFalse();
     }
     return symptoms.stream().map(SymptomResponse::from).toList();
   }
@@ -60,7 +63,7 @@ public class SymptomService {
     User loggedInUser = authenticationService.getAuthenticatedUser();
     Symptom symptom = symptomRepository.findById(id).orElseThrow(NotFoundException::new);
 
-    if (symptom.getIsDeleted()) {
+    if (symptom.getDeleted()) {
       throw new PatchDeletedEntityException(PATCH_DELETED_ENTITY);
     }
 
@@ -68,6 +71,7 @@ public class SymptomService {
       if (loggedInUser.hasUserRole()) {
         throw new ForbiddenException(ADMIN_OR_MODERATOR_ONLY_ACTION);
       }
+      symptom.setVerified(patch.isVerified());
     }
 
     if (patch.name() != null) {

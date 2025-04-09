@@ -12,7 +12,7 @@ import org.hibernate.annotations.*;
 @Entity
 @NoArgsConstructor
 @Getter
-@SQLDelete(sql = "UPDATE pet_type SET deleted = true WHERE id=?")
+@SQLDelete(sql = "UPDATE pet_types SET deleted = true WHERE id=?")
 @Table(name = "pet_types")
 public class PetType {
   @Column(name = "id")

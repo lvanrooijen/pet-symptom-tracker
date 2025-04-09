@@ -17,7 +17,6 @@ import com.laila.pet_symptom_tracker.exceptions.generic.ForbiddenException;
 import com.laila.pet_symptom_tracker.exceptions.generic.NotFoundException;
 import com.laila.pet_symptom_tracker.exceptions.generic.PatchDeletedEntityException;
 import com.laila.pet_symptom_tracker.testdata.TestDataProvider;
-import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;
@@ -86,7 +85,10 @@ class SymptomServiceTest {
 
   @Test
   public void get_symptom_with_invalid_id_should_throw_not_found_exception() {
-    when(symptomRepository.findById(INVALID_ID)).thenReturn(Optional.empty());
+    User user = TestDataProvider.getUser();
+
+    when(authenticationService.getAuthenticatedUser()).thenReturn(user);
+    when(symptomRepository.findByIdAndDeletedFalse(INVALID_ID)).thenReturn(Optional.empty());
 
     assertThrows(NotFoundException.class, () -> symptomService.getById(INVALID_ID));
   }
@@ -97,47 +99,58 @@ class SymptomServiceTest {
     Symptom symptom = TestDataProvider.SYMPTOM.getSymptom();
 
     when(authenticationService.getAuthenticatedUser()).thenReturn(user);
-    when(symptomRepository.findById(VALID_ID)).thenReturn(Optional.of(symptom));
+    when(symptomRepository.findByIdAndDeletedFalse(VALID_ID)).thenReturn(Optional.of(symptom));
 
     SymptomResponse result = symptomService.getById(VALID_ID);
     assertNotNull(result);
   }
 
   @Test
-  public void get_soft_deleted_symptom_by_id_should_throw_forbidden_exception_with_message() {
+  public void get_symptom_by_id_as_user_should_not_return_soft_deleted_symptom() {
     User user = TestDataProvider.getUser();
     Symptom deletedSymptom = TestDataProvider.SYMPTOM.getSoftDeletedSymptom();
 
     when(authenticationService.getAuthenticatedUser()).thenReturn(user);
+    when(symptomRepository.findByIdAndDeletedFalse(VALID_ID))
+        .thenReturn(Optional.of(deletedSymptom));
+
+    symptomService.getById(VALID_ID);
+
+    verify(symptomRepository).findByIdAndDeletedFalse(VALID_ID);
+  }
+
+  @Test
+  public void get_symptom_by_id_as_admin_should_return_soft_deleted_symptom() {
+    User admin = TestDataProvider.getAdmin();
+    Symptom deletedSymptom = TestDataProvider.SYMPTOM.getSoftDeletedSymptom();
+
+    when(authenticationService.getAuthenticatedUser()).thenReturn(admin);
     when(symptomRepository.findById(VALID_ID)).thenReturn(Optional.of(deletedSymptom));
 
-    assertThrows(ForbiddenException.class, () -> symptomService.getById(VALID_ID));
+    symptomService.getById(VALID_ID);
+
+    verify(symptomRepository).findById(VALID_ID);
   }
 
   @Test
   public void get_all_symptoms_as_user_should_return_non_deleted_symptoms() {
     User user = TestDataProvider.getUser();
-    List<Symptom> symptomList = TestDataProvider.SYMPTOM.getSymptomList();
 
     when(authenticationService.getAuthenticatedUser()).thenReturn(user);
-    when(symptomRepository.findByIsDeletedFalse()).thenReturn(symptomList);
 
-    List<SymptomResponse> result = symptomService.getAll();
-
-    assertEquals(symptomList.size(), result.size());
+    symptomService.getAll();
+    verify(symptomRepository).findByDeletedFalse();
   }
 
   @Test
   public void get_all_symptoms_as_admin_should_return_all_symptoms() {
     User admin = TestDataProvider.getAdmin();
-    List<Symptom> symptomList = TestDataProvider.SYMPTOM.getSymptomList();
 
     when(authenticationService.getAuthenticatedUser()).thenReturn(admin);
-    when(symptomRepository.findAll()).thenReturn(symptomList);
 
-    List<SymptomResponse> result = symptomService.getAll();
+    symptomService.getAll();
 
-    assertEquals(symptomList.size(), result.size());
+    verify(symptomRepository).findAll();
   }
 
   @Test

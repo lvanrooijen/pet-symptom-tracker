@@ -74,7 +74,7 @@ public class Seeder implements CommandLineRunner {
                     Symptom.builder()
                         .name(symptom.name())
                         .description(symptom.description())
-                        .isVerified(false)
+                        .verified(false)
                         .build())
             .toList();
     symptomRepository.saveAll(symptoms);

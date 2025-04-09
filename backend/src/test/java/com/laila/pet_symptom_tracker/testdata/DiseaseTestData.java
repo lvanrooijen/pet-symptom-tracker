@@ -6,7 +6,6 @@ import com.laila.pet_symptom_tracker.entities.disease.dto.DiseaseResponse;
 import com.laila.pet_symptom_tracker.entities.disease.dto.PatchDisease;
 import com.laila.pet_symptom_tracker.entities.disease.dto.PostDisease;
 import com.laila.pet_symptom_tracker.entities.user.User;
-import java.util.List;
 
 public class DiseaseTestData extends TestData {
   public Disease getDisease(User creator) {
@@ -46,20 +45,6 @@ public class DiseaseTestData extends TestData {
         DEFAULT_DISEASE.getName(),
         DEFAULT_DISEASE.getDescription(),
         DEFAULT_DISEASE.getCreator().getId());
-  }
-
-  public List<Disease> getAdminDiseaseList() {
-    return List.of(
-        new Disease(1L, "A", "description on A", false, ADMIN),
-        new Disease(2L, "B", "description on B", false, ADMIN));
-  }
-
-  public List<Disease> getDiseaseList() {
-    return List.of(
-        new Disease(1L, "A", "description on A", false, ADMIN),
-        new Disease(2L, "B", "description on B", false, ADMIN),
-        new Disease(3L, "C", "description on C", true, ADMIN),
-        new Disease(4L, "D", "description on D", true, ADMIN));
   }
 
   public DiseaseCompactResponse getDiseaseCompactResponse() {

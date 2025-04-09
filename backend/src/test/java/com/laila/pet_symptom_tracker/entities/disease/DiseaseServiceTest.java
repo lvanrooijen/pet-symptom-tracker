@@ -16,7 +16,6 @@ import com.laila.pet_symptom_tracker.entities.user.User;
 import com.laila.pet_symptom_tracker.exceptions.generic.ForbiddenException;
 import com.laila.pet_symptom_tracker.exceptions.generic.NotFoundException;
 import com.laila.pet_symptom_tracker.testdata.TestDataProvider;
-import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;
@@ -86,31 +85,57 @@ class DiseaseServiceTest {
   @Test
   public void get_all_as_admin_should_show_soft_deleted_diseases() {
     User admin = TestDataProvider.getAdmin();
-    List<Disease> adminDiseaseList = TestDataProvider.DISEASE.getAdminDiseaseList();
 
     when(authenticationService.getAuthenticatedUser()).thenReturn(admin);
-    when(diseaseRepository.findAll()).thenReturn(adminDiseaseList);
 
-    List<DiseaseResponse> result = diseaseService.getAll();
-    assertEquals(adminDiseaseList.size(), result.size());
+    diseaseService.getAll();
+
+    verify(diseaseRepository).findAll();
   }
 
   @Test
   public void get_all_as_user_should_not_show_soft_deleted_diseases() {
     User user = TestDataProvider.getUser();
-    List<Disease> diseaseList = TestDataProvider.DISEASE.getDiseaseList();
 
     when(authenticationService.getAuthenticatedUser()).thenReturn(user);
-    when(diseaseRepository.findByDeletedFalse()).thenReturn(diseaseList);
 
-    List<DiseaseResponse> result = diseaseService.getAll();
-    assertEquals(diseaseList.size(), result.size());
+    diseaseService.getAll();
+
+    verify(diseaseRepository).findByDeletedFalse();
   }
 
   @Test
   public void get_disease_with_invalid_id_should_throw_not_found_exception() {
+    User admin = TestDataProvider.getAdmin();
+
+    when(authenticationService.getAuthenticatedUser()).thenReturn(admin);
     when(diseaseRepository.findById(INVALID_ID)).thenReturn(Optional.empty());
+
     assertThrows(NotFoundException.class, () -> diseaseService.getById(INVALID_ID));
+  }
+
+  @Test
+  public void get_by_id_as_user_should_not_return_soft_deleted_diseases() {
+    User user = TestDataProvider.getUser();
+    Disease disease = TestDataProvider.DISEASE.getDisease();
+
+    when(authenticationService.getAuthenticatedUser()).thenReturn(user);
+    when(diseaseRepository.findByIdAndDeletedFalse(VALID_ID)).thenReturn(Optional.of(disease));
+
+    diseaseService.getById(VALID_ID);
+    verify(diseaseRepository).findByIdAndDeletedFalse(VALID_ID);
+  }
+
+  @Test
+  public void get_by_id_as_admin_should_return_soft_deleted_diseases() {
+    User admin = TestDataProvider.getAdmin();
+    Disease disease = TestDataProvider.DISEASE.getDisease();
+
+    when(authenticationService.getAuthenticatedUser()).thenReturn(admin);
+    when(diseaseRepository.findById(VALID_ID)).thenReturn(Optional.of(disease));
+
+    diseaseService.getById(VALID_ID);
+    verify(diseaseRepository).findById(VALID_ID);
   }
 
   @Test
