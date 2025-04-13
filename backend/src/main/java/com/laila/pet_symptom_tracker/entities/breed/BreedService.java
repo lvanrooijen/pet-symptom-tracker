@@ -58,7 +58,7 @@ public class BreedService {
   }
 
   // TODO bijhouden wie wanneer aanpassing heeft gemaakt
-  public BreedResponse patch(Long id, PatchBreed patch) {
+  public BreedResponse updateBreed(Long id, PatchBreed patch) {
     Breed updatedBreed = breedRepository.findById(id).orElseThrow(NotFoundException::new);
 
     if (patch.name() != null) {
@@ -73,11 +73,13 @@ public class BreedService {
       updatedBreed.setPetType(type);
     }
 
+    breedRepository.save(updatedBreed);
+
     return BreedResponse.from(updatedBreed);
   }
 
   public void deleteById(Long id) {
-    breedRepository.findById(id).orElseThrow(NotFoundException::new);
-    breedRepository.deleteById(id);
+    Breed breed = breedRepository.findById(id).orElseThrow(NotFoundException::new);
+    breedRepository.delete(breed);
   }
 }

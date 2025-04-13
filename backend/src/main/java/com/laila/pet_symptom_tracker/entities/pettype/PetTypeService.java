@@ -70,7 +70,7 @@ public class PetTypeService {
   }
 
   public void delete(Long id) {
-    petTypeRepository.findById(id).orElseThrow(NotFoundException::new);
-    petTypeRepository.deleteById(id);
+    PetType petType = petTypeRepository.findById(id).orElseThrow(NotFoundException::new);
+    petTypeRepository.delete(petType);
   }
 }

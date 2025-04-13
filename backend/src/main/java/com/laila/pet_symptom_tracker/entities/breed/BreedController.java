@@ -47,7 +47,7 @@ public class BreedController {
   @PatchMapping("/{id}")
   public ResponseEntity<BreedResponse> update(
       @PathVariable Long id, @RequestBody @Valid PatchBreed patch) {
-    return ResponseEntity.ok(breedService.patch(id, patch));
+    return ResponseEntity.ok(breedService.updateBreed(id, patch));
   }
 
   @DeleteMapping("/{id}")

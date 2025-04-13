@@ -1,6 +1,8 @@
 package com.laila.pet_symptom_tracker;
 
 import com.laila.pet_symptom_tracker.entities.authentication.Role;
+import com.laila.pet_symptom_tracker.entities.blacklistword.BlackListWord;
+import com.laila.pet_symptom_tracker.entities.blacklistword.BlackListWordRepository;
 import com.laila.pet_symptom_tracker.entities.breed.Breed;
 import com.laila.pet_symptom_tracker.entities.breed.BreedRepository;
 import com.laila.pet_symptom_tracker.entities.disease.Disease;
@@ -37,6 +39,7 @@ public class Seeder implements CommandLineRunner {
   private final DiseaseRepository diseaseRepository;
   private final SymptomRepository symptomRepository;
   private final SymptomLogRepository symptomLogRepository;
+  private final BlackListWordRepository blackListWordRepository;
 
   @Override
   public void run(String... args) throws Exception {
@@ -47,6 +50,15 @@ public class Seeder implements CommandLineRunner {
     seedPets();
     seedSymptoms();
     seedSymptomLogs();
+    seedBlackListWords();
+  }
+
+  private void seedBlackListWords() {
+    if (!blackListWordRepository.findAll().isEmpty()) return;
+
+    List<BlackListWord> foulWords =
+        List.of(new BlackListWord("fuck"), new BlackListWord("dick"), new BlackListWord("pussy"));
+    blackListWordRepository.saveAll(foulWords);
   }
 
   private void seedSymptomLogs() {

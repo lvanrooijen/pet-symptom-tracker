@@ -258,8 +258,7 @@ class DiseaseLogServiceTest {
   }
 
   @Test
-  public void
-      delete_non_disease_by_non_owner_log_should_throw_not_forbidden_exception_with_message() {
+  public void delete_non_disease_by_non_owner_log_should_throw_forbidden_exception_with_message() {
     User user = TestDataProvider.getUser();
     DiseaseLog diseaseLog = TestDataProvider.DISEASE_LOG.getDiseaseLog();
 

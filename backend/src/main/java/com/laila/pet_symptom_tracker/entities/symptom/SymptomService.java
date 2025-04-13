@@ -87,7 +87,7 @@ public class SymptomService {
   }
 
   public void delete(Long id) {
-    symptomRepository.findById(id).orElseThrow(NotFoundException::new);
-    symptomRepository.deleteById(id);
+    Symptom symptom = symptomRepository.findById(id).orElseThrow(NotFoundException::new);
+    symptomRepository.delete(symptom);
   }
 }

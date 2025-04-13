@@ -266,7 +266,7 @@ class BreedControllerTest {
     PatchBreed patch = new PatchBreed("Changed", null);
     BreedResponse patchedBreed = new BreedResponse(breedId, "Changed", petType, creatorId);
 
-    when(breedService.patch(breedId, patch)).thenReturn(patchedBreed);
+    when(breedService.updateBreed(breedId, patch)).thenReturn(patchedBreed);
 
     ResultActions response =
         mvc.perform(
@@ -288,7 +288,7 @@ class BreedControllerTest {
     PatchBreed patch = new PatchBreed("Changed", null);
     BreedResponse patchedBreed = new BreedResponse(breedId, "Changed", petType, creatorId);
 
-    when(breedService.patch(breedId, patch)).thenReturn(patchedBreed);
+    when(breedService.updateBreed(breedId, patch)).thenReturn(patchedBreed);
 
     ResultActions response =
         mvc.perform(

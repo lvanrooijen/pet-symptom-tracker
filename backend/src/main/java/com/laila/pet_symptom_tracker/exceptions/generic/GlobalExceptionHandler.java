@@ -91,4 +91,12 @@ public class GlobalExceptionHandler {
     ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, msg);
     return ResponseEntity.badRequest().body(problemDetail);
   }
+
+  @ExceptionHandler(ProfanityViolationException.class)
+  public ResponseEntity<ProblemDetail> profanityViolationHandler(
+      ProfanityViolationException exception) {
+    String msg = exception.getMessage();
+    ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, msg);
+    return ResponseEntity.badRequest().body(problemDetail);
+  }
 }

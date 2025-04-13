@@ -8,10 +8,12 @@ import com.laila.pet_symptom_tracker.entities.authentication.Role;
 import com.laila.pet_symptom_tracker.entities.authentication.dto.LoginRequest;
 import com.laila.pet_symptom_tracker.entities.authentication.dto.RegisterRequest;
 import com.laila.pet_symptom_tracker.entities.authentication.dto.RegisterResponse;
+import com.laila.pet_symptom_tracker.entities.blacklistword.ProfanityFilterService;
 import com.laila.pet_symptom_tracker.entities.user.dto.UserResponse;
 import com.laila.pet_symptom_tracker.exceptions.authentication.InvalidLoginAttemptException;
 import com.laila.pet_symptom_tracker.exceptions.authentication.UserNotFoundException;
 import com.laila.pet_symptom_tracker.exceptions.generic.ForbiddenException;
+import com.laila.pet_symptom_tracker.exceptions.generic.ProfanityViolationException;
 import com.laila.pet_symptom_tracker.securityconfig.JwtService;
 import com.laila.pet_symptom_tracker.securityconfig.JwtToken;
 import java.awt.*;
@@ -30,8 +32,15 @@ public class UserService implements UserDetailsManager {
   private final PasswordEncoder passwordEncoder;
   private final JwtService jwtService;
   private final AuthenticationService authenticationService;
+  private final ProfanityFilterService profanityFilterService;
 
   public RegisterResponse register(RegisterRequest registerRequest) {
+    // TODO bijbehorende test scrhijven!
+    if (profanityFilterService.violatesProfanityFilter(registerRequest.username())) {
+      throw new ProfanityViolationException("Can not create username that contains profanity.");
+    }
+
+    // TODO voor morgen. als email al geregistreerd is dan geeft ie internal server. fixen
     User createdUser =
         User.builder()
             .username(registerRequest.username())

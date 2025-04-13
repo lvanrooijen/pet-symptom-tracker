@@ -72,7 +72,7 @@ public class DiseaseService {
   }
 
   public void delete(Long id) {
-    diseaseRepository.findById(id).orElseThrow(NotFoundException::new);
-    diseaseRepository.deleteById(id);
+    Disease disease = diseaseRepository.findById(id).orElseThrow(NotFoundException::new);
+    diseaseRepository.delete(disease);
   }
 }

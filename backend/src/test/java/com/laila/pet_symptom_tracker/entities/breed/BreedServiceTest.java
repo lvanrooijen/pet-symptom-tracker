@@ -101,28 +101,28 @@ class BreedServiceTest {
   }
 
   @Test
-  public void patch_breed_with_invalid_id_throws_not_found_exception() {
+  public void updateBreed_breed_with_invalid_id_throws_not_found_exception() {
     PatchBreed patch = TestDataProvider.BREED.getPatchBreed();
 
     when(breedRepository.findById(INVALID_ID)).thenReturn(Optional.empty());
-    assertThrows(NotFoundException.class, () -> breedService.patch(INVALID_ID, patch));
+    assertThrows(NotFoundException.class, () -> breedService.updateBreed(INVALID_ID, patch));
   }
 
   @Test
   public void
-      patch_breed_with_invalid_pet_type_id_should_throw_bad_request_exception_with_correct_message() {
+      updateBreed_breed_with_invalid_pet_type_id_should_throw_bad_request_exception_with_correct_message() {
     Breed breed = TestDataProvider.BREED.getBreed();
     PatchBreed patch = TestDataProvider.BREED.getPatchBreed(INVALID_ID);
 
     when(breedRepository.findById(VALID_ID)).thenReturn(Optional.of(breed));
     when(petTypeRepository.findById(INVALID_ID)).thenReturn(Optional.empty());
     BadRequestException exception =
-        assertThrows(BadRequestException.class, () -> breedService.patch(VALID_ID, patch));
+        assertThrows(BadRequestException.class, () -> breedService.updateBreed(VALID_ID, patch));
     assertEquals(NON_EXISTENT_PET_TYPE, exception.getMessage());
   }
 
   @Test
-  public void patch_breed_should_return_patched_breed() {
+  public void updateBreed_breed_should_return_patched_breed() {
     Breed breed = TestDataProvider.BREED.getBreed();
     PetType petType = TestDataProvider.PET_TYPE.getPetType();
     PatchBreed patch = TestDataProvider.BREED.getPatchBreed();
@@ -130,7 +130,7 @@ class BreedServiceTest {
     when(breedRepository.findById(VALID_ID)).thenReturn(Optional.of(breed));
     when(petTypeRepository.findById(VALID_ID)).thenReturn(Optional.of(petType));
 
-    BreedResponse result = breedService.patch(VALID_ID, patch);
+    BreedResponse result = breedService.updateBreed(VALID_ID, patch);
 
     assertEquals(patch.name(), result.name());
     assertEquals(patch.petTypeId(), result.petType().id());
