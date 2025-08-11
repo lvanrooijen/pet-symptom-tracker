@@ -21,9 +21,11 @@ class BlackListWordControllerTest {
   }
 
   /**
-   * Fetch JWT-token for given username (email address). method sends login to endpoint {@code
-   * /api/v1/login} This method uses the standard password ({@code Password123!}). succesful login
-   * returns token
+   * Fetch JWT-token for given username (email address).
+   *
+   * <p>Method sends login to endpoint {@code /api/v1/login}
+   *
+   * <p>This method uses the standard password ({@code Password123!}). succesful login returns token
    *
    * @param username user email address
    * @return JWT token
